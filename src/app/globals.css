@@ -343,7 +343,7 @@ section {
 .btn-outline:hover {
   border-color: var(--mint);
   box-shadow: var(--glow-sm);
-  background: rgba(168, 230, 207, 0.05);
+  background: rgba(168, 230, 207, 0.03);
   transform: translateY(-1px);
 }
 
