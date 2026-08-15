@@ -1,0 +1,363 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CSS CUSTOM PROPERTIES
+───────────────────────────────────────────────────────────────────────────── */
+:root {
+  --bg: #0A0A0A;
+  --card: #0F1A15;
+  --card-border: #0F3D2E;
+  --accent-primary: #0F3D2E;
+  --accent-hover: #2E8B57;
+  --mint: #A8E6CF;
+  --text-primary: #E0E0E0;
+  --text-secondary: #A0A0A0;
+
+  /* Glow shadows */
+  --glow-mint: 0 0 20px rgba(168, 230, 207, 0.25);
+  --glow-green: 0 0 30px rgba(46, 139, 87, 0.35);
+  --glow-sm: 0 0 8px rgba(168, 230, 207, 0.15);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE RESET & BODY
+───────────────────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+  overscroll-behavior: none;
+}
+
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SELECTION
+───────────────────────────────────────────────────────────────────────────── */
+::selection {
+  background-color: rgba(168, 230, 207, 0.25);
+  color: #A8E6CF;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+::-webkit-scrollbar-thumb {
+  background: #0F3D2E;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2E8B57;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TYPOGRAPHY UTILITIES
+───────────────────────────────────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #A8E6CF 0%, #2E8B57 50%, #A8E6CF 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 4s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% center; }
+  50%       { background-position: 100% center; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CARD STYLES
+───────────────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--accent-hover);
+  box-shadow: var(--glow-green);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   INPUT STYLES
+───────────────────────────────────────────────────────────────────────────── */
+.input-field {
+  width: 100%;
+  background: rgba(15, 26, 21, 0.8);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.input-field::placeholder {
+  color: var(--text-secondary);
+}
+
+.input-field:focus {
+  border-color: var(--mint);
+  box-shadow: 0 0 0 3px rgba(168, 230, 207, 0.12), var(--glow-sm);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ANIMATED NOISE BACKGROUND OVERLAY
+───────────────────────────────────────────────────────────────────────────── */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ANIMATED GRADIENT BG ORBS
+───────────────────────────────────────────────────────────────────────────── */
+.bg-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  animation: orb-drift 12s ease-in-out infinite alternate;
+}
+
+.bg-orb-1 {
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(15, 61, 46, 0.18) 0%, transparent 70%);
+  top: -200px;
+  left: -200px;
+  animation-duration: 14s;
+}
+
+.bg-orb-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(46, 139, 87, 0.08) 0%, transparent 70%);
+  bottom: -150px;
+  right: -100px;
+  animation-duration: 18s;
+  animation-delay: -5s;
+}
+
+.bg-orb-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(168, 230, 207, 0.05) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-duration: 22s;
+  animation-delay: -8s;
+}
+
+@keyframes orb-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(40px, -30px) scale(1.05); }
+  66%  { transform: translate(-20px, 40px) scale(0.97); }
+  100% { transform: translate(30px, 20px) scale(1.03); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION SPACING
+───────────────────────────────────────────────────────────────────────────── */
+section {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TOOLTIP
+───────────────────────────────────────────────────────────────────────────── */
+.tooltip {
+  position: relative;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0F3D2E;
+  color: #A8E6CF;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 230, 207, 0.2);
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LOADING SKELETON
+───────────────────────────────────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--card) 25%,
+    rgba(15, 61, 46, 0.4) 50%,
+    var(--card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TIMELINE
+───────────────────────────────────────────────────────────────────────────── */
+.timeline-line {
+  background: linear-gradient(to bottom, transparent, var(--card-border) 10%, var(--card-border) 90%, transparent);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TECH TAG
+───────────────────────────────────────────────────────────────────────────── */
+.tech-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: rgba(15, 61, 46, 0.5);
+  border: 1px solid rgba(15, 61, 46, 0.8);
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #A8E6CF;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.tech-tag:hover {
+  background: rgba(46, 139, 87, 0.3);
+  border-color: #2E8B57;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BUTTON
+───────────────────────────────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #0F3D2E, #2E8B57);
+  border: 1px solid rgba(168, 230, 207, 0.2);
+  border-radius: 12px;
+  color: #E0E0E0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #2E8B57, #A8E6CF);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.btn-primary:hover::before {
+  opacity: 0.15;
+}
+
+.btn-primary:hover {
+  box-shadow: var(--glow-green);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 28px;
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  color: var(--mint);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-outline:hover {
+  border-color: var(--mint);
+  box-shadow: var(--glow-sm);
+  background: rgba(168, 230, 207, 0.05);
+  transform: translateY(-1px);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SUBTLE GRID OVERLAY — matches reference aesthetic
+───────────────────────────────────────────────────────────────────────────── */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.018;
+  background-image:
+    linear-gradient(rgba(168, 230, 207, 0.8) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 230, 207, 0.8) 1px, transparent 1px);
+  background-size: 56px 56px;
+}

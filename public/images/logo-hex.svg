@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220">
+  <defs>
+    <linearGradient id="mintGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A8E6CF"/>
+      <stop offset="100%" stop-color="#2E8B57"/>
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F3D2E"/>
+      <stop offset="100%" stop-color="#0A2218"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer glow ring -->
+  <polygon points="110,18 174,55 174,129 110,166 46,129 46,55"
+    fill="none" stroke="#2E8B57" stroke-width="1.2" opacity="0.35"/>
+  <!-- Mid ring -->
+  <polygon points="110,26 168,61 168,125 110,160 52,125 52,61"
+    fill="none" stroke="#A8E6CF" stroke-width="0.6" opacity="0.18"/>
+  <!-- Main hex body -->
+  <polygon points="110,34 162,63 162,121 110,150 58,121 58,63"
+    fill="url(#bgGrad)" stroke="#A8E6CF" stroke-width="1.6"/>
+
+  <!-- Circuit trace — left -->
+  <line x1="58" y1="92" x2="36" y2="92" stroke="#1a5c3a" stroke-width="1.6"/>
+  <circle cx="32" cy="92" r="3.5" fill="none" stroke="#2E8B57" stroke-width="1.2"/>
+  <circle cx="32" cy="92" r="1.5" fill="#2E8B57"/>
+  <!-- Circuit trace — right -->
+  <line x1="162" y1="92" x2="184" y2="92" stroke="#1a5c3a" stroke-width="1.6"/>
+  <circle cx="188" cy="92" r="3.5" fill="none" stroke="#2E8B57" stroke-width="1.2"/>
+  <circle cx="188" cy="92" r="1.5" fill="#2E8B57"/>
+  <!-- Circuit trace — top left -->
+  <line x1="75" y1="52" x2="60" y2="32" stroke="#1a5c3a" stroke-width="1.4"/>
+  <circle cx="57" cy="28" r="3" fill="none" stroke="#2E8B57" stroke-width="1.2"/>
+  <!-- Circuit trace — bottom right -->
+  <line x1="145" y1="132" x2="160" y2="152" stroke="#1a5c3a" stroke-width="1.4"/>
+  <circle cx="163" cy="156" r="3" fill="none" stroke="#2E8B57" stroke-width="1.2"/>
+
+  <!-- Accent dot top-right -->
+  <circle cx="150" cy="52" r="4" fill="#A8E6CF" opacity="0.9"/>
+  <circle cx="150" cy="52" r="7" fill="none" stroke="#A8E6CF" stroke-width="0.8" opacity="0.3"/>
+
+  <!-- Small inner corner marks -->
+  <line x1="72" y1="67" x2="80" y2="72" stroke="#A8E6CF" stroke-width="1" opacity="0.4"/>
+  <line x1="148" y1="67" x2="140" y2="72" stroke="#A8E6CF" stroke-width="1" opacity="0.4"/>
+
+  <!-- MQ text -->
+  <text x="110" y="118"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="52" font-weight="700"
+    fill="url(#mintGrad)"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    letter-spacing="-2">MQ</text>
+
+  <!-- Thin bottom tag inside hex -->
+  <rect x="82" y="136" width="56" height="10" rx="3" fill="#0A2218" opacity="0.85"/>
+  <text x="110" y="144.5"
+    font-family="Arial, sans-serif"
+    font-size="7" font-weight="400"
+    fill="#A8E6CF"
+    text-anchor="middle"
+    letter-spacing="3">DEV·OPS</text>
+</svg>

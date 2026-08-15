@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Background -->
+  <circle cx="60" cy="60" r="60" fill="#0F1A15"/>
+  <!-- Subtle ring -->
+  <circle cx="60" cy="60" r="58" stroke="#0F3D2E" stroke-width="1.5"/>
+  <!-- Body silhouette -->
+  <circle cx="60" cy="45" r="20" fill="#1a3d2a"/>
+  <ellipse cx="60" cy="98" rx="32" ry="22" fill="#1a3d2a"/>
+  <!-- Initials fallback text -->
+  <text x="60" y="51" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, sans-serif" font-size="20" font-weight="700"
+        fill="#A8E6CF" opacity="0.9">YN</text>
+</svg>
