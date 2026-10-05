@@ -1,14 +1,9 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Send, Download, Eye, CheckCircle, AlertCircle,
-  Loader2, Mail, Copy, Check, Clock, Sparkles,
-  MapPin, ShieldCheck, ArrowRight, FileText
-} from 'lucide-react';
-import AnimatedSection from './AnimatedSection';
+import { useState, type SyntheticEvent } from 'react';
+import { Download, Eye, Mail, Copy, Check } from 'lucide-react';
 import ResumeModal from './resumemodal';
+import { Section, SectionHeading, MonoLabel, StatusDot } from './ui';
 
 const FORM_ENDPOINT = 'https://formspree.io/f/mojygwvj';
 const CONTACT_EMAIL = 'aslamqasim126@gmail.com';
@@ -38,12 +33,15 @@ function FormField({
 }: FieldProps) {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-xs font-mono text-text-secondary uppercase tracking-wider font-semibold">
-        {label} {required && <span className="text-cyan-400">*</span>}
+      <label htmlFor={id}>
+        <MonoLabel>
+          {label} {required && <span aria-hidden="true">*</span>}
+        </MonoLabel>
       </label>
       {multiline ? (
         <textarea
           id={id}
+          name={id}
           rows={5}
           placeholder={placeholder}
           value={value}
@@ -54,6 +52,7 @@ function FormField({
       ) : (
         <input
           id={id}
+          name={id}
           type={type}
           placeholder={placeholder}
           value={value}
@@ -67,12 +66,12 @@ function FormField({
 }
 
 export default function Contact() {
-  const [name, setName]       = useState('');
-  const [email, setEmail]     = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [status, setStatus]   = useState<FormStatus>('idle');
+  const [status, setStatus] = useState<FormStatus>('idle');
   const [resumeOpen, setResumeOpen] = useState(false);
-  const [copied, setCopied]   = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
     navigator.clipboard.writeText(CONTACT_EMAIL);
@@ -80,7 +79,7 @@ export default function Contact() {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!name.trim() || !/^\S+@\S+\.\S+$/.test(email.trim()) || !message.trim()) {
       setStatus('invalid');
@@ -109,112 +108,84 @@ export default function Contact() {
 
   return (
     <>
-      <AnimatedSection
-        id="contact"
-        eyebrow="Contact"
-        heading="Let's Work Together"
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 max-w-5xl mx-auto items-start">
+      <Section id="contact" labelledBy="contact-title" tone="paper-2">
+        <SectionHeading id="contact-title" eyebrow="Contact">
+          Let&apos;s work together
+        </SectionHeading>
 
-          {/* ═══════════════════════════════════════════════════════════════
-              LEFT: EXECUTIVE VALUE & DIRECT ACCESS
-             ═══════════════════════════════════════════════════════════════ */}
-          <div className="lg:col-span-5 flex flex-col gap-6">
-            
-            {/* Header info card */}
-            <div className="card p-6 sm:p-7 relative overflow-hidden">
-              <h3 className="font-display font-bold text-xl text-white mb-3">
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12">
+          <div className="flex flex-col gap-6 lg:col-span-5">
+            <div className="card p-6 sm:p-7">
+              <h3 className="mb-3 text-title text-ink">
                 Open to internships, junior roles and project work
               </h3>
-
-              <p className="text-text-secondary text-sm leading-relaxed mb-6">
-                Need a web app or a Flutter mobile app built and shipped? Send a message or email me directly.
+              <p className="mb-6 text-body text-ink-soft">
+                Need a web app or a Flutter mobile app built and shipped? Send a message or email me
+                directly.
               </p>
 
-              {/* 1-Click Copy Email Button */}
-              <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-cyan-400 flex-shrink-0">
-                    <Mail size={15} />
-                  </div>
-                  <span className="text-xs sm:text-sm font-mono text-white truncate">
+              <div className="flex items-center justify-between gap-3 border border-rule p-3">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <Mail size={16} className="shrink-0 text-ink-soft" aria-hidden="true" />
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="link truncate font-mono text-mono-m"
+                  >
                     {CONTACT_EMAIL}
-                  </span>
+                  </a>
                 </div>
-
                 <button
                   onClick={copyEmail}
-                  className="px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/10 border border-white/15 text-xs text-text-primary flex items-center gap-1.5 transition-all flex-shrink-0 cursor-pointer"
-                  title="Copy email to clipboard"
+                  className="btn-ghost min-h-[44px] shrink-0 px-3 py-1.5 text-caption"
+                  aria-label="Copy email address"
                 >
                   {copied ? (
                     <>
-                      <Check size={13} className="text-emerald-400" />
-                      <span className="text-emerald-400 font-medium">Copied!</span>
+                      <Check size={14} aria-hidden="true" />
+                      Copied
                     </>
                   ) : (
                     <>
-                      <Copy size={13} className="text-cyan-400" />
-                      <span>Copy</span>
+                      <Copy size={14} aria-hidden="true" />
+                      Copy
                     </>
                   )}
                 </button>
               </div>
             </div>
 
-            {/* Resume Action Card */}
-            <div className="card p-5 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-400 flex-shrink-0">
-                  <FileText size={18} />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-white leading-tight">
-                    Muhammad Qasim — CV
-                  </p>
-                  <p className="text-xs text-text-muted mt-0.5">
-                    Resume (PDF)
-                  </p>
-                </div>
+            <div className="card flex flex-wrap items-center justify-between gap-4 p-5">
+              <div>
+                <p className="text-body font-semibold text-ink">Muhammad Qasim — CV</p>
+                <MonoLabel as="p" className="mt-0.5 normal-case tracking-normal">
+                  Resume (PDF)
+                </MonoLabel>
               </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setResumeOpen(true)}
-                  className="btn-outline text-xs py-2 px-3 cursor-pointer"
-                >
-                  <Eye size={12} />
+              <div className="flex flex-wrap items-center gap-2">
+                <button onClick={() => setResumeOpen(true)} className="btn-outline px-3 py-2 text-caption">
+                  <Eye size={14} aria-hidden="true" />
                   Preview
                 </button>
                 <a
                   href="/resume.pdf"
                   download="Muhammad_Qasim_CV.pdf"
-                  className="btn-primary text-xs py-2 px-3"
+                  className="btn-primary px-3 py-2 text-caption"
                 >
-                  <Download size={12} />
+                  <Download size={14} aria-hidden="true" />
                   PDF
                 </a>
               </div>
             </div>
-
           </div>
 
-          {/* ═══════════════════════════════════════════════════════════════
-              RIGHT: FROSTED GLASS FORM
-             ═══════════════════════════════════════════════════════════════ */}
           <div className="lg:col-span-7">
             <div className="card p-6 sm:p-8">
-              <h4 className="font-display font-bold text-lg text-white mb-2 flex items-center gap-2">
-                <Sparkles size={16} className="text-cyan-400" />
-                Send a Message
-              </h4>
-              <p className="text-text-muted text-xs mb-6">
-                Messages are sent to my email inbox.
-              </p>
+              <h3 className="mb-2 text-title text-ink">Send a message</h3>
+              <p className="mb-6 text-caption text-ink-soft">Messages are sent to my email inbox.</p>
 
               <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <FormField
-                  label="Your Name"
+                  label="Your name"
                   id="name"
                   placeholder="Your name"
                   value={name}
@@ -240,64 +211,39 @@ export default function Contact() {
                   required
                 />
 
-                <div aria-live="polite" className="space-y-5">
-                {status === 'invalid' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-2.5 text-xs sm:text-sm text-red-400 font-medium"
-                  >
-                    <AlertCircle size={16} className="flex-shrink-0" />
-                    Please fill in your name, a valid email and a message.
-                  </motion.div>
-                )}
-
-                {status === 'success' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-2.5 text-xs sm:text-sm text-emerald-400 font-medium"
-                  >
-                    <CheckCircle size={16} className="flex-shrink-0" />
-                    Message sent. Thank you — I'll reply by email.
-                  </motion.div>
-                )}
-
-                {status === 'error' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-2.5 text-xs sm:text-sm text-red-400 font-medium"
-                  >
-                    <AlertCircle size={16} className="flex-shrink-0" />
-                    Message could not be sent. Please email me directly at {CONTACT_EMAIL}.
-                  </motion.div>
-                )}
+                <div aria-live="polite">
+                  {status === 'invalid' && (
+                    <p className="border border-fail p-4 text-caption text-fail">
+                      <StatusDot status="fail" label="Please fill in your name, a valid email and a message." />
+                    </p>
+                  )}
+                  {status === 'success' && (
+                    <p className="border border-accent bg-accent-wash p-4 text-caption text-ink">
+                      <StatusDot status="live" label="Message sent. Thank you — I'll reply by email." />
+                    </p>
+                  )}
+                  {status === 'error' && (
+                    <p className="border border-fail p-4 text-caption text-fail">
+                      <StatusDot
+                        status="fail"
+                        label={`Message could not be sent. Please email me directly at ${CONTACT_EMAIL}.`}
+                      />
+                    </p>
+                  )}
                 </div>
 
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="btn-primary w-full justify-center py-3 text-sm font-semibold cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="btn-primary w-full justify-center"
                 >
-                  {status === 'loading' ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      Sending…
-                    </>
-                  ) : (
-                    <>
-                      <Send size={15} />
-                      Send Message
-                    </>
-                  )}
+                  {status === 'loading' ? 'Sending…' : 'Send message'}
                 </button>
               </form>
             </div>
           </div>
-
         </div>
-      </AnimatedSection>
+      </Section>
 
       <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
     </>

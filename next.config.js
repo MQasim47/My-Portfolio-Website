@@ -4,8 +4,8 @@ const nextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
   },
-  // Enable experimental features if needed
-  experimental: {},
+
+
 };
 
 module.exports = nextConfig;

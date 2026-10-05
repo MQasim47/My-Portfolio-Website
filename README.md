@@ -2,7 +2,7 @@
 
 Personal portfolio: full-stack and Flutter mobile engineer.
 
-**Stack:** Next.js 14 (App Router) · React 18 · TypeScript · Tailwind CSS · Framer Motion
+**Stack:** Next.js 15 (App Router) · React 19 · TypeScript · Tailwind CSS 3 · `motion` 12
 
 ## Development
 
@@ -21,6 +21,21 @@ npm run start    # serve the production build
 
 The contact form posts to a Formspree endpoint defined in `src/app/components/Contact.tsx`.
 Submissions are delivered to the email address configured in that Formspree form.
+
+## Design system
+
+`src/app/globals.css` is the single source of truth for design tokens (palette, shadows, hairline,
+page margin, section rhythm). `tailwind.config.js` reads them via `var()` — never add a literal colour
+to a component. Shared primitives live in `src/app/components/ui/`.
+
+Fonts are self-hosted from `src/fonts/` (latin subset, variable; SIL OFL):
+Bodoni Moda (display), Hanken Grotesk (body), JetBrains Mono (technical).
+
+```bash
+npm run lint     # next lint (ESLint, next/core-web-vitals + next/typescript)
+```
+
+CI (`.github/workflows/ci.yml`) runs lint and build on every push and pull request.
 
 ## Content
 

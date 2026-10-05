@@ -1,20 +1,14 @@
-'use client';
-
-import { motion } from 'framer-motion';
-import AnimatedSection from './AnimatedSection';
+import { Section, SectionHeading, StatusDot, Reveal } from './ui';
 
 // TODO: moves to the CMS in Phase 3.
 const ITEMS = [
   {
     name: 'Archive',
-    status: 'In development',
-    description:
-      'A RAG-based AI chatbot over private documents. Personal project.',
+    description: 'A RAG-based AI chatbot over private documents. Personal project.',
     tech: ['Next.js', 'Express', 'Ollama', 'pgvector'],
   },
   {
     name: 'Flacron Auto Social',
-    status: 'In development',
     description: 'A social media management app.',
     tech: ['Flutter', 'Firebase'],
   },
@@ -22,27 +16,30 @@ const ITEMS = [
 
 export default function CurrentlyBuilding() {
   return (
-    <AnimatedSection id="building" eyebrow="In Progress" heading="Currently Building">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        {ITEMS.map((item) => (
-          <motion.div key={item.name} className="card p-6 sm:p-7 flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="font-display font-bold text-lg text-white">{item.name}</h3>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
-                {item.status}
-              </span>
-            </div>
-            <p className="text-text-secondary text-sm leading-relaxed">{item.description}</p>
-            <div className="flex flex-wrap gap-1.5 mt-auto">
-              {item.tech.map((t) => (
-                <span key={t} className="tech-tag text-[11px]">
-                  {t}
-                </span>
-              ))}
-            </div>
-          </motion.div>
+    <Section id="building" labelledBy="building-title" tone="paper-2">
+      <SectionHeading id="building-title" eyebrow="In progress">
+        Currently building
+      </SectionHeading>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {ITEMS.map((item, i) => (
+          <Reveal key={item.name} delay={i * 0.08} className="h-full">
+            <article className="card flex h-full flex-col gap-4 p-6 sm:p-8">
+              <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+                <h3 className="font-display text-display-m text-ink">{item.name}</h3>
+                <StatusDot status="in-development" label="In development" className="text-ink-soft" />
+              </div>
+              <p className="text-body text-ink-soft">{item.description}</p>
+              <ul className="mt-auto flex flex-wrap gap-1.5" aria-label="Technologies">
+                {item.tech.map((t) => (
+                  <li key={t} className="tech-tag">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </Reveal>
         ))}
       </div>
-    </AnimatedSection>
+    </Section>
   );
 }

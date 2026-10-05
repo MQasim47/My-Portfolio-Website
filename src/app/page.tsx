@@ -6,18 +6,14 @@ import CurrentlyBuilding from './components/CurrentlyBuilding';
 import Skills from './components/Skills';
 import Experience from './components/Experience';
 import Contact from './components/Contact';
-import ParticleBackground from './components/Particlebackground';
-import SmoothScroll from './components/SmoothScroll';
+import { Container, MonoLabel } from './components/ui';
 
 export default function HomePage() {
   return (
     <>
-      <SmoothScroll />
-      <ParticleBackground />
-
       <Navbar />
 
-      <main className="relative z-10">
+      <main id="main">
         <Hero />
         <About />
         <Projects />
@@ -27,18 +23,16 @@ export default function HomePage() {
         <Contact />
       </main>
 
-      <footer className="relative z-10 border-t border-white/10 py-10 text-center bg-[#050814]/80 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-cyan-400" />
-            <span className="font-display font-bold text-sm text-white">Muhammad Qasim</span>
-            <span className="text-xs text-text-muted">· Full-stack &amp; Mobile Engineer</span>
-          </div>
-
-          <p className="text-text-muted text-xs font-mono">
-            © {new Date().getFullYear()} Muhammad Qasim
+      <footer className="border-t border-rule bg-paper py-10 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
+        <Container className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <p className="text-body text-ink">
+            <span className="font-semibold">Muhammad Qasim</span>
+            <span className="text-ink-soft"> · Full-stack &amp; Mobile Engineer</span>
           </p>
-        </div>
+          <MonoLabel as="p" className="normal-case tracking-normal">
+            © {new Date().getFullYear()} Muhammad Qasim
+          </MonoLabel>
+        </Container>
       </footer>
     </>
   );
