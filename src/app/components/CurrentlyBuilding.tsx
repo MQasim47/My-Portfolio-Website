@@ -1,4 +1,6 @@
+import type { CSSProperties } from 'react';
 import { Section, SectionHeading, StatusDot } from './ui';
+import SplitLines from './SplitLines';
 
 // TODO: moves to the CMS in Phase 3.
 const ITEMS = [
@@ -22,20 +24,26 @@ export default function CurrentlyBuilding() {
       </SectionHeading>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {ITEMS.map((item) => (
-            <article key={item.name} className="card draw-border flex h-full flex-col gap-4 p-6 sm:p-8">
-              <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
-                <h3 className="font-display text-display-m text-ink">{item.name}</h3>
-                <StatusDot status="in-development" label="In development" className="text-ink-soft" />
-              </div>
-              <p className="text-body text-ink-soft">{item.description}</p>
-              <ul className="mt-auto flex flex-wrap gap-1.5" aria-label="Technologies">
-                {item.tech.map((t) => (
-                  <li key={t} className="tech-tag">
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </article>
+          // Each card is its own reveal group: the title rises out of its mask, then the tags
+          // stagger in. The border simply changes colour on hover (no drawing).
+          <article
+            key={item.name}
+            data-reveal-group
+            className="card card-hover flex h-full flex-col gap-4 p-6 sm:p-8"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+              <SplitLines as="h3" className="font-display text-display-m text-ink" text={item.name} />
+              <StatusDot status="in-development" label="In development" className="text-ink-soft" />
+            </div>
+            <p className="text-body text-ink-soft">{item.description}</p>
+            <ul className="mt-auto flex flex-wrap gap-1.5" aria-label="Technologies">
+              {item.tech.map((t, i) => (
+                <li key={t} className="tech-tag rv-tag" style={{ '--ti': i } as CSSProperties}>
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </article>
         ))}
       </div>
     </Section>
