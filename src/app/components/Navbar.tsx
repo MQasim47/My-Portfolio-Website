@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, FileText } from 'lucide-react';
+import { Menu, X, FileText, Sparkles, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ResumeModal from './resumemodal';
 
 const NAV_ITEMS = [
-  { label: 'Home',       href: '#hero'       },
+  { label: 'Overview',   href: '#hero'       },
+  { label: 'Pillars',    href: '#pillars'    },
   { label: 'Skills',     href: '#skills'     },
   { label: 'Projects',   href: '#projects'   },
   { label: 'Experience', href: '#experience' },
@@ -20,14 +21,14 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen]       = useState(false);
   const [resumeOpen, setResumeOpen]       = useState(false);
 
-  // Scroll → blur background
+  // Scroll detection for backdrop styling
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Active section highlight
+  // Intersection observer for active section
   useEffect(() => {
     const ids = NAV_ITEMS.map((i) => i.href.replace('#', ''));
     const observers: IntersectionObserver[] = [];
@@ -36,7 +37,7 @@ export default function Navbar() {
       if (!el) return;
       const obs = new IntersectionObserver(
         ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
-        { threshold: 0.4 }
+        { threshold: 0.3 }
       );
       obs.observe(el);
       observers.push(obs);
@@ -55,182 +56,171 @@ export default function Navbar() {
       <motion.header
         initial={{ y: -70, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-          scrolled
-            ? 'bg-background/80 backdrop-blur-xl border-b border-card-border shadow-[0_4px_30px_rgba(0,0,0,0.35)]'
-            : 'bg-transparent'
-        )}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-4 transition-all duration-300"
       >
-        <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-
+        <div
+          className={cn(
+            'max-w-6xl mx-auto rounded-2xl transition-all duration-300 px-4 sm:px-6 h-16 flex items-center justify-between border',
+            scrolled
+              ? 'bg-[#060A17]/85 backdrop-blur-2xl border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.65)]'
+              : 'bg-[#080D1A]/50 backdrop-blur-md border-white/5 shadow-none'
+          )}
+        >
           {/* ── Logo ───────────────────────────────────────────────── */}
           <motion.button
             onClick={() => handleNavClick('#hero')}
-            whileHover={{ scale: 1.04 }}
+            whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="flex items-center gap-2.5 group"
+            className="flex items-center gap-3 group text-left cursor-pointer"
             aria-label="Go to top"
           >
-            {/* Monogram mark */}
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center font-display font-extrabold text-sm transition-shadow duration-300 group-hover:shadow-glow-mint"
-              style={{
-                background: 'linear-gradient(135deg, #0F3D2E 0%, #1a5c3a 100%)',
-                border: '1px solid rgba(168,230,207,0.25)',
-                color: '#A8E6CF',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              MQ
+            {/* Monogram mark with animated border glow */}
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 via-cyan-500/20 to-emerald-500/20 border border-white/15 shadow-sm group-hover:border-cyan-400/50 transition-colors">
+              <span className="font-display font-extrabold text-sm text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">
+                MQ
+              </span>
+              <div className="absolute inset-0 rounded-xl bg-cyan-400/10 opacity-0 group-hover:opacity-100 blur-sm transition-opacity" />
             </div>
-            {/* Name — hides on very small screens */}
-            <span className="hidden sm:block font-display font-bold text-base leading-none">
-              <span className="gradient-text">Muhammad Qasim</span>
-            </span>
+
+            {/* Name + Title */}
+            <div className="hidden sm:flex flex-col">
+              <span className="font-display font-bold text-sm tracking-tight text-white group-hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                Muhammad Qasim
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              </span>
+              <span className="text-[10px] text-text-muted font-medium tracking-wider uppercase">
+                DevOps &amp; Full-Stack Architect
+              </span>
+            </div>
           </motion.button>
 
-          {/* ── Desktop nav ─────────────────────────────────────────── */}
-          <ul className="hidden md:flex items-center gap-1">
+          {/* ── Desktop Nav Links ─────────────────────────────────────── */}
+          <ul className="hidden md:flex items-center gap-1 bg-white/[0.03] p-1.5 rounded-xl border border-white/5">
             {NAV_ITEMS.map(({ label, href }) => {
               const isActive = activeSection === href.replace('#', '');
               return (
                 <li key={href}>
-                  <motion.button
+                  <button
                     onClick={() => handleNavClick(href)}
-                    whileHover={{ y: -1 }}
-                    whileTap={{ scale: 0.96 }}
                     className={cn(
-                      'relative px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200',
-                      isActive ? 'text-mint' : 'text-text-secondary hover:text-text-primary'
+                      'relative px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors duration-200 cursor-pointer',
+                      isActive ? 'text-white font-semibold' : 'text-text-secondary hover:text-white'
                     )}
                   >
-                    {label}
-                    <AnimatePresence>
-                      {isActive && (
-                        <motion.span
-                          layoutId="nav-underline"
-                          initial={{ scaleX: 0, opacity: 0 }}
-                          animate={{ scaleX: 1, opacity: 1 }}
-                          exit={{ scaleX: 0, opacity: 0 }}
-                          transition={{ duration: 0.25, ease: 'easeInOut' }}
-                          className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-mint"
-                        />
-                      )}
-                    </AnimatePresence>
-                  </motion.button>
+                    {isActive && (
+                      <motion.span
+                        layoutId="active-nav-pill"
+                        className="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-600/30 to-cyan-600/30 border border-cyan-400/30 shadow-[0_0_15px_rgba(6,182,212,0.25)]"
+                        transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10">{label}</span>
+                  </button>
                 </li>
               );
             })}
           </ul>
 
-          {/* ── Desktop right actions ───────────────────────────────── */}
-          <div className="hidden md:flex items-center gap-2">
+          {/* ── Desktop Right Actions ───────────────────────────────── */}
+          <div className="hidden md:flex items-center gap-2.5">
+            {/* Live Availability Badge */}
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-medium text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Available
+            </div>
+
             {/* Resume button */}
             <motion.button
               onClick={() => setResumeOpen(true)}
-              whileHover={{ scale: 1.04 }}
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="btn-outline text-xs py-2 px-4"
+              className="btn-outline text-xs py-2 px-3.5"
             >
-              <FileText size={13} />
+              <FileText size={13} className="text-cyan-400" />
               Resume
             </motion.button>
 
-            {/* Hire Me */}
+            {/* Contact / Hire Me */}
             <motion.button
               onClick={() => handleNavClick('#contact')}
-              whileHover={{ scale: 1.04 }}
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="btn-primary text-xs py-2 px-5"
+              className="btn-primary text-xs py-2 px-4.5"
             >
+              <Send size={12} />
               Hire Me
             </motion.button>
           </div>
 
-          {/* ── Hamburger ───────────────────────────────────────────── */}
+          {/* ── Mobile Hamburger ────────────────────────────────────── */}
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setMobileOpen((p) => !p)}
-            className="md:hidden text-text-secondary hover:text-mint transition-colors p-2"
+            className="md:hidden text-text-secondary hover:text-white transition-colors p-2 rounded-lg bg-white/5 border border-white/10"
             aria-label="Toggle menu"
           >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </motion.button>
-        </nav>
+        </div>
       </motion.header>
 
-      {/* ── Mobile drawer ───────────────────────────────────────────────── */}
+      {/* ── Mobile Menu Drawer ────────────────────────────────────────── */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.28, ease: 'easeInOut' }}
-            className="fixed top-16 inset-x-0 z-40 bg-background/95 backdrop-blur-xl border-b border-card-border md:hidden"
+            initial={{ opacity: 0, y: -20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.98 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed top-22 inset-x-4 z-40 bg-[#080D1A]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl p-5 md:hidden"
           >
-            <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-1">
+            <div className="flex flex-col gap-1.5">
               {/* Nav links */}
-              {NAV_ITEMS.map(({ label, href }, i) => (
-                <motion.div
-                  key={href}
-                  initial={{ opacity: 0, x: -16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.055 }}
-                >
+              {NAV_ITEMS.map(({ label, href }) => {
+                const isActive = activeSection === href.replace('#', '');
+                return (
                   <button
+                    key={href}
                     onClick={() => handleNavClick(href)}
                     className={cn(
-                      'w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors duration-200',
-                      activeSection === href.replace('#', '')
-                        ? 'text-mint bg-card border border-card-border'
-                        : 'text-text-secondary hover:text-text-primary hover:bg-card/50'
+                      'w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer',
+                      isActive
+                        ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-500/25 font-semibold'
+                        : 'text-text-secondary hover:text-white hover:bg-white/5'
                     )}
                   >
                     {label}
                   </button>
-                </motion.div>
-              ))}
+                );
+              })}
 
-              {/* Divider */}
-              <div className="my-1 h-px bg-card-border" />
+              <div className="my-2 h-px bg-white/10" />
 
-              {/* Resume */}
-              <motion.div
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: NAV_ITEMS.length * 0.055 }}
-              >
+              {/* Mobile Actions */}
+              <div className="flex flex-col gap-2 pt-1">
                 <button
                   onClick={() => { setMobileOpen(false); setResumeOpen(true); }}
                   className="btn-outline w-full justify-center text-sm py-2.5"
                 >
-                  <FileText size={14} />
-                  View / Download Resume
+                  <FileText size={14} className="text-cyan-400" />
+                  View &amp; Download Resume
                 </button>
-              </motion.div>
 
-              {/* Hire Me */}
-              <motion.div
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: (NAV_ITEMS.length + 1) * 0.055 }}
-              >
                 <button
                   onClick={() => handleNavClick('#contact')}
                   className="btn-primary w-full justify-center text-sm py-2.5"
                 >
-                  Hire Me
+                  <Sparkles size={14} />
+                  Hire Me / Get in Touch
                 </button>
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ── Resume Modal ────────────────────────────────────────────────── */}
+      {/* ── Resume Modal ─────────────────────────────────────────────── */}
       <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
     </>
   );

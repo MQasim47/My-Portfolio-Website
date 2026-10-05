@@ -9,7 +9,7 @@ interface AnimatedSectionProps {
   className?: string;
   /** Optional visual section heading */
   heading?: string;
-  /** Sub-label shown above heading in mint color */
+  /** Sub-label shown above heading in cyan accent */
   eyebrow?: string;
 }
 
@@ -30,7 +30,7 @@ const childVariants = {
     y: 0,
     transition: {
       duration: 0.65,
-      ease: [0.25, 0.46, 0.45, 0.94],
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 };
@@ -47,27 +47,28 @@ export default function AnimatedSection({
   return (
     <section
       id={id}
-      className={`py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto ${className}`}
+      className={`py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto ${className}`}
     >
       {(eyebrow || heading) && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="mb-12 text-center"
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-14 text-center"
         >
           {eyebrow && (
-            <span className="inline-block text-mint text-xs font-bold tracking-widest uppercase mb-3 px-3 py-1 rounded-full border border-card-border bg-card">
+            <span className="inline-flex items-center gap-1.5 text-cyan-400 text-xs font-mono font-bold tracking-widest uppercase mb-3.5 px-3.5 py-1.5 rounded-full border border-cyan-400/25 bg-cyan-500/10 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
               {eyebrow}
             </span>
           )}
           {heading && (
-            <h2 className="font-display font-bold text-3xl sm:text-4xl text-text-primary">
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight">
               {heading}
             </h2>
           )}
-          <div className="mt-4 mx-auto w-16 h-px bg-gradient-to-r from-transparent via-mint to-transparent opacity-50" />
+          <div className="mt-5 mx-auto w-20 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70" />
         </motion.div>
       )}
       <motion.div
@@ -80,4 +81,4 @@ export default function AnimatedSection({
       </motion.div>
     </section>
   );
-}
+}

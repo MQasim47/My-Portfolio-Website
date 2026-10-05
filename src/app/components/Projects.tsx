@@ -4,32 +4,49 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ExternalLink, Github, ChevronLeft, ChevronRight,
-  X, ZoomIn, Maximize2
+  X, ZoomIn, Maximize2, Sparkles, Layers, ShieldCheck,
+  CheckCircle2, ArrowUpRight
 } from 'lucide-react';
-import Image from 'next/image';
-import AnimatedSection, { childVariants } from './AnimatedSection';
+import AnimatedSection from './AnimatedSection';
 
-// Slide interval in ms — change to taste
-const SLIDE_INTERVAL = 2500;
+const SLIDE_INTERVAL = 3000;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PROJECT DATA
-// HOW TO ADD SCREENSHOTS:
-//   1. Drop .jpg / .png files into  public/images/projects/<folder>/
-//   2. Update the `images` array below with the correct paths
-//   3. Set  imageMode: 'portrait'  for mobile/phone screenshots
-//          imageMode: 'landscape' for desktop/dashboard screenshots
-// ─────────────────────────────────────────────────────────────────────────────
-const projects = [
+type ProjectCategory = 'all' | 'devops' | 'web' | 'mobile';
+
+interface Project {
+  id: string;
+  title: string;
+  category: ProjectCategory;
+  label: string;
+  labelColor: string;
+  imageMode: 'portrait' | 'landscape';
+  tagline: string;
+  description: string;
+  architectureHighlights: string[];
+  techStack: string[];
+  liveUrl: string;
+  githubUrl: string;
+  images: string[];
+}
+
+const projects: Project[] = [
   {
     id: 'azure-devops',
-    title: 'Azure Cloud DevOps',
-    label: 'Azure',
-    labelColor: '#A8E6CF',
-    imageMode: 'landscape' as const,
+    title: 'Azure Cloud DevOps & Auto-Scaling',
+    category: 'devops',
+    label: 'Cloud & DevOps',
+    labelColor: '#38BDF8',
+    imageMode: 'landscape',
+    tagline: 'Multi-environment cloud infrastructure with automated zero-downtime releases.',
     description:
-      'Deployed and managed multiple production web applications on Azure App Service with auto-scaling, custom domain SSL, and GitHub Actions CI/CD pipelines — zero-downtime deployments on every merge to main.',
-    techStack: ['Azure App Service', 'GitHub Actions', 'Docker', 'Terraform', 'Node.js'],
+      'Architected and maintained mission-critical web applications on Azure App Service with auto-scaling rules, custom SSL certificates, and automated GitHub Actions CI/CD pipelines — delivering zero-downtime rolling updates.',
+    architectureHighlights: [
+      'Automated GitHub Actions CI/CD with health verification',
+      'Azure App Service auto-scaling up to high load traffic',
+      'Terraform Infrastructure as Code (IaC) configuration',
+      'Zero-downtime blue/green deployment strategy',
+    ],
+    techStack: ['Azure App Service', 'GitHub Actions', 'Docker', 'Terraform', 'Node.js', 'Linux'],
     liveUrl: 'https://flacronenterprises.com/',
     githubUrl: 'https://github.com/MQasim47',
     images: [
@@ -40,54 +57,52 @@ const projects = [
     ],
   },
   {
-    id: 'skillswap',
-    title: 'SkillSwap Platform',
-    label: 'Full-Stack',
-    labelColor: '#2E8B57',
-    imageMode: 'landscape' as const,
-    description:
-      'Peer-to-peer skill exchange platform for students — post skills you can teach, discover skills you want to learn, and connect directly. Built with Next.js, Express and Node.js REST API backend.',
-    techStack: ['Next.js', 'Express', 'Node.js', 'MongoDB', 'TypeScript'],
-    liveUrl: '#',
-    githubUrl: 'https://github.com/MQasim47',
-    images: [
-      '/images/projects/skillswap/screenshot-1.svg',
-      '/images/projects/skillswap/screenshot-2.svg',
-      '/images/projects/skillswap/screenshot-3.svg',
-    ],
-  },
-  {
     id: 'flacron-gamezone',
-    title: 'FlacronGameZone',
+    title: 'FlacronGameZone Live Sports Platform',
+    category: 'web',
     label: 'Live Platform',
-    labelColor: '#A8E6CF',
-    imageMode: 'landscape' as const,
+    labelColor: '#22D3EE',
+    imageMode: 'landscape',
+    tagline: 'High-traffic live sports streaming and AI match analytics web portal.',
     description:
-      'Football live matches platform covering all global leagues and teams. AI-generated pre & post-match analysis, YouTube live stream embeds, real-time scores and standings — by Flacron Enterprises LLC.',
-    techStack: ['Next.js', 'AI Analysis', 'YouTube API', 'REST APIs', 'Azure'],
+      'Football live matches platform covering all global leagues and teams. Features AI-generated pre & post-match tactical analysis, YouTube live stream embeds, real-time scores, standings, and responsive high-FPS video players.',
+    architectureHighlights: [
+      'AI Analysis integration for real-time match insights',
+      'Sub-second API response caching for live fixtures',
+      'Dynamic YouTube livestream feed integration',
+      'SEO-optimized Next.js architecture with edge rendering',
+    ],
+    techStack: ['Next.js 14', 'TypeScript', 'AI Analysis', 'YouTube API', 'REST APIs', 'Azure'],
     liveUrl: 'https://flacrongamezone.com/',
     githubUrl: 'https://github.com/MQasim47',
     images: [
-     '/images/projects/flacron-gamezone/gamezone3.png',
+      '/images/projects/flacron-gamezone/gamezone3.png',
       '/images/projects/flacron-gamezone/gamezone1.png',
       '/images/projects/flacron-gamezone/gamezone2.png',
       '/images/projects/flacron-gamezone/gamezone4.png',
       '/images/projects/flacron-gamezone/gamezone5.png',
       '/images/projects/flacron-gamezone/gamezone6.png',
       '/images/projects/flacron-gamezone/gamezon7.png',
-      '/images/projects/flacron-gamezone/gamezon8.png'
-
+      '/images/projects/flacron-gamezone/gamezon8.png',
     ],
   },
   {
     id: 'ibm-cicd',
-    title: 'IBM Cloud CI/CD Hub',
+    title: 'IBM Cloud Kubernetes CI/CD Hub',
+    category: 'devops',
     label: 'IBM Cloud',
-    labelColor: '#A8E6CF',
-    imageMode: 'landscape' as const,
+    labelColor: '#818CF8',
+    imageMode: 'landscape',
+    tagline: 'Enterprise Kubernetes orchestration with Jenkins automation and Prometheus monitoring.',
     description:
-      'Multi-environment deployment infrastructure on IBM Cloud — Kubernetes workloads managed with Helm, Jenkins CI/CD pipelines, Prometheus/Grafana monitoring, and automated rollback triggers.',
-    techStack: ['IBM Cloud', 'Kubernetes', 'Jenkins', 'Prometheus', 'Helm'],
+      'Engineered multi-environment deployment pipelines on IBM Cloud. Configured containerized microservices managed via Helm charts, Jenkins CI/CD automation, Prometheus/Grafana real-time metrics, and automated rollback triggers.',
+    architectureHighlights: [
+      'Kubernetes cluster orchestration with Helm package manager',
+      'Automated Jenkins multi-branch release pipelines',
+      'Prometheus scrapers with Grafana telemetry dashboards',
+      'Automated rollbacks on error threshold breach',
+    ],
+    techStack: ['IBM Cloud', 'Kubernetes', 'Jenkins', 'Prometheus', 'Helm', 'Docker'],
     liveUrl: '#',
     githubUrl: 'https://github.com/MQasim47',
     images: [
@@ -98,13 +113,21 @@ const projects = [
   },
   {
     id: 'flutter-expense',
-    title: 'Flutter Expense Tracker',
-    label: 'Mobile',
-    labelColor: '#2E8B57',
-    imageMode: 'portrait' as const,   // ← portrait mode for phone screenshots
+    title: 'Flutter Commercial Expense Tracker',
+    category: 'mobile',
+    label: 'Mobile App',
+    labelColor: '#34D399',
+    imageMode: 'portrait',
+    tagline: 'Cross-platform financial tracking app with real-time Firebase cloud sync.',
     description:
-      'Cross-platform iOS & Android expense tracking app built with Flutter. Real-time charts, category filters, monthly budgets, and Firebase cloud sync — clean Material 3 dark theme.',
-    techStack: ['Flutter', 'Dart', 'Firebase', 'Riverpod', 'Hive'],
+      'Cross-platform iOS & Android mobile financial tracking application. Built with Flutter and Riverpod state management, featuring interactive expense analytics, budget threshold alerts, and offline-first Hive caching synced to Firebase.',
+    architectureHighlights: [
+      'Offline-first architecture with Hive local database',
+      'Bi-directional cloud synchronization via Firebase',
+      'Riverpod state management with immutable models',
+      'Custom 60fps charting and transaction filtering',
+    ],
+    techStack: ['Flutter', 'Dart', 'Firebase', 'Riverpod', 'Hive', 'Material 3'],
     liveUrl: '#',
     githubUrl: 'https://github.com/MQasim47/M_Hassan_Traders_App',
     images: [
@@ -117,12 +140,60 @@ const projects = [
       '/images/projects/flutter-expense/img-7.jpeg',
     ],
   },
+  {
+    id: 'skillswap',
+    title: 'SkillSwap Peer-to-Peer Platform',
+    category: 'web',
+    label: 'Full-Stack Web',
+    labelColor: '#A78BFA',
+    imageMode: 'landscape',
+    tagline: 'Collaborative student skill exchange web platform with REST backend.',
+    description:
+      'Peer-to-peer student knowledge exchange platform. Enables learners to barter skills, schedule live sessions, and connect directly. Designed with Next.js frontend, Express/Node.js REST API backend, and MongoDB database.',
+    architectureHighlights: [
+      'Modular RESTful architecture with JWT authentication',
+      'Real-time skill matching algorithms and filter tags',
+      'MongoDB schemas with aggregation pipelines',
+      'Type-safe React client with responsive interface',
+    ],
+    techStack: ['Next.js', 'Express.js', 'Node.js', 'MongoDB', 'TypeScript', 'Tailwind CSS'],
+    liveUrl: '#',
+    githubUrl: 'https://github.com/MQasim47',
+    images: [],
+  },
 ];
 
-type Project = (typeof projects)[0];
+// ─────────────────────────────────────────────────────────────────────────────
+// Fallback Graphic for Projects without uploaded screenshots (e.g. SkillSwap)
+// ─────────────────────────────────────────────────────────────────────────────
+function FallbackProjectGraphic({ title, techStack }: { title: string; techStack: string[] }) {
+  return (
+    <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-[#0B1120] via-[#0E172A] to-[#1E1B4B] relative overflow-hidden">
+      {/* Decorative background grid and circles */}
+      <div className="absolute inset-0 dot-pattern opacity-30" />
+      <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-indigo-500/20 blur-2xl" />
+      <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-cyan-500/20 blur-2xl" />
+
+      <div className="relative z-10 text-center max-w-xs">
+        <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-indigo-600/30 border border-indigo-400/40 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.25)]">
+          <Layers size={22} />
+        </div>
+        <h4 className="text-white font-display font-bold text-sm mb-1">{title}</h4>
+        <p className="text-[11px] text-text-muted mb-3 font-mono">Full-Stack Architecture Preview</p>
+        <div className="flex flex-wrap justify-center gap-1">
+          {techStack.slice(0, 3).map((t) => (
+            <span key={t} className="px-2 py-0.5 rounded bg-white/[0.06] border border-white/10 text-[10px] text-cyan-300">
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Lightbox
+// Lightbox Modal
 // ─────────────────────────────────────────────────────────────────────────────
 function Lightbox({
   images,
@@ -157,75 +228,69 @@ function Lightbox({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-[200] flex items-center justify-center"
-      style={{ background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(12px)' }}
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8"
+      style={{ background: 'rgba(3, 7, 18, 0.94)', backdropFilter: 'blur(16px)' }}
       onClick={onClose}
     >
-      {/* Close */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
-        aria-label="Close"
+        className="absolute top-5 right-5 z-10 w-11 h-11 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 hover:scale-105 transition-all cursor-pointer"
+        aria-label="Close modal"
       >
-        <X size={18} />
+        <X size={20} />
       </button>
 
-      {/* Counter */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/50 border border-white/10 text-xs text-white/70 font-medium">
-        {idx + 1} / {images.length}
+      <div className="absolute top-5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/60 border border-white/15 text-xs text-white/80 font-mono">
+        {title} · {idx + 1} / {images.length}
       </div>
 
-      {/* Image */}
       <motion.div
         key={idx}
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.25 }}
-        className="relative max-w-[90vw] max-h-[85vh] flex items-center justify-center"
+        className="relative max-w-[92vw] max-h-[85vh] flex items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
         <img
           src={images[idx]}
           alt={`${title} screenshot ${idx + 1}`}
-          className="max-w-full max-h-[85vh] object-contain rounded-xl"
-          style={{ boxShadow: '0 0 60px rgba(168,230,207,0.1)' }}
+          className="max-w-full max-h-[82vh] object-contain rounded-2xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.8)]"
         />
       </motion.div>
 
-      {/* Prev */}
       {images.length > 1 && (
         <>
           <button
             onClick={(e) => { e.stopPropagation(); setIdx((i) => (i - 1 + images.length) % images.length); }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
-            aria-label="Previous"
+            className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 hover:scale-105 transition-all cursor-pointer"
+            aria-label="Previous screenshot"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={22} />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); setIdx((i) => (i + 1) % images.length); }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
-            aria-label="Next"
+            className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 hover:scale-105 transition-all cursor-pointer"
+            aria-label="Next screenshot"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={22} />
           </button>
         </>
       )}
 
-      {/* Dot strip */}
       {images.length > 1 && (
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2" onClick={(e) => e.stopPropagation()}>
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2" onClick={(e) => e.stopPropagation()}>
           {images.map((_, i) => (
             <button
               key={i}
               onClick={() => setIdx(i)}
-              className="rounded-full transition-all duration-300"
+              className="rounded-full transition-all duration-300 cursor-pointer"
               style={{
-                width: i === idx ? 20 : 7,
-                height: 7,
-                background: i === idx ? '#A8E6CF' : 'rgba(168,230,207,0.3)',
+                width: i === idx ? 24 : 8,
+                height: 8,
+                background: i === idx ? '#38BDF8' : 'rgba(255, 255, 255, 0.25)',
               }}
-              aria-label={`Slide ${i + 1}`}
+              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
@@ -235,27 +300,27 @@ function Lightbox({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Image Carousel — inside the card
+// Project Carousel inside Card
 // ─────────────────────────────────────────────────────────────────────────────
 function ProjectCarousel({
   images,
   title,
   imageMode,
+  techStack,
   onExpand,
 }: {
   images: string[];
   title: string;
   imageMode: 'portrait' | 'landscape';
+  techStack: string[];
   onExpand: (index: number) => void;
 }) {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [direction, setDirection] = useState(1);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const go = useCallback(
-    (next: number, dir: number) => {
-      setDirection(dir);
+    (next: number) => {
       setCurrent((next + images.length) % images.length);
     },
     [images.length]
@@ -263,99 +328,93 @@ function ProjectCarousel({
 
   useEffect(() => {
     if (paused || images.length <= 1) return;
-    intervalRef.current = setInterval(() => go(current + 1, 1), SLIDE_INTERVAL);
+    intervalRef.current = setInterval(() => go(current + 1), SLIDE_INTERVAL);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, [current, paused, go, images.length]);
 
-  const variants = {
-    enter: (d: number) => ({ opacity: 0, x: d > 0 ? 30 : -30 }),
-    center: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] as number[] } },
-    exit:  (d: number) => ({ opacity: 0, x: d > 0 ? -30 : 30, transition: { duration: 0.3 } }),
-  };
+  const containerHeight = imageMode === 'portrait' ? 'h-64 sm:h-72' : 'h-52 sm:h-56';
 
-  // Portrait: tall container centered with phone-frame feel
-  // Landscape: standard wide container
-  const containerHeight = imageMode === 'portrait' ? 'h-72' : 'h-48';
-  const imgFit = imageMode === 'portrait' ? 'object-contain p-3' : 'object-cover';
+  if (!images || images.length === 0) {
+    return (
+      <div className={`relative ${containerHeight} overflow-hidden rounded-t-2xl border-b border-white/10`}>
+        <FallbackProjectGraphic title={title} techStack={techStack} />
+      </div>
+    );
+  }
 
   return (
     <div
-      className={`relative ${containerHeight} overflow-hidden rounded-t-2xl border-b border-card-border cursor-pointer`}
-      style={{ background: imageMode === 'portrait' ? '#0a110e' : '#0F1A15' }}
+      className={`relative ${containerHeight} overflow-hidden rounded-t-2xl border-b border-white/10 cursor-pointer group/carousel bg-[#060913]`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onClick={() => onExpand(current)}
     >
-      {/* Slides */}
-      <AnimatePresence custom={direction} mode="sync">
+      <AnimatePresence mode="wait">
         <motion.div
           key={current}
-          custom={direction}
-          variants={variants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          className="absolute inset-0 flex items-center justify-center"
+          initial={{ opacity: 0, scale: 1.02 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35 }}
+          className="absolute inset-0 flex items-center justify-center p-2"
         >
           <img
             src={images[current]}
-            alt={`${title} screenshot ${current + 1}`}
-            className={`w-full h-full ${imgFit} transition-none`}
+            alt={`${title} preview ${current + 1}`}
+            className={`w-full h-full ${imageMode === 'portrait' ? 'object-contain' : 'object-cover'} rounded-lg transition-transform duration-300 group-hover/carousel:scale-105`}
             draggable={false}
           />
-          {/* Bottom fade for landscape */}
           {imageMode === 'landscape' && (
-            <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0B1120] via-transparent to-transparent pointer-events-none" />
           )}
         </motion.div>
       </AnimatePresence>
 
-      {/* Expand hint on hover */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-        style={{ background: 'rgba(0,0,0,0.25)' }}>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-white/20 text-white text-xs font-medium">
-          <ZoomIn size={12} />
-          Click to expand
+      {/* Hover Zoom Prompt */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 bg-black/40 backdrop-blur-xs pointer-events-none">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/75 border border-white/20 text-white text-xs font-medium shadow-lg">
+          <ZoomIn size={14} className="text-cyan-400" />
+          Expand Screenshot
         </div>
       </div>
 
-      {/* Expand icon top-right */}
-      <div className="absolute top-2 right-2 z-10 w-7 h-7 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center text-white/60 pointer-events-none">
-        <Maximize2 size={11} />
+      {/* Counter Tag Top Right */}
+      <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-md bg-black/70 border border-white/10 text-[10px] font-mono text-white/80 pointer-events-none">
+        {current + 1} / {images.length}
       </div>
 
-      {/* Prev / Next */}
+      {/* Prev / Next controls */}
       {images.length > 1 && (
         <>
           <button
-            onClick={(e) => { e.stopPropagation(); setPaused(true); go(current - 1, -1); }}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-black/70 transition-all"
-            aria-label="Previous"
+            onClick={(e) => { e.stopPropagation(); setPaused(true); go(current - 1); }}
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-lg bg-black/60 border border-white/10 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all"
+            aria-label="Previous image"
           >
-            <ChevronLeft size={13} />
+            <ChevronLeft size={14} />
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); setPaused(true); go(current + 1, 1); }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-black/70 transition-all"
-            aria-label="Next"
+            onClick={(e) => { e.stopPropagation(); setPaused(true); go(current + 1); }}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-lg bg-black/60 border border-white/10 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all"
+            aria-label="Next image"
           >
-            <ChevronRight size={13} />
+            <ChevronRight size={14} />
           </button>
         </>
       )}
 
-      {/* Dot indicators */}
+      {/* Indicator bar */}
       {images.length > 1 && (
-        <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
           {images.map((_, i) => (
             <button
               key={i}
-              onClick={(e) => { e.stopPropagation(); setPaused(true); go(i, i > current ? 1 : -1); }}
+              onClick={(e) => { e.stopPropagation(); setPaused(true); setCurrent(i); }}
               className="rounded-full transition-all duration-300"
               style={{
-                width: i === current ? 16 : 5,
-                height: 5,
-                background: i === current ? '#A8E6CF' : 'rgba(168,230,207,0.3)',
+                width: i === current ? 18 : 6,
+                height: 6,
+                background: i === current ? '#38BDF8' : 'rgba(255, 255, 255, 0.3)',
               }}
               aria-label={`Slide ${i + 1}`}
             />
@@ -375,75 +434,97 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <>
       <motion.article
-        variants={childVariants}
+        layout
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: 0.35 }}
         whileHover={{ y: -5 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-        className="card flex flex-col overflow-hidden group cursor-default relative"
+        className="card flex flex-col overflow-hidden group hover:border-cyan-400/40 hover:shadow-glow-cyan transition-all"
       >
-        {/* Platform badge */}
+        {/* Category Pill Badge on top of image */}
         <div className="absolute top-3 left-3 z-10">
           <span
-            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
+            className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider shadow-md"
             style={{
-              background: 'rgba(10,10,10,0.85)',
-              border: `1px solid ${project.labelColor}40`,
+              background: 'rgba(8, 13, 26, 0.92)',
+              border: `1px solid ${project.labelColor}60`,
               color: project.labelColor,
-              backdropFilter: 'blur(8px)',
+              backdropFilter: 'blur(10px)',
             }}
           >
             {project.label}
           </span>
         </div>
 
-        {/* Carousel */}
+        {/* Media Carousel */}
         <ProjectCarousel
           images={project.images}
           title={project.title}
           imageMode={project.imageMode}
-          onExpand={(i) => setLightboxIndex(i)}
+          techStack={project.techStack}
+          onExpand={(idx) => setLightboxIndex(idx)}
         />
 
-        {/* Body */}
-        <div className="flex flex-col flex-1 p-5">
-          <h3 className="font-display font-bold text-base text-text-primary mb-2 group-hover:text-mint transition-colors duration-200">
-            {project.title}
+        {/* Card Body */}
+        <div className="flex flex-col flex-1 p-5 sm:p-6">
+          <h3 className="font-display font-bold text-lg text-white mb-2 group-hover:text-cyan-400 transition-colors flex items-center justify-between">
+            <span>{project.title}</span>
           </h3>
+
           <p className="text-text-secondary text-sm leading-relaxed mb-4 flex-1">
             {project.description}
           </p>
 
-          {/* Tech tags */}
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {project.techStack.map((tech) => (
-              <span key={tech} className="tech-tag text-[10px]">{tech}</span>
+          {/* Architectural Key Takeaways */}
+          <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1.5 mb-5">
+            <p className="text-[10px] font-mono text-cyan-400 font-semibold tracking-wider uppercase">
+              Engineering Highlights:
+            </p>
+            {project.architectureHighlights.slice(0, 2).map((h) => (
+              <div key={h} className="flex items-start gap-2 text-xs text-text-muted">
+                <CheckCircle2 size={12} className="text-cyan-400 flex-shrink-0 mt-0.5" />
+                <span className="leading-tight">{h}</span>
+              </div>
             ))}
           </div>
 
-          {/* Links */}
-          <div className="flex items-center gap-4 pt-3 border-t border-card-border">
+          {/* Tech Stack Pills */}
+          <div className="flex flex-wrap gap-1.5 mb-5">
+            {project.techStack.map((tech) => (
+              <span key={tech} className="tech-tag text-[10px]">
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          {/* Action Links */}
+          <div className="flex items-center gap-3 pt-4 border-t border-white/10 mt-auto">
             {project.liveUrl !== '#' && (
-              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-mint hover:text-white transition-colors">
-                <ExternalLink size={12} /> Live Demo
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-400/30 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 hover:text-white transition-colors"
+              >
+                <ExternalLink size={12} /> Live Platform
               </a>
             )}
-            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors ml-auto">
-              <Github size={12} /> GitHub
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-xs font-semibold text-text-secondary hover:text-white hover:bg-white/10 transition-colors ml-auto"
+            >
+              <Github size={12} /> Source Code
             </a>
           </div>
         </div>
-
-        {/* Hover glow */}
-        <div
-          className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ boxShadow: `inset 0 0 0 1px ${project.labelColor}25, 0 0 28px ${project.labelColor}10` }}
-        />
       </motion.article>
 
-      {/* Lightbox portal */}
+      {/* Lightbox Modal */}
       <AnimatePresence>
-        {lightboxIndex !== null && (
+        {lightboxIndex !== null && project.images.length > 0 && (
           <Lightbox
             images={project.images}
             startIndex={lightboxIndex}
@@ -457,16 +538,56 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Section
+// Projects Section
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Projects() {
+  const [filter, setFilter] = useState<ProjectCategory>('all');
+
+  const filteredProjects = filter === 'all'
+    ? projects
+    : projects.filter((p) => p.category === filter);
+
+  const FILTERS = [
+    { id: 'all',    label: `All Systems (${projects.length})` },
+    { id: 'devops', label: 'Cloud & DevOps (2)' },
+    { id: 'web',    label: 'Full-Stack Web (2)' },
+    { id: 'mobile', label: 'Mobile Apps (1)' },
+  ];
+
   return (
-    <AnimatedSection id="projects" eyebrow="What I've built" heading="Featured Projects">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
+    <AnimatedSection
+      id="projects"
+      eyebrow="Flagship Deployments"
+      heading="Production Projects & Architecture"
+    >
+      {/* Category Tabs */}
+      <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+        {FILTERS.map((f) => {
+          const isActive = filter === f.id;
+          return (
+            <button
+              key={f.id}
+              onClick={() => setFilter(f.id as ProjectCategory)}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
+                isActive
+                  ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-semibold shadow-[0_0_20px_rgba(6,182,212,0.35)] border border-cyan-400/40'
+                  : 'bg-white/[0.03] text-text-secondary hover:text-white hover:bg-white/[0.08] border border-white/5'
+              }`}
+            >
+              {f.label}
+            </button>
+          );
+        })}
       </div>
+
+      {/* Projects Grid */}
+      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+        <AnimatePresence mode="popLayout">
+          {filteredProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </AnimatePresence>
+      </motion.div>
     </AnimatedSection>
   );
-}
+}

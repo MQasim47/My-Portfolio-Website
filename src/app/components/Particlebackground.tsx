@@ -2,11 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Canvas-based particle constellation background
-// Inspired by the floating-node network aesthetic
-// ─────────────────────────────────────────────────────────────────────────────
-
 interface Particle {
   x: number;
   y: number;
@@ -16,6 +11,7 @@ interface Particle {
   opacity: number;
   pulseSpeed: number;
   pulseOffset: number;
+  colorType: number; // 0 for cyan, 1 for indigo, 2 for violet
 }
 
 export default function ParticleBackground() {
@@ -29,33 +25,31 @@ export default function ParticleBackground() {
 
     let animId: number;
     let particles: Particle[] = [];
-    const PARTICLE_COUNT = 70;
-    const CONNECTION_DIST = 140;
-    const MOUSE_REPEL_DIST = 100;
+    const PARTICLE_COUNT = 65;
+    const CONNECTION_DIST = 130;
+    const MOUSE_REPEL_DIST = 120;
 
     let mouse = { x: -9999, y: -9999 };
 
-    // ── Resize ───────────────────────────────────────────────────────────────
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
 
-    // ── Init particles ───────────────────────────────────────────────────────
     const initParticles = () => {
       particles = Array.from({ length: PARTICLE_COUNT }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        radius: Math.random() * 2 + 1,
-        opacity: Math.random() * 0.5 + 0.2,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        radius: Math.random() * 2 + 0.8,
+        opacity: Math.random() * 0.45 + 0.2,
         pulseSpeed: Math.random() * 0.02 + 0.008,
         pulseOffset: Math.random() * Math.PI * 2,
+        colorType: Math.floor(Math.random() * 3),
       }));
     };
 
-    // ── Draw ─────────────────────────────────────────────────────────────────
     let tick = 0;
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -64,41 +58,49 @@ export default function ParticleBackground() {
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
 
-        // Move
         p.x += p.vx;
         p.y += p.vy;
 
-        // Soft mouse repulsion
+        // Smooth mouse interaction
         const dx = p.x - mouse.x;
         const dy = p.y - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < MOUSE_REPEL_DIST) {
           const force = (MOUSE_REPEL_DIST - dist) / MOUSE_REPEL_DIST;
-          p.vx += (dx / dist) * force * 0.08;
-          p.vy += (dy / dist) * force * 0.08;
+          p.vx += (dx / dist) * force * 0.06;
+          p.vy += (dy / dist) * force * 0.06;
         }
 
-        // Clamp velocity
+        // Dampen velocity
         const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-        if (speed > 1.2) { p.vx *= 0.95; p.vy *= 0.95; }
+        if (speed > 1.1) {
+          p.vx *= 0.96;
+          p.vy *= 0.96;
+        }
 
-        // Wrap edges
+        // Edge wrapping
         if (p.x < -10) p.x = canvas.width + 10;
         if (p.x > canvas.width + 10) p.x = -10;
         if (p.y < -10) p.y = canvas.height + 10;
         if (p.y > canvas.height + 10) p.y = -10;
 
-        // Pulsing opacity
         const pulseOpacity =
           p.opacity + Math.sin(tick * p.pulseSpeed + p.pulseOffset) * 0.15;
 
-        // Draw particle dot
+        // Colors
+        let color = `rgba(56, 189, 248, ${Math.max(0.1, pulseOpacity)})`; // cyan
+        if (p.colorType === 1) {
+          color = `rgba(129, 140, 248, ${Math.max(0.1, pulseOpacity)})`; // indigo
+        } else if (p.colorType === 2) {
+          color = `rgba(167, 139, 250, ${Math.max(0.1, pulseOpacity)})`; // violet
+        }
+
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(168, 230, 207, ${pulseOpacity})`;
+        ctx.fillStyle = color;
         ctx.fill();
 
-        // Draw connections
+        // Connect nearby particles
         for (let j = i + 1; j < particles.length; j++) {
           const q = particles[j];
           const ex = p.x - q.x;
@@ -106,12 +108,12 @@ export default function ParticleBackground() {
           const edgeDist = Math.sqrt(ex * ex + ey * ey);
 
           if (edgeDist < CONNECTION_DIST) {
-            const alpha = (1 - edgeDist / CONNECTION_DIST) * 0.18;
+            const alpha = (1 - edgeDist / CONNECTION_DIST) * 0.14;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(q.x, q.y);
-            ctx.strokeStyle = `rgba(46, 139, 87, ${alpha})`;
-            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+            ctx.lineWidth = 0.75;
             ctx.stroke();
           }
         }
@@ -120,7 +122,6 @@ export default function ParticleBackground() {
       animId = requestAnimationFrame(draw);
     };
 
-    // ── Mouse tracking ───────────────────────────────────────────────────────
     const onMouseMove = (e: MouseEvent) => {
       mouse = { x: e.clientX, y: e.clientY };
     };
@@ -128,12 +129,14 @@ export default function ParticleBackground() {
       mouse = { x: -9999, y: -9999 };
     };
 
-    // ── Boot ─────────────────────────────────────────────────────────────────
     resize();
     initParticles();
     draw();
 
-    window.addEventListener('resize', () => { resize(); initParticles(); });
+    window.addEventListener('resize', () => {
+      resize();
+      initParticles();
+    });
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseleave', onMouseLeave);
 
@@ -149,8 +152,8 @@ export default function ParticleBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.65 }}
+      style={{ opacity: 0.55 }}
       aria-hidden="true"
     />
   );
-}
+}

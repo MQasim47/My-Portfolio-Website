@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Poppins } from 'next/font/google';
 import './globals.css';
 
@@ -18,30 +18,50 @@ const poppins = Poppins({
   display: 'swap',
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#030712',
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
-// TODO: METADATA — replace with your own name, description, URL, OG image
+// Metadata
 // ─────────────────────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
-  title: 'Muhammad Qasim | DevOps · Web · Flutter',
+  title: 'Muhammad Qasim | Senior DevOps Engineer & Full-Stack Architect',
   description:
-    'Full-stack developer and DevOps engineer specialising in cloud infrastructure, modern web applications, and cross-platform mobile development.',
-  keywords: ['DevOps', 'Web Developer', 'Flutter', 'Azure', 'IBM Cloud', 'CI/CD', 'Portfolio'],
-  authors: [{ name: 'Muhammad Qasim' }], // TODO: YOUR NAME
+    'Engineering high-scale cloud infrastructure, zero-downtime CI/CD pipelines, modern web applications, and cross-platform mobile architectures on Azure and IBM Cloud.',
+  keywords: [
+    'Muhammad Qasim',
+    'DevOps Engineer',
+    'Cloud Architect',
+    'Full-Stack Developer',
+    'Next.js 14',
+    'TypeScript',
+    'Flutter',
+    'Azure',
+    'IBM Cloud',
+    'Kubernetes',
+    'Docker',
+    'CI/CD Pipelines',
+    'Terraform',
+    'Software Engineer Portfolio',
+  ],
+  authors: [{ name: 'Muhammad Qasim' }],
   openGraph: {
-    title: 'Your Name | DevOps · Web · Flutter',
-    description: 'Developer portfolio showcasing cloud, web, and mobile projects.',
-    url: 'https://yourportfolio.dev', // TODO: YOUR DOMAIN
-    siteName: 'Muhammad Qasim Portfolio',
+    title: 'Muhammad Qasim | Senior DevOps Engineer & Full-Stack Architect',
+    description:
+      'Engineering high-scale cloud infrastructure, zero-downtime CI/CD pipelines, and high-velocity digital products.',
+    url: 'https://flacronenterprises.com/',
+    siteName: 'Muhammad Qasim — Engineering Portfolio',
     type: 'website',
-    // images: [{ url: '/og-image.png', width: 1200, height: 630 }], // TODO: Add OG image
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Muhammad Qasim | DevOps · Web · Flutter',
-    description: 'Developer portfolio showcasing cloud, web, and mobile projects.',
+    title: 'Muhammad Qasim | Senior DevOps Engineer & Full-Stack Architect',
+    description:
+      'Cloud infrastructure, automated CI/CD pipelines, modern web applications, and Flutter mobile systems.',
   },
-  viewport: 'width=device-width, initial-scale=1',
-  themeColor: '#0A0A0A',
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -53,15 +73,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
-      <body className="bg-background text-text-primary antialiased overflow-x-hidden">
-        {/* Subtle ambient background orbs */}
+    <html lang="en" className={`${inter.variable} ${poppins.variable} dark`}>
+      <body className="bg-background text-text-primary antialiased overflow-x-hidden selection:bg-indigo-500/30 selection:text-cyan-400">
+        {/* Subtle ambient background luminous orbs */}
         <div className="bg-orb bg-orb-1" aria-hidden="true" />
         <div className="bg-orb bg-orb-2" aria-hidden="true" />
         <div className="bg-orb bg-orb-3" aria-hidden="true" />
-        {/* Grid overlay */}
+
+        {/* Precision grid overlay */}
         <div className="grid-overlay" aria-hidden="true" />
-        {/* Noise texture overlay */}
+
+        {/* Fine-grain noise texture */}
         <div className="noise-overlay" aria-hidden="true" />
 
         {children}

@@ -1,5 +1,6 @@
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import ArchitectureBento from './components/ArchitectureBento';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Experience from './components/Experience';
@@ -11,16 +12,17 @@ import SmoothScroll from './components/SmoothScroll';
 export default function HomePage() {
   return (
     <>
-      {/* Smooth scroll — desktop lerp easing */}
+      {/* Smooth scroll configuration */}
       <SmoothScroll />
 
-      {/* Animated particle constellation background */}
+      {/* Animated cosmic constellation canvas */}
       <ParticleBackground />
 
       <Navbar />
 
       <main className="relative z-10">
         <Hero />
+        <ArchitectureBento />
         <Skills />
         <Projects />
         <Experience />
@@ -29,17 +31,23 @@ export default function HomePage() {
 
       <DevOpsBadge />
 
-      <footer className="relative z-10 border-t border-card-border py-8 text-center">
-        <p className="text-text-secondary text-sm">
-          Built with{' '}
-          <span className="text-mint font-medium">Next.js</span>,{' '}
-          <span className="text-mint font-medium">Framer Motion</span> &amp;{' '}
-          <span className="text-mint font-medium">♥</span>
-          {' '}·{' '}
-          <span className="text-text-primary font-medium">Muhammad Qasim</span>{' '}
-          © {new Date().getFullYear()}
-        </p>
+      <footer className="relative z-10 border-t border-white/10 py-10 text-center bg-[#050814]/80 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+            <span className="font-display font-bold text-sm text-white">
+              Muhammad Qasim
+            </span>
+            <span className="text-xs text-text-muted">
+              · Senior DevOps &amp; Full-Stack Architect
+            </span>
+          </div>
+
+          <p className="text-text-muted text-xs font-mono">
+            Designed &amp; Engineered with Next.js 14, TypeScript &amp; Framer Motion © {new Date().getFullYear()}
+          </p>
+        </div>
       </footer>
     </>
   );
-}
+}
