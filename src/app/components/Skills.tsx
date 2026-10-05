@@ -33,7 +33,7 @@ export default function Skills() {
       </SectionHeading>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {SKILL_GROUPS.map((skill) => (
-            <article key={skill.id} className="card card-rule-hover flex h-full flex-col justify-between p-6 sm:p-7">
+            <article key={skill.id} className="card draw-border flex h-full flex-col justify-between p-6 sm:p-7">
               <div>
                 <h3 className="mb-4 text-title text-ink">{skill.title}</h3>
                 <ul className="flex flex-wrap gap-1.5" aria-label={`${skill.title} technologies`}>

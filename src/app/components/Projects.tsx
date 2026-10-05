@@ -94,14 +94,14 @@ export default function Projects() {
       </div>
 
       <Reveal className="mt-8">
-        <MonoLabel as="h3" className="mb-6 block">
+        <MonoLabel as="h3" className="mb-6 block text-accent">
           More work
         </MonoLabel>
         <article>
           <Rule />
           <div className="grid gap-4 py-8 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-3">
-              <MonoLabel as="p" className="mb-2">
+              <MonoLabel as="p" className="mb-2 text-accent">
                 {other.label}
               </MonoLabel>
               <h4 className="font-display text-display-m text-ink">{other.title}</h4>

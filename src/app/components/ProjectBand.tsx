@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { ArrowRight, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
@@ -42,6 +42,47 @@ export default function ProjectBand({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [everOpened, setEverOpened] = useState(false);
 
+  // Proximity glow: only the hovered band listens. One style write per animation frame
+  // (rAF), --mx/--my only, listener detached on pointerleave. Mouse/pen only.
+  const bandRef = useRef<HTMLElement>(null);
+  const detachRef = useRef<(() => void) | null>(null);
+
+  const onPointerEnter = (e: ReactPointerEvent<HTMLElement>) => {
+    const el = bandRef.current;
+    if (!el || e.pointerType === 'touch') return;
+    if (!window.matchMedia('(any-hover: hover) and (prefers-reduced-motion: no-preference)').matches)
+      return;
+    detachRef.current?.();
+
+    let frame = 0;
+    let x = 0;
+    let y = 0;
+    const flush = () => {
+      frame = 0;
+      el.style.setProperty('--mx', `${x}px`);
+      el.style.setProperty('--my', `${y}px`);
+    };
+    const move = (ev: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      x = ev.clientX - r.left;
+      y = ev.clientY - r.top;
+      if (!frame) frame = requestAnimationFrame(flush);
+    };
+    el.addEventListener('pointermove', move);
+    detachRef.current = () => {
+      el.removeEventListener('pointermove', move);
+      if (frame) cancelAnimationFrame(frame);
+    };
+    move(e.nativeEvent);
+  };
+
+  const onPointerLeave = () => {
+    detachRef.current?.();
+    detachRef.current = null;
+  };
+
+  useEffect(() => () => detachRef.current?.(), []);
+
   const { images } = project;
   const go = (n: number) => setCurrent((n + images.length) % images.length);
   const expand = () => {
@@ -58,13 +99,20 @@ export default function ProjectBand({
   const imageFirst = imageSide === 'left';
 
   return (
-    <article className="band" aria-labelledby={`band-${project.id}`}>
-      <div className="grid items-center gap-8 py-12 lg:min-h-[85svh] lg:grid-cols-12 lg:gap-14 lg:py-16">
+    <>
+    <article
+      ref={bandRef}
+      className="band draw-border"
+      aria-labelledby={`band-${project.id}`}
+      onPointerEnter={onPointerEnter}
+      onPointerLeave={onPointerLeave}
+    >
+      <div className="band-inner grid items-center gap-8 py-12 lg:min-h-[85svh] lg:grid-cols-12 lg:gap-14 lg:py-16">
         {/* ── media: screenshot in a paper-2 matte, 1px rule frame, mono caption ── */}
         <figure
           className={`m-0 lg:col-span-6 ${imageFirst ? 'lg:order-1' : 'lg:order-2'}`}
         >
-          <div className="border border-rule bg-paper-2 p-3 sm:p-5" style={{ borderWidth: 'var(--hairline)' }}>
+          <div className="panel-frame bg-paper-2 p-3 sm:p-5">
             {images.length > 0 ? (
               <div className={`relative overflow-hidden ${mediaBox}`}>
                 <button
@@ -107,14 +155,14 @@ export default function ProjectBand({
                   <>
                     <button
                       onClick={() => go(current - 1)}
-                      className="flex h-11 w-11 items-center justify-center text-ink-soft hover:text-accent"
+                      className="flex h-11 w-11 items-center justify-center text-ink-soft hov:text-accent"
                       aria-label={`Previous ${project.title} screenshot`}
                     >
                       <ChevronLeft size={18} />
                     </button>
                     <button
                       onClick={() => go(current + 1)}
-                      className="flex h-11 w-11 items-center justify-center text-ink-soft hover:text-accent"
+                      className="flex h-11 w-11 items-center justify-center text-ink-soft hov:text-accent"
                       aria-label={`Next ${project.title} screenshot`}
                     >
                       <ChevronRight size={18} />
@@ -123,7 +171,7 @@ export default function ProjectBand({
                 )}
                 <button
                   onClick={expand}
-                  className="flex h-11 w-11 items-center justify-center text-ink-soft hover:text-accent"
+                  className="flex h-11 w-11 items-center justify-center text-ink-soft hov:text-accent"
                   aria-label={`Expand ${project.title} screenshot`}
                 >
                   <Maximize2 size={16} />
@@ -139,7 +187,7 @@ export default function ProjectBand({
             imageFirst ? 'lg:order-2 lg:col-start-8' : 'lg:order-1 lg:col-start-1'
           }`}
         >
-          <MonoLabel as="p" className="mb-4">
+          <MonoLabel as="p" className="mb-4 text-accent">
             {num} / {project.eyebrow}
           </MonoLabel>
           <h3
@@ -188,6 +236,10 @@ export default function ProjectBand({
         </div>
       </div>
 
+    </article>
+
+      {/* Outside the <article>: the band is an isolated stacking context (for the glow),
+          and the viewer must sit above the fixed nav. */}
       {everOpened && (
         <Lightbox
           open={lightboxOpen}
@@ -197,6 +249,6 @@ export default function ProjectBand({
           onClose={() => setLightboxOpen(false)}
         />
       )}
-    </article>
+    </>
   );
 }

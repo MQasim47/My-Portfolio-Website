@@ -86,7 +86,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 </a>
                 <button
                   onClick={onClose}
-                  className="flex h-11 w-11 items-center justify-center rounded text-ink hover:text-accent"
+                  className="flex h-11 w-11 items-center justify-center rounded text-ink hov:text-accent"
                   aria-label="Close resume preview"
                 >
                   <X size={18} />

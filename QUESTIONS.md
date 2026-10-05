@@ -45,7 +45,12 @@ For each project: platform, delivery method, environment (Production / Staging /
 - [ ] The form posts to Formspree (`mojygwvj`) to `aslamqasim126@gmail.com`. Delivery has **not** been tested end-to-end from here (a test would email you). Please submit one message and confirm it arrives.
 
 ## Phase 3 (visual build) additions
-- [ ] **Hero meta column** says "Lahore, PK / Remote — UTC+5" (from your brief). Your resume/About say QUEST, Nawabshah — confirm Lahore is right.
+- [x] Location corrected to "Nawabshah, PK" (Remote — UTC+5 unchanged).
 - [ ] **"Read case study →"** is rendered as muted "Case study coming soon" on all three bands, because no case-study pages exist yet (a link would 404). It becomes the real link as soon as `caseStudyHref` is set per project.
 - [ ] **`public/images/hero-portrait.png`** (982 KB) is no longer referenced (the AVIF/WebP versions are used). Delete it, or keep it as the source file?
 - [ ] **Portrait asset:** the file was 1122×1402, not 464×1200. I cropped to the figure at 464:1200 and exported 580×1500. The cutout has small yellow/red fringe pixels along some edges (near the ears and arms) — worth a re-export of the cutout.
+
+## Phase 3b (fixes) additions
+- [ ] **NEW PORTRAIT NOT RECEIVED.** `public/images/hero-portrait.png` is still the old 1122×1402 file (unchanged since the first export), so the AVIF/WebP in `public/images/` are still derived from the OLD cutout (with the yellow/red fringe), cropped to 580×1500. The layout already uses the new 502:1304 ratio (a 0.4% difference, invisible). When the new PNG is in place, run `node scripts/export-portrait.mjs` — it overwrites both derivatives (target <180 KB each).
+- [ ] **Bottom edge of the figure.** The cutout stops at the thigh, and now that the figure no longer overflows the viewport its bottom edge is visible, ending mid-air. A longer crop, a soft fade at the legs, or anchoring the figure to the bottom of the stage would all fix it — your call.
+- [ ] **Dark-theme colours I had to invent** (the brief had none): `--warn #D9962B` and `--fail #E0705F` (lifted for contrast on dark). `--accent-deep` and `--accent-wash` in dark are derived with color-mix from `--signal`, `--paper-inv` and `--terminal`.

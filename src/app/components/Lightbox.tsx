@@ -47,13 +47,13 @@ function LightboxView({
     >
       <button
         onClick={onClose}
-        className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded border border-paper-inv bg-ink text-paper-inv hover:border-signal hover:text-signal"
+        className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded border border-paper-inv bg-terminal text-paper-inv hov:border-signal hov:text-signal"
         aria-label="Close screenshot viewer"
       >
         <X size={20} />
       </button>
 
-      <p className="absolute left-1/2 top-4 -translate-x-1/2 rounded bg-ink px-3 py-2 font-mono text-mono-m text-paper-inv">
+      <p className="absolute left-1/2 top-4 -translate-x-1/2 rounded bg-terminal px-3 py-2 font-mono text-mono-m text-paper-inv">
         {title} · {idx + 1} / {images.length}
       </p>
 
@@ -79,7 +79,7 @@ function LightboxView({
               e.stopPropagation();
               setIdx((i) => (i - 1 + images.length) % images.length);
             }}
-            className="absolute left-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded border border-paper-inv bg-ink text-paper-inv hover:border-signal hover:text-signal sm:left-8"
+            className="absolute left-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded border border-paper-inv bg-terminal text-paper-inv hov:border-signal hov:text-signal sm:left-8"
             aria-label="Previous screenshot"
           >
             <ChevronLeft size={22} />
@@ -89,7 +89,7 @@ function LightboxView({
               e.stopPropagation();
               setIdx((i) => (i + 1) % images.length);
             }}
-            className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded border border-paper-inv bg-ink text-paper-inv hover:border-signal hover:text-signal sm:right-8"
+            className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded border border-paper-inv bg-terminal text-paper-inv hov:border-signal hov:text-signal sm:right-8"
             aria-label="Next screenshot"
           >
             <ChevronRight size={22} />

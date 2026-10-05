@@ -13,10 +13,15 @@ interface SectionHeadingProps {
 export default function SectionHeading({ id, eyebrow, children, className }: SectionHeadingProps) {
   return (
     <header className={cn('mb-12 lg:mb-16', className)}>
-      {eyebrow && <MonoLabel as="p" className="mb-4">{eyebrow}</MonoLabel>}
+      {eyebrow && (
+        <MonoLabel as="p" className="mb-4 text-accent">
+          {eyebrow}
+        </MonoLabel>
+      )}
       <h2 id={id} className="font-display text-display-l text-ink">
         {children}
       </h2>
+      <div className="heading-rule" aria-hidden="true" />
     </header>
   );
 }

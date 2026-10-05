@@ -22,7 +22,7 @@ export default function CurrentlyBuilding() {
       </SectionHeading>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {ITEMS.map((item) => (
-            <article key={item.name} className="card flex h-full flex-col gap-4 p-6 sm:p-8">
+            <article key={item.name} className="card draw-border flex h-full flex-col gap-4 p-6 sm:p-8">
               <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
                 <h3 className="font-display text-display-m text-ink">{item.name}</h3>
                 <StatusDot status="in-development" label="In development" className="text-ink-soft" />

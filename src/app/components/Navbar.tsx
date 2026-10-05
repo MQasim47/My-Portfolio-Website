@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 // Loaded on first open — keeps the modal and its animation code out of the first-load bundle.
 const ResumeModal = dynamic(() => import('./resumemodal'));
 import { Container } from './ui';
+import ThemeToggle from './ThemeToggle';
 
 const NAV_ITEMS = [
   { label: 'Overview', href: '#hero' },
@@ -105,7 +106,7 @@ export default function Navbar() {
                         'inline-flex min-h-[44px] items-center border-b px-3 text-caption font-medium transition-colors duration-[var(--dur-instant)]',
                         isActive
                           ? 'border-accent text-accent'
-                          : 'border-transparent text-ink-soft hover:text-ink'
+                          : 'border-transparent text-ink-soft hov:text-ink'
                       )}
                     >
                       {label}
@@ -117,6 +118,7 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden items-center gap-2 lg:flex">
+            <ThemeToggle />
             <button onClick={openResume} className="btn-outline py-2 text-caption">
               <FileText size={14} />
               Resume
@@ -126,15 +128,18 @@ export default function Navbar() {
             </a>
           </div>
 
-          <button
-            onClick={() => setMobileOpen((p) => !p)}
-            className="flex h-11 w-11 items-center justify-center rounded border border-rule text-ink lg:hidden"
-            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-menu"
-          >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          <div className="flex items-center gap-2 lg:hidden">
+            <ThemeToggle />
+            <button
+              onClick={() => setMobileOpen((p) => !p)}
+              className="flex h-11 w-11 items-center justify-center rounded border border-rule text-ink"
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-menu"
+            >
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </Container>
       </header>
 

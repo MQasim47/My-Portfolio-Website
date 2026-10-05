@@ -1,9 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 // Every value here reads from the CSS custom properties in src/app/globals.css.
-// That file is the single source of truth — never add a literal color here.
+// That file is the single source of truth â€” never add a literal color here.
 module.exports = {
-  // hover: variants only apply on devices that can hover � touch gets none.
-  future: { hoverOnlyWhenSupported: true },
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     colors: {
@@ -64,5 +62,12 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // `hov:` replaces `hover:`. Tailwind's hover variant is gated on (hover: hover), which
+    // fails on touchscreen laptops where the PRIMARY pointer reports as touch.
+    // any-hover: hover is true whenever ANY attached pointer can hover.
+    function ({ addVariant }) {
+      addVariant('hov', '@media (any-hover: hover) { &:hover }');
+    },
+  ],
 };

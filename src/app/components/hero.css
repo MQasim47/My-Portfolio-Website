@@ -42,30 +42,44 @@
   will-change: transform, opacity;
 }
 
-/* Front copy: middle cut away so the figure stands inside the word. */
+/* Front copy: middle cut away so the figure stands inside the word.
+   (The mask is alpha-only; any opaque colour works, so use a token.) */
 .hero-name-front {
-  -webkit-mask-image: linear-gradient(90deg, black 0 19%, transparent 28% 72%, black 81% 100%);
-  mask-image: linear-gradient(90deg, black 0 19%, transparent 28% 72%, black 81% 100%);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    var(--ink) 0 19%,
+    transparent 28% 72%,
+    var(--ink) 81% 100%
+  );
+  mask-image: linear-gradient(90deg, var(--ink) 0 19%, transparent 28% 72%, var(--ink) 81% 100%);
   pointer-events: none;
 }
 
 /* ── Portrait: seven vertical slats ───────────────────────────────────────── */
+/* Sized by HEIGHT so it can never exceed the viewport (it used to be sized by width,
+   which made it taller than a laptop viewport). The figure is anchored to the top of
+   the stage with a floor under the nav, so if it ever had to clip, it clips the legs. */
 .hero-portrait {
+  --ph: min(76svh, 900px, calc(38vw * 1304 / 502));
   grid-area: 1 / 1;
+  align-self: start;
+  margin-top: max(72px, calc((100svh - var(--ph)) / 2));
   position: relative;
   display: flex;
-  width: min(34vw, 310px);
-  aspect-ratio: 464 / 1200;
+  height: var(--ph);
+  width: auto;
+  max-width: 38vw;
+  aspect-ratio: 502 / 1304;
   -webkit-mask-image: linear-gradient(
     180deg,
-    black 0,
-    black calc(100% - var(--p) * 118%),
+    var(--ink) 0,
+    var(--ink) calc(100% - var(--p) * 118%),
     transparent calc(104% - var(--p) * 118%)
   );
   mask-image: linear-gradient(
     180deg,
-    black 0,
-    black calc(100% - var(--p) * 118%),
+    var(--ink) 0,
+    var(--ink) calc(100% - var(--p) * 118%),
     transparent calc(104% - var(--p) * 118%)
   );
 }
@@ -82,7 +96,7 @@
 
 .hero-slat-img {
   position: absolute;
-  inset: 0 -0.5px; /* 1px overlap hides the sub-pixel seams between slats */
+  inset: 0 -1px; /* 2px overlap hides the sub-pixel seams between slats */
   background-image: url('/images/hero-portrait.webp');
   background-image: image-set(
     url('/images/hero-portrait.avif') type('image/avif'),
@@ -96,7 +110,7 @@
   animation-delay: calc(640ms + var(--i) * 60ms);
 }
 
-/* ── Statement (right) ────────────────────────────────────────────────────── */
+/* ── Statement (right) — a scroll arrival, so no load animation ───────────── */
 .hero-statement {
   position: absolute;
   right: var(--gutter-x);
@@ -115,8 +129,6 @@
   font-size: clamp(1.9rem, 5vw, 3.8rem);
   line-height: 1.05;
   color: var(--ink);
-  animation: hero-rise var(--dur-base) var(--ease-enter) both;
-  animation-delay: calc(120ms + var(--n) * 100ms);
 }
 
 .hero-line-accent {
@@ -130,28 +142,39 @@
   color: var(--ink-soft);
   font-size: 1.0625rem;
   line-height: 1.65;
-  animation: hero-rise var(--dur-base) var(--ease-enter) both;
-  animation-delay: 420ms;
 }
 
-/* ── Meta column (left, desktop only) ─────────────────────────────────────── */
-.hero-meta {
-  display: none;
+/* ── Left column: rest-state positioning + meta ───────────────────────────── */
+/* Width is capped at 140px: that is the room between the gutter and the "Q" of the
+   name at every desktop width from 1024 to 1920. */
+.hero-left {
   position: absolute;
   left: var(--gutter-x);
   top: 50%;
   translate: 0 -50%;
-  opacity: calc(1 - var(--p) * 2.2);
-}
-
-.hero-meta-inner {
+  width: 140px;
   display: flex;
   flex-direction: column;
   gap: 32px;
+  opacity: calc(1 - var(--p) * 2.2);
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   letter-spacing: 0.02em;
+  line-height: 1.6;
   color: var(--ink);
+}
+
+.hero-tagline {
+  margin: 0;
+  color: var(--accent);
+  animation: hero-fade var(--dur-base) var(--ease-enter) both;
+  animation-delay: 400ms;
+}
+
+.hero-meta-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
   animation: hero-fade var(--dur-base) var(--ease-enter) both;
   animation-delay: 480ms;
 }
@@ -163,12 +186,24 @@
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--accent);
 }
 
-@media (min-width: 1024px) {
-  .hero-meta {
-    display: block;
+/* Below 1024px there is no room beside the name: the tagline moves under the figure
+   and the meta blocks drop out. */
+@media (max-width: 1023px) {
+  .hero-left {
+    top: auto;
+    bottom: 56px;
+    left: var(--gutter-x);
+    right: var(--gutter-x);
+    translate: none;
+    width: auto;
+    text-align: center;
+  }
+
+  .hero-meta-blocks {
+    display: none;
   }
 }
 
@@ -183,7 +218,7 @@
   align-items: center;
   gap: 8px;
   opacity: calc(1 - var(--p) * 4);
-  color: var(--ink-soft);
+  color: var(--accent);
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.6875rem;
   font-weight: 500;
@@ -196,7 +231,7 @@
   content: '';
   width: var(--hairline);
   height: 32px;
-  background: var(--ink-soft);
+  background: var(--accent);
 }
 
 /* keep the cue off the figure on desktop */
@@ -208,7 +243,7 @@
   }
 }
 
-/* ── Status rail (bottom, full width) ─────────────────────────────────────── */
+/* ── Status rail (bottom, full width) — a scroll arrival, no load animation ── */
 .hero-rail {
   position: absolute;
   left: 0;
@@ -231,23 +266,9 @@
   right: 0;
   height: var(--hairline);
   background: var(--rule);
-  transform-origin: left center;
-  animation: hero-draw var(--dur-slow) var(--ease-out) both;
-  animation-delay: 820ms;
 }
 
 /* ── Load sequence keyframes (each runs once) ─────────────────────────────── */
-@keyframes hero-rise {
-  from {
-    opacity: 0;
-    transform: translateY(var(--rise));
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 @keyframes hero-fade {
   from {
     opacity: 0;
@@ -266,19 +287,24 @@
   }
 }
 
-@keyframes hero-draw {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-/* ── Mobile: stack. Portrait 52vw, statement full width below, meta hidden ── */
-@media (max-width: 767px) {
+/* ── Mobile: stack. Portrait ≤62vw, statement full width below, meta hidden ── */
+@media (max-width: 760px) {
   .hero-portrait {
-    width: 52vw;
+    --ph: min(56svh, 520px, calc(62vw * 1304 / 502));
+    max-width: 62vw;
+  }
+
+  .hero-left {
+    bottom: 64px;
+    font-size: 0.6875rem;
+  }
+
+  .hero-cue {
+    bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .hero-cue::after {
+    display: none;
   }
 
   .hero-statement {
@@ -312,7 +338,7 @@
   .hero-name,
   .hero-slat,
   .hero-statement,
-  .hero-meta,
+  .hero-left,
   .hero-rail {
     transform: none !important;
     opacity: 1 !important;
@@ -329,47 +355,60 @@
   }
 
   .hero-slat-img,
-  .hero-line,
-  .hero-sub,
-  .hero-meta-inner,
-  .hero-rail::before {
+  .hero-tagline,
+  .hero-meta-blocks {
     animation: none !important;
   }
 }
 
-/* Static desktop composition: the figure-in-the-word moves left so the statement
-   sits beside it instead of on top of it (in the scroll version the name has left
-   by the time the statement arrives). */
-@media (prefers-reduced-motion: reduce) and (min-width: 768px) {
+/* Static desktop composition: left column | figure-in-the-word | statement, with the
+   name and figure scaled and shifted so nothing overlaps (in the scroll version the
+   name has left by the time the statement arrives). */
+@media (prefers-reduced-motion: reduce) and (min-width: 761px) {
   .hero-name,
   .hero-portrait {
-    transform: translateX(-17vw) scale(0.8) !important;
-  }
-
-  .hero-meta {
-    top: auto;
-    bottom: 104px;
-    translate: none;
+    --reserve: 0px;
+    transform: translateX(calc((var(--reserve) - min(32vw, 430px)) / 2)) scale(0.62) !important;
   }
 }
 
-@media (prefers-reduced-motion: reduce) and (max-width: 767px) {
+@media (prefers-reduced-motion: reduce) and (min-width: 1024px) {
+  .hero-name,
+  .hero-portrait {
+    --reserve: 140px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 760px) {
   .hero-sticky {
-    grid-template: minmax(72svh, auto) auto auto / 100%;
+    grid-template: minmax(72svh, auto) auto auto auto / 100%;
     padding-top: 72px;
     padding-bottom: 0;
   }
 
-  .hero-statement {
+  .hero-portrait {
+    align-self: center;
+    margin-top: 0;
+  }
+
+  .hero-left {
     position: static;
     grid-area: 2 / 1;
+    width: 100%;
+    padding: 20px var(--gutter-x) 0;
+    translate: none;
+  }
+
+  .hero-statement {
+    position: static;
+    grid-area: 3 / 1;
     width: 100%;
     padding: 24px var(--gutter-x) 0;
   }
 
   .hero-rail {
     position: relative;
-    grid-area: 3 / 1;
+    grid-area: 4 / 1;
     width: 100%;
     margin-top: 32px;
   }

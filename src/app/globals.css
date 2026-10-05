@@ -4,19 +4,31 @@
 
 /* ─────────────────────────────────────────────────────────────────────────────
    DESIGN TOKENS — the single source of truth.
-   tailwind.config.js reads these via var(); components never contain raw hex.
+   tailwind.config.js reads these via var(). Components never contain a literal
+   colour: every colour below this block is a var() or a color-mix() of tokens.
+
+   Theming: bare :root holds the LIGHT values. They are redefined for dark
+   (1) by the system preference, unless the user chose light explicitly, and
+   (2) by an explicit data-theme="dark". The toggle sets data-theme and persists it.
 ───────────────────────────────────────────────────────────────────────────── */
 :root {
+  color-scheme: light;
+
   --paper: #F6EAD4;
   --paper-2: #EEE0C4;
   --ink: #16120C;
   --ink-soft: #5B5346;
-  --rule: #D8C7A6;
+  --rule-base: #D8C7A6;
   --accent: #0B5F46;
   --accent-deep: #063D2D;
   --accent-wash: #E4EFE8;
 
-  /* dark band (used for one section only, Phase 6) */
+  /* status */
+  --pass: #0B5F46;
+  --warn: #9A6400;
+  --fail: #A8392B;
+
+  /* dark palette — static; also the dark theme's source values */
   --terminal: #12100B;
   --panel: #1C1912;
   --panel-rule: #2E291E;
@@ -24,14 +36,14 @@
   --ink-soft-inv: #9A8F7A;
   --signal: #3FA880;
 
-  /* status */
-  --pass: #0B5F46;
-  --warn: #9A6400;
-  --fail: #A8392B;
+  /* derived (resolved per theme, because they are declared on :root) */
+  --rule: var(--rule-base);
+  --line-accent: color-mix(in srgb, var(--accent) 18%, transparent);
+  --scrim: color-mix(in srgb, var(--terminal) 90%, transparent);
 
   /* shadows — exactly two exist */
   --shadow-lift: 0 2px 0 0 var(--rule);
-  --shadow-overlay: 0 24px 64px color-mix(in srgb, var(--ink) 45%, transparent);
+  --shadow-overlay: 0 24px 64px color-mix(in srgb, var(--terminal) 55%, transparent);
 
   /* hairline weight; thickened by prefers-contrast */
   --hairline: 1px;
@@ -55,6 +67,42 @@
   --focus-color: var(--accent);
 }
 
+/* Dark, following the system — unless the user explicitly chose light */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --paper: var(--terminal);
+    --paper-2: var(--panel);
+    --ink: var(--paper-inv);
+    --ink-soft: var(--ink-soft-inv);
+    --rule-base: var(--panel-rule);
+    --accent: var(--signal);
+    --accent-deep: color-mix(in srgb, var(--signal) 78%, var(--paper-inv));
+    --accent-wash: color-mix(in srgb, var(--signal) 14%, var(--terminal));
+    --pass: var(--signal);
+    --warn: #D9962B;
+    --fail: #E0705F;
+  }
+}
+
+/* Dark, chosen explicitly */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --paper: var(--terminal);
+  --paper-2: var(--panel);
+  --ink: var(--paper-inv);
+  --ink-soft: var(--ink-soft-inv);
+  --rule-base: var(--panel-rule);
+  --accent: var(--signal);
+  --accent-deep: color-mix(in srgb, var(--signal) 78%, var(--paper-inv));
+  --accent-wash: color-mix(in srgb, var(--signal) 14%, var(--terminal));
+  --pass: var(--signal);
+  --warn: #D9962B;
+  --fail: #E0705F;
+}
+
 @media (min-width: 640px) {
   :root {
     --page-margin: 24px;
@@ -72,7 +120,7 @@
 @media (prefers-contrast: more) {
   :root {
     --hairline: 2px;
-    --rule: color-mix(in srgb, var(--rule) 40%, var(--ink-soft));
+    --rule: color-mix(in srgb, var(--rule-base) 40%, var(--ink-soft));
   }
 }
 
@@ -111,7 +159,7 @@ h1, h2, h3, h4, p, ul, ol, figure, blockquote {
   color: var(--ink);
 }
 
-/* Links — emerald marks interactive things */
+/* Links — emerald text, emerald underline that draws left to right */
 a {
   color: inherit;
   text-decoration: none;
@@ -123,14 +171,16 @@ a {
   padding-bottom: 2px;
   background-image:
     linear-gradient(var(--accent), var(--accent)),
-    linear-gradient(color-mix(in srgb, var(--accent) 40%, transparent), color-mix(in srgb, var(--accent) 40%, transparent));
+    linear-gradient(var(--line-accent), var(--line-accent));
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: 0% var(--hairline), 100% var(--hairline);
   transition: background-size var(--dur-instant) var(--ease-out);
 }
 
-@media (hover: hover) {
+/* Hover rules use any-hover, not hover: on a touchscreen laptop the PRIMARY pointer
+   reports as touch, so (hover: hover) fails even with a mouse attached. */
+@media (any-hover: hover) {
   .link:hover {
     background-size: 100% var(--hairline), 100% var(--hairline);
   }
@@ -184,23 +234,27 @@ a {
    COMPONENT CLASSES
 ───────────────────────────────────────────────────────────────────────────── */
 
-/* Card: hairline border, no blur, no glow. Lift is a hard 2px rule. */
+/* Card / panel: 1px emerald at 18% at rest, 100% on hover. No lift, glow or scale. */
 .card {
   background: var(--paper);
-  border: var(--hairline) solid var(--rule);
+  border: var(--hairline) solid var(--line-accent);
   border-radius: 10px;
   position: relative;
   transition: border-color var(--dur-instant) var(--ease-out);
 }
 
-/* Skill groups: the rule shifts to accent (desktop pointer only). No lift, glow or scale. */
-@media (hover: hover) {
-  .card-rule-hover:hover {
+.panel-frame {
+  border: var(--hairline) solid var(--line-accent);
+  transition: border-color var(--dur-instant) var(--ease-out);
+}
+
+@media (any-hover: hover) {
+  .card:hover {
     border-color: var(--accent);
   }
 }
 
-/* Buttons — flat, 3px radius, ink or emerald. */
+/* Buttons — flat, 3px radius. Primary is emerald at rest, deeper on hover. */
 .btn-primary,
 .btn-outline,
 .btn-ghost {
@@ -219,15 +273,15 @@ a {
 }
 
 .btn-primary {
-  background: var(--ink);
+  background: var(--accent);
   color: var(--paper);
-  border: var(--hairline) solid var(--ink);
+  border: var(--hairline) solid var(--accent);
 }
 
-@media (hover: hover) {
+@media (any-hover: hover) {
   .btn-primary:hover {
-    background: var(--accent);
-    border-color: var(--accent);
+    background: var(--accent-deep);
+    border-color: var(--accent-deep);
   }
 }
 
@@ -237,7 +291,7 @@ a {
   border: var(--hairline) solid var(--ink);
 }
 
-@media (hover: hover) {
+@media (any-hover: hover) {
   .btn-outline:hover {
     color: var(--accent);
     border-color: var(--accent);
@@ -250,7 +304,7 @@ a {
   border: var(--hairline) solid var(--rule);
 }
 
-@media (hover: hover) {
+@media (any-hover: hover) {
   .btn-ghost:hover {
     color: var(--accent);
     border-color: var(--accent);
@@ -262,21 +316,29 @@ a {
   cursor: not-allowed;
 }
 
-/* Tech chip */
+/* Tech chip — emerald text on accent-wash, 1px accent border at 40% */
 .tech-tag {
   display: inline-flex;
   align-items: center;
   min-height: 24px;
   padding: 2px 8px;
-  border: var(--hairline) solid var(--rule);
+  background: var(--accent-wash);
+  border: var(--hairline) solid color-mix(in srgb, var(--accent) 40%, transparent);
   border-radius: 3px;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.6875rem;
   letter-spacing: 0.02em;
-  color: var(--ink-soft);
+  color: var(--accent);
 }
 
-/* Inputs — keep the browser focus affordance; :focus-visible adds the ring */
+/* Hairline under every section heading — emerald at 35% */
+.heading-rule {
+  height: var(--hairline);
+  margin-top: 24px;
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* Inputs — the browser focus affordance stays; :focus-visible adds the ring */
 .input-field {
   width: 100%;
   min-height: 44px;
@@ -300,17 +362,17 @@ a {
 
 /* Overlay scrims (lightbox, resume modal) */
 .scrim {
-  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  background: var(--scrim);
 }
 
 .dialog-surface {
   background: var(--paper);
-  border: var(--hairline) solid var(--rule);
+  border: var(--hairline) solid var(--line-accent);
   border-radius: 10px;
   box-shadow: var(--shadow-overlay);
 }
 
-/* Terminal surface (dark band tokens) */
+/* Terminal surface (dark band tokens — always dark) */
 .terminal-surface {
   background: var(--terminal);
   color: var(--paper-inv);
@@ -318,11 +380,71 @@ a {
   border-radius: 10px;
 }
 
-/* Blinking-free caret: static, never animated */
+/* ─────────────────────────────────────────────────────────────────────────────
+   HOVER FEEDBACK — emerald, cheap, pointer devices only.
+   (a) border draw: a 1px emerald frame scales 0 → full over 320ms.
+   (b) proximity glow inside project bands: an --accent radial at 8%, 400px,
+       following the cursor via --mx / --my (written by ProjectBand, one write
+       per frame, only while that band is hovered).
+   Both are off under prefers-reduced-motion and any-hover: none.
+───────────────────────────────────────────────────────────────────────────── */
+.draw-border {
+  position: relative;
+}
+
+.draw-border::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: 2;
+  border: var(--hairline) solid var(--accent);
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    opacity var(--dur-base) var(--ease-out);
+}
+
+.band {
+  position: relative;
+  isolation: isolate;
+}
+
+.band-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle 400px at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--accent) 8%, transparent),
+    transparent
+  );
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+@media (any-hover: hover) and (prefers-reduced-motion: no-preference) {
+  .draw-border:hover::after {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .band:hover::before {
+    opacity: 1;
+  }
+}
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   PROJECT BANDS — the only hover interactions: image 1 → 1.02, arrow → 4px.
-   Desktop pointer only; touch devices get no hover state at all.
+   PROJECT BANDS — image scale and arrow nudge, pointer devices only.
 ───────────────────────────────────────────────────────────────────────────── */
 .band-img-scale {
   transition: transform var(--dur-slow) var(--ease-out);
@@ -332,13 +454,17 @@ a {
   transition: transform var(--dur-quick) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (any-hover: hover) {
   .band:hover .band-img-scale {
     transform: scale(1.02);
   }
 
   .band:hover .band-arrow {
     transform: translateX(4px);
+  }
+
+  .band:hover .panel-frame {
+    border-color: var(--accent);
   }
 }
 

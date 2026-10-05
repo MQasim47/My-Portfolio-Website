@@ -7,7 +7,6 @@ import './hero.css';
 const SLATS = [0, 1, 2, 3, 4, 5, 6];
 
 const slatStyle = (i: number) => ({ '--i': i }) as CSSProperties;
-const lineStyle = (n: number) => ({ '--n': n }) as CSSProperties;
 
 export default function Hero() {
   // The portrait is the LCP element. It is a CSS background (the slats), so it is
@@ -42,12 +41,15 @@ export default function Hero() {
           Qasim
         </div>
 
-        {/* left: meta (desktop) */}
-        <div className="hero-meta">
-          <div className="hero-meta-inner">
+        {/* left: what I do (visible at rest) + meta (desktop) */}
+        <div className="hero-left">
+          <p className="hero-tagline">
+            Full-stack &amp; mobile engineer — web, Flutter, and the infrastructure behind them
+          </p>
+          <div className="hero-meta-blocks">
             <p>
               <span className="hero-meta-label">Based in</span>
-              Lahore, PK
+              Nawabshah, PK
               <br />
               Remote — UTC+5
             </p>
@@ -62,17 +64,11 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* right: statement */}
+        {/* right: statement (arrives on scroll) */}
         <div className="hero-statement">
-          <p className="hero-line" style={lineStyle(0)}>
-            I build.
-          </p>
-          <p className="hero-line" style={lineStyle(1)}>
-            I ship.
-          </p>
-          <p className="hero-line hero-line-accent" style={lineStyle(2)}>
-            I run it.
-          </p>
+          <p className="hero-line">I build.</p>
+          <p className="hero-line">I ship.</p>
+          <p className="hero-line hero-line-accent">I run it.</p>
           <p className="hero-sub">
             Full-stack and mobile engineer. Web, Flutter apps and the infrastructure that keeps
             them running — first commit to production.
@@ -83,7 +79,7 @@ export default function Hero() {
           Scroll
         </div>
 
-        {/* bottom: status rail */}
+        {/* bottom: status rail (arrives on scroll) */}
         <div className="hero-rail">
           <StatusDot status="live" label="Open to work" className="text-ink" />
           <span className="font-mono text-mono-s uppercase text-ink-soft">

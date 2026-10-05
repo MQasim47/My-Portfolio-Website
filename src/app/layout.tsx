@@ -74,13 +74,26 @@ export const metadata: Metadata = {
 // ─────────────────────────────────────────────────────────────────────────────
 // Root Layout
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Runs before first paint: applies a saved theme choice so there is no flash of the wrong
+// theme. With no saved choice the CSS follows the system preference. try/catch because
+// storage can be blocked.
+const THEME_INIT =
+  "try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}";
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${display.variable} ${body.variable} ${mono.variable}`}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+      </head>
       <body>
         <a href="#main" className="skip-link">
           Skip to content
