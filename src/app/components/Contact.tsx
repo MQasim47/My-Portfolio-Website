@@ -117,7 +117,7 @@ export default function Contact() {
           Let&apos;s work together
         </SectionHeading>
 
-        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12">
+        <div data-reveal className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12">
           <div className="flex flex-col gap-6 lg:col-span-5">
             <div className="card p-6 sm:p-7">
               <h3 className="mb-3 text-title text-ink">
