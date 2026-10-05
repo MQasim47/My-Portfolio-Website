@@ -133,16 +133,17 @@ export default function ParticleBackground() {
     initParticles();
     draw();
 
-    window.addEventListener('resize', () => {
+    const onResize = () => {
       resize();
       initParticles();
-    });
+    };
+    window.addEventListener('resize', onResize);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseleave', onMouseLeave);
 
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', onResize);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseleave', onMouseLeave);
     };
@@ -156,4 +157,4 @@ export default function ParticleBackground() {
       aria-hidden="true"
     />
   );
-}
+}

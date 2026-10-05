@@ -13,7 +13,7 @@ import ResumeModal from './resumemodal';
 const FORM_ENDPOINT = 'https://formspree.io/f/mojygwvj';
 const CONTACT_EMAIL = 'aslamqasim126@gmail.com';
 
-type FormStatus = 'idle' | 'loading' | 'success' | 'error';
+type FormStatus = 'idle' | 'loading' | 'success' | 'error' | 'invalid';
 
 interface FieldProps {
   label: string;
@@ -82,14 +82,17 @@ export default function Contact() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !message) return;
+    if (!name.trim() || !/^\S+@\S+\.\S+$/.test(email.trim()) || !message.trim()) {
+      setStatus('invalid');
+      return;
+    }
 
     setStatus('loading');
     try {
       const res = await fetch(FORM_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name: name.trim(), email: email.trim(), message: message.trim() }),
       });
       if (res.ok) {
         setStatus('success');
@@ -108,8 +111,8 @@ export default function Contact() {
     <>
       <AnimatedSection
         id="contact"
-        eyebrow="Initiate Conversation"
-        heading="Let's Build Something Exceptional"
+        eyebrow="Contact"
+        heading="Let's Work Together"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 max-w-5xl mx-auto items-start">
 
@@ -120,17 +123,12 @@ export default function Contact() {
             
             {/* Header info card */}
             <div className="card p-6 sm:p-7 relative overflow-hidden">
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold w-fit mb-4">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                Response Guarantee: &lt; 24h
-              </div>
-
               <h3 className="font-display font-bold text-xl text-white mb-3">
-                Open to Enterprise &amp; Senior Engineering Roles
+                Open to internships, junior roles and project work
               </h3>
 
               <p className="text-text-secondary text-sm leading-relaxed mb-6">
-                Whether you need a Senior DevOps Architect to automate your multi-cloud pipelines or a Full-Stack Engineer to scale your product, my direct line is always open.
+                Need a web app or a Flutter mobile app built and shipped? Send a message or email me directly.
               </p>
 
               {/* 1-Click Copy Email Button */}
@@ -164,18 +162,6 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Quick Stats Grid */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                <span className="text-[10px] font-mono uppercase text-text-muted">Location</span>
-                <p className="text-sm font-semibold text-white mt-1">Remote &amp; Global</p>
-              </div>
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                <span className="text-[10px] font-mono uppercase text-text-muted">Primary Stack</span>
-                <p className="text-sm font-semibold text-white mt-1">Azure · Next.js · Flutter</p>
-              </div>
-            </div>
-
             {/* Resume Action Card */}
             <div className="card p-5 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -187,7 +173,7 @@ export default function Contact() {
                     Muhammad Qasim — CV
                   </p>
                   <p className="text-xs text-text-muted mt-0.5">
-                    Updated Executive Resume
+                    Resume (PDF)
                   </p>
                 </div>
               </div>
@@ -220,39 +206,51 @@ export default function Contact() {
             <div className="card p-6 sm:p-8">
               <h4 className="font-display font-bold text-lg text-white mb-2 flex items-center gap-2">
                 <Sparkles size={16} className="text-cyan-400" />
-                Send a Direct Message
+                Send a Message
               </h4>
               <p className="text-text-muted text-xs mb-6">
-                Fill out the form below and it will route directly to my personal inbox.
+                Messages are sent to my email inbox.
               </p>
 
               <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <FormField
-                  label="Your Name / Organization"
+                  label="Your Name"
                   id="name"
-                  placeholder="e.g. Alex Henderson (Tech Lead)"
+                  placeholder="Your name"
                   value={name}
                   onChange={setName}
                   required
                 />
                 <FormField
-                  label="Work Email"
+                  label="Email"
                   id="email"
                   type="email"
-                  placeholder="e.g. alex@enterprise.com"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={setEmail}
                   required
                 />
                 <FormField
-                  label="Project Scope / Role Opportunity"
+                  label="Message"
                   id="message"
-                  placeholder="Describe your architecture requirements, open senior position, or team goals..."
+                  placeholder="What would you like to build or discuss?"
                   value={message}
                   onChange={setMessage}
                   multiline
                   required
                 />
+
+                <div aria-live="polite" className="space-y-5">
+                {status === 'invalid' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-2.5 text-xs sm:text-sm text-red-400 font-medium"
+                  >
+                    <AlertCircle size={16} className="flex-shrink-0" />
+                    Please fill in your name, a valid email and a message.
+                  </motion.div>
+                )}
 
                 {status === 'success' && (
                   <motion.div
@@ -261,7 +259,7 @@ export default function Contact() {
                     className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-2.5 text-xs sm:text-sm text-emerald-400 font-medium"
                   >
                     <CheckCircle size={16} className="flex-shrink-0" />
-                    Message delivered successfully! I will respond within 24 hours.
+                    Message sent. Thank you — I'll reply by email.
                   </motion.div>
                 )}
 
@@ -272,9 +270,10 @@ export default function Contact() {
                     className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-2.5 text-xs sm:text-sm text-red-400 font-medium"
                   >
                     <AlertCircle size={16} className="flex-shrink-0" />
-                    Unable to transmit message. Please contact directly via {CONTACT_EMAIL}.
+                    Message could not be sent. Please email me directly at {CONTACT_EMAIL}.
                   </motion.div>
                 )}
+                </div>
 
                 <button
                   type="submit"
@@ -284,12 +283,12 @@ export default function Contact() {
                   {status === 'loading' ? (
                     <>
                       <Loader2 size={16} className="animate-spin" />
-                      Transmitting Message…
+                      Sending…
                     </>
                   ) : (
                     <>
                       <Send size={15} />
-                      Transmit Direct Message
+                      Send Message
                     </>
                   )}
                 </button>
@@ -303,4 +302,4 @@ export default function Contact() {
       <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
     </>
   );
-}
+}

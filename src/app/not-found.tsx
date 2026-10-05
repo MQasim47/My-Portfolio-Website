@@ -3,34 +3,14 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Home, Terminal } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
-const glitchLines = [
+const lines = [
   'ERROR 404: ROUTE_NOT_FOUND',
-  'STACK TRACE: null pointer at 0x00000000',
-  '> checking deployment manifests on Azure cluster...',
-  '> ingress rule not matched in api-gateway',
-  '> CI/CD pipeline telemetry: ROUTE_MISSING',
-  '$ kubectl get pod route-404 --namespace=production',
-  'No resources found in target namespace.',
+  '> The page you requested does not exist.',
+  '$ cd /',
 ];
 
 export default function NotFound() {
-  const [visibleLines, setVisibleLines] = useState<number>(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setVisibleLines((prev) => {
-        if (prev >= glitchLines.length) {
-          clearInterval(interval);
-          return prev;
-        }
-        return prev + 1;
-      });
-    }, 250);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <main className="min-h-screen bg-background flex flex-col items-center justify-center px-6 relative overflow-hidden">
       {/* Background glow */}
@@ -86,13 +66,13 @@ export default function NotFound() {
               <div className="w-3 h-3 rounded-full bg-green-500/80" />
             </div>
             <span className="text-text-muted text-xs font-mono flex items-center gap-1.5">
-              <Terminal size={11} className="text-cyan-400" /> bash — cluster/ingress
+              <Terminal size={11} className="text-cyan-400" /> bash — 404
             </span>
           </div>
 
           {/* Terminal body */}
           <div className="p-5 font-mono text-xs space-y-1.5 min-h-[160px] bg-[#060914]">
-            {glitchLines.slice(0, visibleLines).map((line, i) => (
+            {lines.map((line, i) => (
               <motion.p
                 key={i}
                 initial={{ opacity: 0, x: -4 }}
@@ -111,9 +91,6 @@ export default function NotFound() {
                 {line}
               </motion.p>
             ))}
-            {visibleLines < glitchLines.length && (
-              <span className="text-cyan-400 animate-blink">▮</span>
-            )}
           </div>
         </motion.div>
 
@@ -125,14 +102,14 @@ export default function NotFound() {
           className="text-center space-y-5"
         >
           <p className="text-text-secondary text-sm">
-            Looks like this route was never deployed to our cluster. Let&apos;s get you back to the main portal.
+            This page doesn&apos;t exist. Let&apos;s get you back to the homepage.
           </p>
           <Link href="/" className="btn-primary inline-flex">
             <Home size={16} />
-            Return to Command Center
+            Back to Home
           </Link>
         </motion.div>
       </motion.div>
     </main>
   );
-}
+}

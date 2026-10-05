@@ -4,77 +4,40 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ExternalLink, Github, ChevronLeft, ChevronRight,
-  X, ZoomIn, Maximize2, Sparkles, Layers, ShieldCheck,
-  CheckCircle2, ArrowUpRight
+  X, ZoomIn, Layers,
 } from 'lucide-react';
 import AnimatedSection from './AnimatedSection';
 
 const SLIDE_INTERVAL = 3000;
 
-type ProjectCategory = 'all' | 'devops' | 'web' | 'mobile';
-
 interface Project {
   id: string;
   title: string;
-  category: ProjectCategory;
   label: string;
   labelColor: string;
   imageMode: 'portrait' | 'landscape';
   tagline: string;
   description: string;
-  architectureHighlights: string[];
   techStack: string[];
-  liveUrl: string;
-  githubUrl: string;
+  liveUrl: string;   // '' = no public URL
+  githubUrl: string; // '' = not published (TODO: confirm repo URL, see QUESTIONS.md)
   images: string[];
 }
 
-const projects: Project[] = [
-  {
-    id: 'azure-devops',
-    title: 'Azure Cloud DevOps & Auto-Scaling',
-    category: 'devops',
-    label: 'Cloud & DevOps',
-    labelColor: '#38BDF8',
-    imageMode: 'landscape',
-    tagline: 'Multi-environment cloud infrastructure with automated zero-downtime releases.',
-    description:
-      'Architected and maintained mission-critical web applications on Azure App Service with auto-scaling rules, custom SSL certificates, and automated GitHub Actions CI/CD pipelines — delivering zero-downtime rolling updates.',
-    architectureHighlights: [
-      'Automated GitHub Actions CI/CD with health verification',
-      'Azure App Service auto-scaling up to high load traffic',
-      'Terraform Infrastructure as Code (IaC) configuration',
-      'Zero-downtime blue/green deployment strategy',
-    ],
-    techStack: ['Azure App Service', 'GitHub Actions', 'Docker', 'Terraform', 'Node.js', 'Linux'],
-    liveUrl: 'https://flacronenterprises.com/',
-    githubUrl: 'https://github.com/MQasim47',
-    images: [
-      '/images/projects/azure-devops/img-1.png',
-      '/images/projects/azure-devops/img-2.png',
-      '/images/projects/azure-devops/img-3.png',
-      '/images/projects/azure-devops/img-4.png',
-    ],
-  },
+// Featured, in order of significance.
+const featuredProjects: Project[] = [
   {
     id: 'flacron-gamezone',
-    title: 'FlacronGameZone Live Sports Platform',
-    category: 'web',
-    label: 'Live Platform',
+    title: 'Flacron GameZone',
+    label: 'Web · Live',
     labelColor: '#22D3EE',
     imageMode: 'landscape',
-    tagline: 'High-traffic live sports streaming and AI match analytics web portal.',
+    tagline: 'Live football matches platform for Flacron Enterprises.',
     description:
-      'Football live matches platform covering all global leagues and teams. Features AI-generated pre & post-match tactical analysis, YouTube live stream embeds, real-time scores, standings, and responsive high-FPS video players.',
-    architectureHighlights: [
-      'AI Analysis integration for real-time match insights',
-      'Sub-second API response caching for live fixtures',
-      'Dynamic YouTube livestream feed integration',
-      'SEO-optimized Next.js architecture with edge rendering',
-    ],
-    techStack: ['Next.js 14', 'TypeScript', 'AI Analysis', 'YouTube API', 'REST APIs', 'Azure'],
+      'Football live matches platform covering global leagues and teams, with live scores and standings. Designed, developed and deployed from client briefing to production, and used by real customers.',
+    techStack: ['Next.js', 'TypeScript', 'Node.js'],
     liveUrl: 'https://flacrongamezone.com/',
-    githubUrl: 'https://github.com/MQasim47',
+    githubUrl: '',
     images: [
       '/images/projects/flacron-gamezone/gamezone3.png',
       '/images/projects/flacron-gamezone/gamezone1.png',
@@ -87,48 +50,30 @@ const projects: Project[] = [
     ],
   },
   {
-    id: 'ibm-cicd',
-    title: 'IBM Cloud Kubernetes CI/CD Hub',
-    category: 'devops',
-    label: 'IBM Cloud',
-    labelColor: '#818CF8',
-    imageMode: 'landscape',
-    tagline: 'Enterprise Kubernetes orchestration with Jenkins automation and Prometheus monitoring.',
-    description:
-      'Engineered multi-environment deployment pipelines on IBM Cloud. Configured containerized microservices managed via Helm charts, Jenkins CI/CD automation, Prometheus/Grafana real-time metrics, and automated rollback triggers.',
-    architectureHighlights: [
-      'Kubernetes cluster orchestration with Helm package manager',
-      'Automated Jenkins multi-branch release pipelines',
-      'Prometheus scrapers with Grafana telemetry dashboards',
-      'Automated rollbacks on error threshold breach',
-    ],
-    techStack: ['IBM Cloud', 'Kubernetes', 'Jenkins', 'Prometheus', 'Helm', 'Docker'],
-    liveUrl: '#',
-    githubUrl: 'https://github.com/MQasim47',
-    images: [
-      '/images/projects/ibm-cicd/img-1.png',
-      '/images/projects/ibm-cicd/img-2.png',
-      '/images/projects/ibm-cicd/img-3.jpeg',
-    ],
-  },
-  {
-    id: 'flutter-expense',
-    title: 'Flutter Commercial Expense Tracker',
-    category: 'mobile',
-    label: 'Mobile App',
+    id: 'synthect',
+    title: 'Synthect',
+    label: 'Mobile · Complete',
     labelColor: '#34D399',
     imageMode: 'portrait',
-    tagline: 'Cross-platform financial tracking app with real-time Firebase cloud sync.',
+    tagline: 'Document summarization and reply generation.',
     description:
-      'Cross-platform iOS & Android mobile financial tracking application. Built with Flutter and Riverpod state management, featuring interactive expense analytics, budget threshold alerts, and offline-first Hive caching synced to Firebase.',
-    architectureHighlights: [
-      'Offline-first architecture with Hive local database',
-      'Bi-directional cloud synchronization via Firebase',
-      'Riverpod state management with immutable models',
-      'Custom 60fps charting and transaction filtering',
-    ],
-    techStack: ['Flutter', 'Dart', 'Firebase', 'Riverpod', 'Hive', 'Material 3'],
-    liveUrl: '#',
+      'A Flutter app that summarizes documents and generates replies. Summaries come from a custom summarization algorithm I wrote that skips low-value words.',
+    techStack: ['Flutter', 'Dart'],
+    liveUrl: '',
+    githubUrl: '', // TODO: confirm repo URL with Muhammad before publishing
+    images: [],
+  },
+  {
+    id: 'm-hassan-traders',
+    title: 'M Hassan Traders',
+    label: 'Mobile · In daily use',
+    labelColor: '#34D399',
+    imageMode: 'portrait',
+    tagline: 'Khata (credit ledger) app for a cattle feed business.',
+    description:
+      'Flutter app that digitizes the khata (credit and dues ledger) of a real cattle feed business, in daily use. Tracks customer dues, sends payment reminder notifications and manages daily transactions, replacing manual bookkeeping.',
+    techStack: ['Flutter', 'Dart', 'Sqflite'],
+    liveUrl: '',
     githubUrl: 'https://github.com/MQasim47/M_Hassan_Traders_App',
     images: [
       '/images/projects/flutter-expense/img-1.jpeg',
@@ -140,25 +85,22 @@ const projects: Project[] = [
       '/images/projects/flutter-expense/img-7.jpeg',
     ],
   },
+];
+
+// Secondary work — not featured.
+const otherProjects: Project[] = [
   {
     id: 'skillswap',
-    title: 'SkillSwap Peer-to-Peer Platform',
-    category: 'web',
-    label: 'Full-Stack Web',
+    title: 'SkillSwap',
+    label: 'Web',
     labelColor: '#A78BFA',
     imageMode: 'landscape',
-    tagline: 'Collaborative student skill exchange web platform with REST backend.',
+    tagline: 'Skill exchange web platform.',
     description:
-      'Peer-to-peer student knowledge exchange platform. Enables learners to barter skills, schedule live sessions, and connect directly. Designed with Next.js frontend, Express/Node.js REST API backend, and MongoDB database.',
-    architectureHighlights: [
-      'Modular RESTful architecture with JWT authentication',
-      'Real-time skill matching algorithms and filter tags',
-      'MongoDB schemas with aggregation pipelines',
-      'Type-safe React client with responsive interface',
-    ],
-    techStack: ['Next.js', 'Express.js', 'Node.js', 'MongoDB', 'TypeScript', 'Tailwind CSS'],
-    liveUrl: '#',
-    githubUrl: 'https://github.com/MQasim47',
+      'A web platform where users list their skills and exchange them with others, with user authentication, skill listing management and a matching system. Built full-stack independently, from database design to UI.',
+    techStack: ['Next.js', 'React', 'Node.js', 'SQL'],
+    liveUrl: '',
+    githubUrl: '', // TODO: confirm repo URL (skillswap-nextjs?) before publishing
     images: [],
   },
 ];
@@ -179,7 +121,7 @@ function FallbackProjectGraphic({ title, techStack }: { title: string; techStack
           <Layers size={22} />
         </div>
         <h4 className="text-white font-display font-bold text-sm mb-1">{title}</h4>
-        <p className="text-[11px] text-text-muted mb-3 font-mono">Full-Stack Architecture Preview</p>
+        <p className="text-[11px] text-text-muted mb-3 font-mono">Screenshots coming soon</p>
         <div className="flex flex-wrap justify-center gap-1">
           {techStack.slice(0, 3).map((t) => (
             <span key={t} className="px-2 py-0.5 rounded bg-white/[0.06] border border-white/10 text-[10px] text-cyan-300">
@@ -428,7 +370,7 @@ function ProjectCarousel({
 // ─────────────────────────────────────────────────────────────────────────────
 // Project Card
 // ─────────────────────────────────────────────────────────────────────────────
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({ project, index }: { project: Project; index?: number }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (
@@ -453,7 +395,7 @@ function ProjectCard({ project }: { project: Project }) {
               backdropFilter: 'blur(10px)',
             }}
           >
-            {project.label}
+            {index ? `${String(index).padStart(2, '0')} · ` : ''}{project.label}
           </span>
         </div>
 
@@ -476,19 +418,6 @@ function ProjectCard({ project }: { project: Project }) {
             {project.description}
           </p>
 
-          {/* Architectural Key Takeaways */}
-          <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1.5 mb-5">
-            <p className="text-[10px] font-mono text-cyan-400 font-semibold tracking-wider uppercase">
-              Engineering Highlights:
-            </p>
-            {project.architectureHighlights.slice(0, 2).map((h) => (
-              <div key={h} className="flex items-start gap-2 text-xs text-text-muted">
-                <CheckCircle2 size={12} className="text-cyan-400 flex-shrink-0 mt-0.5" />
-                <span className="leading-tight">{h}</span>
-              </div>
-            ))}
-          </div>
-
           {/* Tech Stack Pills */}
           <div className="flex flex-wrap gap-1.5 mb-5">
             {project.techStack.map((tech) => (
@@ -500,24 +429,26 @@ function ProjectCard({ project }: { project: Project }) {
 
           {/* Action Links */}
           <div className="flex items-center gap-3 pt-4 border-t border-white/10 mt-auto">
-            {project.liveUrl !== '#' && (
+            {project.liveUrl && (
               <a
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-400/30 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 hover:text-white transition-colors"
               >
-                <ExternalLink size={12} /> Live Platform
+                <ExternalLink size={12} /> Live Site
               </a>
             )}
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-xs font-semibold text-text-secondary hover:text-white hover:bg-white/10 transition-colors ml-auto"
-            >
-              <Github size={12} /> Source Code
-            </a>
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-xs font-semibold text-text-secondary hover:text-white hover:bg-white/10 transition-colors ml-auto"
+              >
+                <Github size={12} /> Source Code
+              </a>
+            )}
           </div>
         </div>
       </motion.article>
@@ -541,53 +472,26 @@ function ProjectCard({ project }: { project: Project }) {
 // Projects Section
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Projects() {
-  const [filter, setFilter] = useState<ProjectCategory>('all');
-
-  const filteredProjects = filter === 'all'
-    ? projects
-    : projects.filter((p) => p.category === filter);
-
-  const FILTERS = [
-    { id: 'all',    label: `All Systems (${projects.length})` },
-    { id: 'devops', label: 'Cloud & DevOps (2)' },
-    { id: 'web',    label: 'Full-Stack Web (2)' },
-    { id: 'mobile', label: 'Mobile Apps (1)' },
-  ];
-
   return (
     <AnimatedSection
       id="projects"
-      eyebrow="Flagship Deployments"
-      heading="Production Projects & Architecture"
+      eyebrow="Featured Work"
+      heading="Built & Shipped"
     >
-      {/* Category Tabs */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
-        {FILTERS.map((f) => {
-          const isActive = filter === f.id;
-          return (
-            <button
-              key={f.id}
-              onClick={() => setFilter(f.id as ProjectCategory)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
-                isActive
-                  ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-semibold shadow-[0_0_20px_rgba(6,182,212,0.35)] border border-cyan-400/40'
-                  : 'bg-white/[0.03] text-text-secondary hover:text-white hover:bg-white/[0.08] border border-white/5'
-              }`}
-            >
-              {f.label}
-            </button>
-          );
-        })}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+        {featuredProjects.map((project, i) => (
+          <ProjectCard key={project.id} project={project} index={i + 1} />
+        ))}
       </div>
 
-      {/* Projects Grid */}
-      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-        <AnimatePresence mode="popLayout">
-          {filteredProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </AnimatePresence>
-      </motion.div>
+      <h3 className="mt-20 mb-8 text-center text-xs font-mono font-bold tracking-widest uppercase text-text-muted">
+        More work
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+        {otherProjects.map((project) => (
+          <ProjectCard key={project.id} project={project} />
+        ))}
+      </div>
     </AnimatedSection>
   );
-}
+}

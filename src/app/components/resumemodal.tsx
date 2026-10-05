@@ -66,10 +66,10 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 </div>
                 <div>
                   <p className="text-white text-sm font-bold leading-tight">
-                    Muhammad Qasim — Executive Resume
+                    Muhammad Qasim — Resume
                   </p>
                   <p className="text-text-muted text-[11px]">
-                    Senior DevOps Engineer &amp; Full-Stack Architect
+                    Full-stack &amp; Mobile Engineer
                   </p>
                 </div>
               </div>

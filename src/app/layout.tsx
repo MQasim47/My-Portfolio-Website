@@ -27,40 +27,28 @@ export const viewport: Viewport = {
 // ─────────────────────────────────────────────────────────────────────────────
 // Metadata
 // ─────────────────────────────────────────────────────────────────────────────
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+const TITLE = 'Muhammad Qasim | Full-stack & Mobile Engineer';
+const DESCRIPTION =
+  'Full-stack and mobile engineer building web apps and Flutter mobile apps, and shipping them to production.';
+
 export const metadata: Metadata = {
-  title: 'Muhammad Qasim | Senior DevOps Engineer & Full-Stack Architect',
-  description:
-    'Engineering high-scale cloud infrastructure, zero-downtime CI/CD pipelines, modern web applications, and cross-platform mobile architectures on Azure and IBM Cloud.',
-  keywords: [
-    'Muhammad Qasim',
-    'DevOps Engineer',
-    'Cloud Architect',
-    'Full-Stack Developer',
-    'Next.js 14',
-    'TypeScript',
-    'Flutter',
-    'Azure',
-    'IBM Cloud',
-    'Kubernetes',
-    'Docker',
-    'CI/CD Pipelines',
-    'Terraform',
-    'Software Engineer Portfolio',
-  ],
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
   authors: [{ name: 'Muhammad Qasim' }],
+  alternates: { canonical: '/' },
   openGraph: {
-    title: 'Muhammad Qasim | Senior DevOps Engineer & Full-Stack Architect',
-    description:
-      'Engineering high-scale cloud infrastructure, zero-downtime CI/CD pipelines, and high-velocity digital products.',
-    url: 'https://flacronenterprises.com/',
-    siteName: 'Muhammad Qasim — Engineering Portfolio',
+    title: TITLE,
+    description: DESCRIPTION,
+    url: '/',
+    siteName: 'Muhammad Qasim',
     type: 'website',
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Muhammad Qasim | Senior DevOps Engineer & Full-Stack Architect',
-    description:
-      'Cloud infrastructure, automated CI/CD pipelines, modern web applications, and Flutter mobile systems.',
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
   },
 };
 

@@ -8,9 +8,10 @@ import ResumeModal from './resumemodal';
 
 const NAV_ITEMS = [
   { label: 'Overview',   href: '#hero'       },
-  { label: 'Pillars',    href: '#pillars'    },
-  { label: 'Skills',     href: '#skills'     },
+  { label: 'About',      href: '#about'      },
   { label: 'Projects',   href: '#projects'   },
+  { label: 'Building',   href: '#building'   },
+  { label: 'Skills',     href: '#skills'     },
   { label: 'Experience', href: '#experience' },
   { label: 'Contact',    href: '#contact'    },
 ];
@@ -90,7 +91,7 @@ export default function Navbar() {
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               </span>
               <span className="text-[10px] text-text-muted font-medium tracking-wider uppercase">
-                DevOps &amp; Full-Stack Architect
+                Full-stack &amp; Mobile Engineer
               </span>
             </div>
           </motion.button>
@@ -127,7 +128,7 @@ export default function Navbar() {
             {/* Live Availability Badge */}
             <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-medium text-emerald-400">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Available
+              Open to work
             </div>
 
             {/* Resume button */}
