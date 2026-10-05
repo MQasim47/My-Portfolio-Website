@@ -73,7 +73,7 @@ const other = {
 
 export default function Projects() {
   return (
-    <Section id="projects" labelledBy="projects-title" className="pt-0" reveal={false}>
+    <Section id="projects" labelledBy="projects-title" className="pt-0">
       <Reveal>
         <SectionHeading id="projects-title" eyebrow="Featured work">
           Built &amp; shipped

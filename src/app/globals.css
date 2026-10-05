@@ -41,6 +41,10 @@
   --line-accent: color-mix(in srgb, var(--accent) 18%, transparent);
   --scrim: color-mix(in srgb, var(--terminal) 90%, transparent);
 
+  /* page-wide cursor glow strength; tinted band so the glow shows through paper-2 sections */
+  --glow-opacity: 0.14;
+  --band-tint: color-mix(in srgb, var(--ink) 4.5%, transparent);
+
   /* shadows — exactly two exist */
   --shadow-lift: 0 2px 0 0 var(--rule);
   --shadow-overlay: 0 24px 64px color-mix(in srgb, var(--terminal) 55%, transparent);
@@ -83,6 +87,8 @@
     --pass: var(--signal);
     --warn: #D9962B;
     --fail: #E0705F;
+    --glow-opacity: 0.2;
+    --band-tint: color-mix(in srgb, var(--paper-inv) 5%, transparent);
   }
 }
 
@@ -101,6 +107,8 @@
   --pass: var(--signal);
   --warn: #D9962B;
   --fail: #E0705F;
+  --glow-opacity: 0.2;
+  --band-tint: color-mix(in srgb, var(--paper-inv) 5%, transparent);
 }
 
 @media (min-width: 640px) {
@@ -245,11 +253,15 @@ a {
 
 .panel-frame {
   border: var(--hairline) solid var(--line-accent);
-  transition: border-color var(--dur-instant) var(--ease-out);
+}
+
+/* Skill and currently-building cards only: the 1px border changes colour, nothing draws. */
+.card-hover {
+  transition: border-color var(--dur-quick) var(--ease-out);
 }
 
 @media (any-hover: hover) {
-  .card:hover {
+  .card-hover:hover {
     border-color: var(--accent);
   }
 }
@@ -381,69 +393,6 @@ a {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   HOVER FEEDBACK — emerald, cheap, pointer devices only.
-   (a) border draw: a 1px emerald frame scales 0 → full over 320ms.
-   (b) proximity glow inside project bands: an --accent radial at 8%, 400px,
-       following the cursor via --mx / --my (written by ProjectBand, one write
-       per frame, only while that band is hovered).
-   Both are off under prefers-reduced-motion and any-hover: none.
-───────────────────────────────────────────────────────────────────────────── */
-.draw-border {
-  position: relative;
-}
-
-.draw-border::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  z-index: 2;
-  border: var(--hairline) solid var(--accent);
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  transform: scale(0);
-  transition:
-    transform var(--dur-base) var(--ease-out),
-    opacity var(--dur-base) var(--ease-out);
-}
-
-.band {
-  position: relative;
-  isolation: isolate;
-}
-
-.band-inner {
-  position: relative;
-  z-index: 1;
-}
-
-.band::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(
-    circle 400px at var(--mx, 50%) var(--my, 50%),
-    color-mix(in srgb, var(--accent) 8%, transparent),
-    transparent
-  );
-  transition: opacity var(--dur-base) var(--ease-out);
-}
-
-@media (any-hover: hover) and (prefers-reduced-motion: no-preference) {
-  .draw-border:hover::after {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .band:hover::before {
-    opacity: 1;
-  }
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
    PROJECT BANDS — image scale and arrow nudge, pointer devices only.
 ───────────────────────────────────────────────────────────────────────────── */
 .band-img-scale {
@@ -462,18 +411,17 @@ a {
   .band:hover .band-arrow {
     transform: translateX(4px);
   }
-
-  .band:hover .panel-frame {
-    border-color: var(--accent);
-  }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   SECTION REVEAL
-   Resting state is VISIBLE. RevealController (JS) only marks below-the-fold
-   elements as pending after hydration and clears the mark when they enter.
-   If JS never runs, nothing is ever hidden.
+   MOTION SYSTEM — every effect runs once, on enter, and is composited
+   (transform / opacity only). The RESTING state of everything below is VISIBLE.
+   RevealController (JS) only marks below-the-fold elements data-reveal-pending
+   after hydration, and clears the mark when they enter the viewport. With JS off
+   nothing is ever marked, so nothing is ever hidden.
 ───────────────────────────────────────────────────────────────────────────── */
+
+/* Body blocks: rise 12px and fade in */
 [data-reveal] {
   transition:
     opacity var(--dur-base) var(--ease-enter),
@@ -483,6 +431,115 @@ a {
 [data-reveal][data-reveal-pending] {
   opacity: 0;
   transform: translateY(var(--rise));
+}
+
+/* Masked line reveals: each line sits in an overflow-hidden mask and rises out of it.
+   The padding/negative margin keeps ascenders and descenders from being clipped. */
+.line {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+}
+
+.line-inner {
+  display: block;
+}
+
+/* Choreography groups (headings, band copy, prose): eyebrow first, then the lines
+   (60ms stagger), the rule draws, tags follow (40ms stagger). */
+.rv-eyebrow {
+  transition:
+    opacity var(--dur-base) var(--ease-enter),
+    transform var(--dur-base) var(--ease-enter);
+}
+
+[data-reveal-group] .line-inner {
+  transition: transform var(--dur-slow) var(--ease-out);
+  transition-delay: calc(80ms + var(--i, 0) * 60ms);
+}
+
+.heading-rule {
+  transform-origin: left center;
+  transition: transform 680ms var(--ease-out) 160ms;
+}
+
+.rv-tag {
+  transition:
+    opacity var(--dur-base) var(--ease-enter),
+    transform var(--dur-base) var(--ease-enter);
+  transition-delay: calc(320ms + var(--ti, 0) * 40ms);
+}
+
+[data-reveal-group][data-reveal-pending] .rv-eyebrow,
+[data-reveal-group][data-reveal-pending] .rv-tag {
+  opacity: 0;
+  transform: translateY(var(--rise));
+}
+
+[data-reveal-group][data-reveal-pending] .line-inner {
+  transform: translateY(110%);
+}
+
+[data-reveal-group][data-reveal-pending] .heading-rule {
+  transform: scaleX(0);
+}
+
+/* Project image parallax: --bp (0 → 1) is written by ParallaxController, once per frame,
+   while the band crosses the viewport. ±24px, inside a frame that clips it. */
+.band-parallax {
+  position: absolute;
+  inset: -24px 0;
+  transform: translateY(calc((var(--bp, 0.5) - 0.5) * 48px));
+  will-change: transform;
+}
+
+/* One site-wide cursor glow: a single fixed element behind the content. CursorGlow writes
+   translate3d only, from one rAF loop that runs only while the pointer is moving. */
+.cursor-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: 520px;
+  height: 520px;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 100%, transparent) 0%,
+    transparent 68%
+  );
+  will-change: transform;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+.cursor-glow[data-active='true'] {
+  opacity: var(--glow-opacity);
+}
+
+@media (any-hover: none), (prefers-reduced-motion: reduce) {
+  .cursor-glow {
+    display: none;
+  }
+}
+
+/* Sections sit above the glow. paper sections are transparent (the body paints the paper);
+   paper-2 sections are a translucent tint so the glow shows through them too. */
+.section-band {
+  background: var(--band-tint);
+}
+
+/* Nav: one underline slides between the items (transform only; width via scaleX) */
+.nav-underline {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  height: var(--hairline);
+  background: var(--accent);
+  transform-origin: left center;
+  transition: transform var(--dur-base) var(--ease-out);
 }
 
 /* Nav logo mark arrives exactly as the hero name shrinks into it */
@@ -521,5 +578,18 @@ html {
 
   .nav-mark {
     opacity: 1 !important;
+  }
+
+  [data-reveal-group][data-reveal-pending] .rv-eyebrow,
+  [data-reveal-group][data-reveal-pending] .rv-tag,
+  [data-reveal-group][data-reveal-pending] .line-inner,
+  [data-reveal-group][data-reveal-pending] .heading-rule {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .band-parallax {
+    transform: none !important;
   }
 }

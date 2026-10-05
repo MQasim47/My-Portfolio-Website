@@ -13,7 +13,7 @@ export default function HomePage() {
     <>
       <Navbar />
 
-      <main id="main">
+      <main id="main" className="relative z-[1]">
         <Hero />
         <About />
         <Projects />
@@ -23,7 +23,7 @@ export default function HomePage() {
         <Contact />
       </main>
 
-      <footer className="border-t border-rule bg-paper py-10 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
+      <footer className="relative z-[1] border-t border-rule py-10 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
         <Container className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-body text-ink">
             <span className="font-semibold">Muhammad Qasim</span>

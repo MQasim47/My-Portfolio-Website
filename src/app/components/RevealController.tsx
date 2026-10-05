@@ -3,11 +3,11 @@
 import { useEffect } from 'react';
 
 /**
- * Section reveal: rise 12px and fade in once, on enter.
+ * Drives the once-only entrance motion (see "MOTION SYSTEM" in globals.css).
  *
- * Everything is VISIBLE by default in CSS. After hydration this marks only the
- * elements that are below the fold as pending, and clears the mark when they
- * enter the viewport. If this never runs (no JS, reduced motion), nothing is hidden.
+ * Everything is VISIBLE by default in CSS. After hydration this marks only the elements
+ * that are below the fold as pending, and clears the mark when they enter the viewport.
+ * If this never runs (no JS, reduced motion), nothing is ever hidden.
  */
 export default function RevealController() {
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function RevealController() {
       { rootMargin: '0px 0px -8% 0px', threshold: 0 }
     );
 
-    document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+    document.querySelectorAll<HTMLElement>('[data-reveal], [data-reveal-group]').forEach((el) => {
       if (el.getBoundingClientRect().top > window.innerHeight * 0.92) {
         el.setAttribute('data-reveal-pending', '');
         io.observe(el);

@@ -9,8 +9,6 @@ interface SectionProps {
   className?: string;
   /** Labelled-by id of the section heading. */
   labelledBy?: string;
-  /** Rise-and-fade the whole content block once on enter. Default true. */
-  reveal?: boolean;
   children: ReactNode;
 }
 
@@ -20,7 +18,6 @@ export default function Section({
   tone = 'paper',
   className,
   labelledBy,
-  reveal = true,
   children,
 }: SectionProps) {
   return (
@@ -29,13 +26,13 @@ export default function Section({
       aria-labelledby={labelledBy}
       className={cn(
         'py-[var(--section-space)]',
-        tone === 'paper-2' ? 'bg-paper-2' : 'bg-paper',
+        // paper sections are transparent: the body paints the paper and the cursor glow
+        // shows through. paper-2 sections are a translucent tint for the same reason.
+        tone === 'paper-2' && 'section-band',
         className
       )}
     >
-      <Container>
-        {reveal ? <div data-reveal>{children}</div> : children}
-      </Container>
+      <Container>{children}</Container>
     </section>
   );
 }

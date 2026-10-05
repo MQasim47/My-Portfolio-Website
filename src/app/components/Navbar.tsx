@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { Menu, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -25,6 +25,23 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
   const [resumeEverOpened, setResumeEverOpened] = useState(false);
+  // Sliding underline: one element, positioned with transform only (translateX + scaleX).
+  const listRef = useRef<HTMLUListElement>(null);
+  const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
+  const [underline, setUnderline] = useState<{ x: number; w: number } | null>(null);
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const li = itemRefs.current[activeSection];
+      const ul = listRef.current;
+      if (!li || !ul || ul.offsetParent === null) return;
+      setUnderline({ x: li.offsetLeft, w: li.offsetWidth });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [activeSection]);
+
   const openResume = () => {
     setResumeEverOpened(true);
     setResumeOpen(true);
@@ -94,19 +111,22 @@ export default function Navbar() {
           </a>
 
           <nav aria-label="Primary" className="hidden lg:block">
-            <ul className="flex items-center gap-1">
+            <ul ref={listRef} className="relative flex items-center gap-1">
               {NAV_ITEMS.map(({ label, href }) => {
                 const isActive = activeSection === href.replace('#', '');
                 return (
-                  <li key={href}>
+                  <li
+                    key={href}
+                    ref={(el) => {
+                      itemRefs.current[href.replace('#', '')] = el;
+                    }}
+                  >
                     <a
                       href={href}
                       aria-current={isActive ? 'true' : undefined}
                       className={cn(
-                        'inline-flex min-h-[44px] items-center border-b px-3 text-caption font-medium transition-colors duration-[var(--dur-instant)]',
-                        isActive
-                          ? 'border-accent text-accent'
-                          : 'border-transparent text-ink-soft hov:text-ink'
+                        'inline-flex min-h-[44px] items-center px-3 text-caption font-medium transition-colors duration-[var(--dur-instant)]',
+                        isActive ? 'text-accent' : 'text-ink-soft hov:text-ink'
                       )}
                     >
                       {label}
@@ -114,6 +134,14 @@ export default function Navbar() {
                   </li>
                 );
               })}
+              <span
+                className="nav-underline"
+                aria-hidden="true"
+                style={{
+                  opacity: underline ? 1 : 0,
+                  transform: underline ? `translateX(${underline.x}px) scaleX(${underline.w})` : undefined,
+                }}
+              />
             </ul>
           </nav>
 

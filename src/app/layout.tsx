@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import RevealController from './components/RevealController';
+import ParallaxController from './components/ParallaxController';
+import CursorGlow from './components/CursorGlow';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Fonts — self-hosted, latin subset, variable. Only Bodoni Moda and Hanken
@@ -75,6 +77,9 @@ export const metadata: Metadata = {
 // Root Layout
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Marks JS as available, so progressive enhancements (the scroll-driven hero) key on it.
+const JS_FLAG = "document.documentElement.classList.add('js')";
+
 // Runs before first paint: applies a saved theme choice so there is no flash of the wrong
 // theme. With no saved choice the CSS follows the system preference. try/catch because
 // storage can be blocked.
@@ -92,14 +97,16 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT + ';' + JS_FLAG }} />
       </head>
       <body>
         <a href="#main" className="skip-link">
           Skip to content
         </a>
+        <CursorGlow />
         {children}
         <RevealController />
+        <ParallaxController />
       </body>
     </html>
   );
