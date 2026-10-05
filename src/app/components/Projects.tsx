@@ -1,4 +1,6 @@
-import { Section, SectionHeading, MonoLabel, Rule, Reveal } from './ui';
+import type { CSSProperties } from 'react';
+import { Section, SectionHeading, MonoLabel, Rule } from './ui';
+import SplitLines from './SplitLines';
 import ProjectBand, { type BandProject } from './ProjectBand';
 
 // Featured, ranked by significance. Case-study routes arrive with the case-study pages.
@@ -74,45 +76,48 @@ const other = {
 export default function Projects() {
   return (
     <Section id="projects" labelledBy="projects-title" className="pt-0">
-      <Reveal>
-        <SectionHeading id="projects-title" eyebrow="Featured work">
-          Built &amp; shipped
-        </SectionHeading>
-      </Reveal>
+      <SectionHeading id="projects-title" eyebrow="Featured work">
+        Built &amp; shipped
+      </SectionHeading>
 
       <div>
         {featured.map((project, i) => (
-          <Reveal key={project.id}>
+          <div key={project.id}>
             <Rule />
             <ProjectBand
               project={project}
               index={i + 1}
               imageSide={i % 2 === 0 ? 'left' : 'right'}
             />
-          </Reveal>
+          </div>
         ))}
       </div>
 
-      <Reveal className="mt-8">
-        <MonoLabel as="h3" className="mb-6 block text-accent">
+      {/* Secondary work: one full-width hairline row. Its own reveal group. */}
+      <div className="mt-8" data-reveal-group>
+        <MonoLabel as="h3" className="rv-eyebrow mb-6 block text-accent">
           More work
         </MonoLabel>
         <article>
           <Rule />
           <div className="grid gap-4 py-8 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-3">
-              <MonoLabel as="p" className="mb-2 text-accent">
+              <MonoLabel as="p" className="rv-eyebrow mb-2 text-accent">
                 {other.label}
               </MonoLabel>
-              <h4 className="font-display text-display-m text-ink">{other.title}</h4>
+              <SplitLines
+                as="h4"
+                className="font-display text-display-m text-ink"
+                text={other.title}
+              />
             </div>
             <p className="text-body text-ink-soft lg:col-span-5">{other.description}</p>
             <ul
               className="flex flex-wrap gap-1.5 lg:col-span-4 lg:justify-end"
               aria-label="Technologies"
             >
-              {other.techStack.map((t) => (
-                <li key={t} className="tech-tag">
+              {other.techStack.map((t, i) => (
+                <li key={t} className="tech-tag rv-tag" style={{ '--ti': i } as CSSProperties}>
                   {t}
                 </li>
               ))}
@@ -120,7 +125,7 @@ export default function Projects() {
           </div>
         </article>
         <Rule />
-      </Reveal>
+      </div>
     </Section>
   );
 }

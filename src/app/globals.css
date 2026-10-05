@@ -395,6 +395,12 @@ a {
 /* ─────────────────────────────────────────────────────────────────────────────
    PROJECT BANDS — image scale and arrow nudge, pointer devices only.
 ───────────────────────────────────────────────────────────────────────────── */
+.band-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  font-weight: 400;
+}
+
 .band-img-scale {
   transition: transform var(--dur-slow) var(--ease-out);
 }

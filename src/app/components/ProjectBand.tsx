@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { useState, type CSSProperties } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { ArrowRight, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { MonoLabel, Rule, StatusDot, type Status } from './ui';
+import SplitLines from './SplitLines';
 
 // Loaded on first open — keeps the viewer out of the first-load bundle.
 const Lightbox = dynamic(() => import('./Lightbox'));
@@ -42,47 +43,6 @@ export default function ProjectBand({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [everOpened, setEverOpened] = useState(false);
 
-  // Proximity glow: only the hovered band listens. One style write per animation frame
-  // (rAF), --mx/--my only, listener detached on pointerleave. Mouse/pen only.
-  const bandRef = useRef<HTMLElement>(null);
-  const detachRef = useRef<(() => void) | null>(null);
-
-  const onPointerEnter = (e: ReactPointerEvent<HTMLElement>) => {
-    const el = bandRef.current;
-    if (!el || e.pointerType === 'touch') return;
-    if (!window.matchMedia('(any-hover: hover) and (prefers-reduced-motion: no-preference)').matches)
-      return;
-    detachRef.current?.();
-
-    let frame = 0;
-    let x = 0;
-    let y = 0;
-    const flush = () => {
-      frame = 0;
-      el.style.setProperty('--mx', `${x}px`);
-      el.style.setProperty('--my', `${y}px`);
-    };
-    const move = (ev: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      x = ev.clientX - r.left;
-      y = ev.clientY - r.top;
-      if (!frame) frame = requestAnimationFrame(flush);
-    };
-    el.addEventListener('pointermove', move);
-    detachRef.current = () => {
-      el.removeEventListener('pointermove', move);
-      if (frame) cancelAnimationFrame(frame);
-    };
-    move(e.nativeEvent);
-  };
-
-  const onPointerLeave = () => {
-    detachRef.current?.();
-    detachRef.current = null;
-  };
-
-  useEffect(() => () => detachRef.current?.(), []);
-
   const { images } = project;
   const go = (n: number) => setCurrent((n + images.length) % images.length);
   const expand = () => {
@@ -100,21 +60,17 @@ export default function ProjectBand({
 
   return (
     <>
-    <article
-      ref={bandRef}
-      className="band draw-border"
-      aria-labelledby={`band-${project.id}`}
-      onPointerEnter={onPointerEnter}
-      onPointerLeave={onPointerLeave}
-    >
-      <div className="band-inner grid items-center gap-8 py-12 lg:min-h-[85svh] lg:grid-cols-12 lg:gap-14 lg:py-16">
+    <article className="band" aria-labelledby={`band-${project.id}`}>
+      <div className="grid items-center gap-8 py-12 lg:min-h-[85svh] lg:grid-cols-12 lg:gap-14 lg:py-16">
         {/* ── media: screenshot in a paper-2 matte, 1px rule frame, mono caption ── */}
         <figure
+          data-reveal
           className={`m-0 lg:col-span-6 ${imageFirst ? 'lg:order-1' : 'lg:order-2'}`}
         >
           <div className="panel-frame bg-paper-2 p-3 sm:p-5">
             {images.length > 0 ? (
-              <div className={`relative overflow-hidden ${mediaBox}`}>
+              <div className={`relative overflow-hidden ${mediaBox}`} data-parallax>
+                <div className="band-parallax">
                 <button
                   onClick={expand}
                   className="absolute inset-0 block h-full w-full cursor-zoom-in"
@@ -126,11 +82,12 @@ export default function ProjectBand({
                       alt={`${project.title} screenshot ${current + 1}`}
                       fill
                       sizes="(min-width: 1024px) 560px, 100vw"
-                      className="object-contain"
+                      className="object-contain py-6"
                       draggable={false}
                     />
                   </span>
                 </button>
+                </div>
               </div>
             ) : (
               <div className={`flex items-center justify-center text-center ${mediaBox}`}>
@@ -147,7 +104,9 @@ export default function ProjectBand({
           <figcaption className="mt-3 flex items-center justify-between gap-3">
             <MonoLabel as="span" className="normal-case tracking-normal">
               {project.title}
-              {images.length > 0 ? ` — ${current + 1} / ${images.length}` : ' — screenshots to be added'}
+              <span className="whitespace-nowrap">
+                {images.length > 0 ? ` — ${current + 1} / ${images.length}` : ' — screenshots to be added'}
+              </span>
             </MonoLabel>
             {images.length > 0 && (
               <span className="flex items-center">
@@ -183,24 +142,37 @@ export default function ProjectBand({
 
         {/* ── copy ─────────────────────────────────────────────────────────── */}
         <div
+          data-reveal-group
           className={`lg:col-span-5 ${
             imageFirst ? 'lg:order-2 lg:col-start-8' : 'lg:order-1 lg:col-start-1'
           }`}
         >
-          <MonoLabel as="p" className="mb-4 text-accent">
+          {/* eyebrow + number rise first, then the title lines rise out of their masks */}
+          <MonoLabel as="p" className="rv-eyebrow mb-4 text-accent">
             {num} / {project.eyebrow}
           </MonoLabel>
-          <h3
+          <SplitLines
+            as="h3"
             id={`band-${project.id}`}
-            className="mb-5 font-display text-ink"
-            style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.05, fontWeight: 400 }}
-          >
-            {project.title}
-          </h3>
+            className="band-title mb-5 font-display text-ink"
+            text={project.title}
+          />
           <p className="mb-6 max-w-[46ch] text-body-l text-ink-soft">{project.summary}</p>
 
+          {/* tech tags stagger in (40ms each) after the title */}
           <p className="mb-6 font-mono text-mono-s uppercase text-ink-soft">
-            {project.techStack.join(' · ')}
+            {project.techStack.map((t, i) => (
+              <span key={t}>
+                <span className="rv-tag inline-block" style={{ '--ti': i } as CSSProperties}>
+                  {t}
+                </span>
+                {i < project.techStack.length - 1 ? (
+                  <span aria-hidden="true" className="mx-[0.7ch]">
+                    ·
+                  </span>
+                ) : null}
+              </span>
+            ))}
           </p>
 
           <Rule />
