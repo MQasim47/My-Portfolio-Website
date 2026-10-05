@@ -1,4 +1,4 @@
-import { Section, SectionHeading, StatusDot, Reveal } from './ui';
+import { Section, SectionHeading, StatusDot } from './ui';
 
 // TODO: moves to the CMS in Phase 3.
 const ITEMS = [
@@ -21,9 +21,8 @@ export default function CurrentlyBuilding() {
         Currently building
       </SectionHeading>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {ITEMS.map((item, i) => (
-          <Reveal key={item.name} delay={i * 0.08} className="h-full">
-            <article className="card flex h-full flex-col gap-4 p-6 sm:p-8">
+        {ITEMS.map((item) => (
+            <article key={item.name} className="card flex h-full flex-col gap-4 p-6 sm:p-8">
               <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
                 <h3 className="font-display text-display-m text-ink">{item.name}</h3>
                 <StatusDot status="in-development" label="In development" className="text-ink-soft" />
@@ -37,7 +36,6 @@ export default function CurrentlyBuilding() {
                 ))}
               </ul>
             </article>
-          </Reveal>
         ))}
       </div>
     </Section>

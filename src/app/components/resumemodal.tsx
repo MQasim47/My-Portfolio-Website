@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { X, Download, ExternalLink } from 'lucide-react';
 
 const RESUME_PDF_PATH = '/resume.pdf';
@@ -34,6 +34,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   }, [isOpen]);
 
   return (
+    <MotionConfig reducedMotion="user">
     <AnimatePresence>
       {isOpen && (
         <>
@@ -130,5 +131,6 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
         </>
       )}
     </AnimatePresence>
+    </MotionConfig>
   );
 }

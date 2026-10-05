@@ -1,0 +1,376 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   HERO — scroll-driven composition.
+   One custom property, --p (0 → 1), is written once per frame by HeroScroll.
+   Everything below derives from it. Only transform, opacity and custom
+   properties change; never width, height, top, left, filter or box-shadow.
+───────────────────────────────────────────────────────────────────────────── */
+
+.hero-stage {
+  position: relative;
+  height: 300vh;
+  background: var(--paper);
+}
+
+.hero-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: grid;
+  grid-template: 100% / 100%;
+  place-items: center;
+}
+
+/* ── Name: two layers, identical position ─────────────────────────────────── */
+.hero-name {
+  grid-area: 1 / 1;
+  margin: 0;
+  width: max-content;
+  white-space: nowrap;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+  /* Shrinks up-left and lands on the nav logo mark: the scaled name's left edge meets
+     the page gutter (where the mark sits), its centre meets the 64px bar's centre line.
+     0.17em = half the scaled word width (the word is ~2.83em wide, scaled to 0.12). */
+  --name-size: clamp(5rem, 22vw, 19rem);
+  transform: translate(
+      calc(var(--p) * (var(--gutter-x) + var(--name-size) * 0.17 - 50vw)),
+      calc(var(--p) * (32px - 50svh))
+    )
+    scale(calc(1 - var(--p) * 0.88));
+  opacity: calc(1 - max(0, var(--p) - 0.74) * 3.8);
+  will-change: transform, opacity;
+}
+
+/* Front copy: middle cut away so the figure stands inside the word. */
+.hero-name-front {
+  -webkit-mask-image: linear-gradient(90deg, black 0 19%, transparent 28% 72%, black 81% 100%);
+  mask-image: linear-gradient(90deg, black 0 19%, transparent 28% 72%, black 81% 100%);
+  pointer-events: none;
+}
+
+/* ── Portrait: seven vertical slats ───────────────────────────────────────── */
+.hero-portrait {
+  grid-area: 1 / 1;
+  position: relative;
+  display: flex;
+  width: min(34vw, 310px);
+  aspect-ratio: 464 / 1200;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    black 0,
+    black calc(100% - var(--p) * 118%),
+    transparent calc(104% - var(--p) * 118%)
+  );
+  mask-image: linear-gradient(
+    180deg,
+    black 0,
+    black calc(100% - var(--p) * 118%),
+    transparent calc(104% - var(--p) * 118%)
+  );
+}
+
+.hero-slat {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  --sp: clamp(0, calc((var(--p) - var(--i) * 0.055) / 0.46), 1);
+  transform: translateY(calc(var(--sp) * 34svh)) scaleY(calc(1 - var(--sp) * 0.12));
+  opacity: calc(1 - var(--sp) * 1.15);
+  will-change: transform, opacity;
+}
+
+.hero-slat-img {
+  position: absolute;
+  inset: 0 -0.5px; /* 1px overlap hides the sub-pixel seams between slats */
+  background-image: url('/images/hero-portrait.webp');
+  background-image: image-set(
+    url('/images/hero-portrait.avif') type('image/avif'),
+    url('/images/hero-portrait.webp') type('image/webp')
+  );
+  background-repeat: no-repeat;
+  background-size: 700% 100%;
+  background-position: calc(var(--i) * 16.6667%) center;
+  /* load sequence: settle only — the image itself is painted at full opacity at once */
+  animation: hero-settle var(--dur-base) var(--ease-enter) both;
+  animation-delay: calc(640ms + var(--i) * 60ms);
+}
+
+/* ── Statement (right) ────────────────────────────────────────────────────── */
+.hero-statement {
+  position: absolute;
+  right: var(--gutter-x);
+  top: 50%;
+  translate: 0 -50%;
+  width: min(32vw, 430px);
+  --s: clamp(0, calc((var(--p) - 0.3) * 3.2), 1);
+  opacity: var(--s);
+  transform: translateY(min(18px, calc((1 - var(--s)) * 18px)));
+}
+
+.hero-line {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.9rem, 5vw, 3.8rem);
+  line-height: 1.05;
+  color: var(--ink);
+  animation: hero-rise var(--dur-base) var(--ease-enter) both;
+  animation-delay: calc(120ms + var(--n) * 100ms);
+}
+
+.hero-line-accent {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-sub {
+  margin: 20px 0 0;
+  max-width: 36ch;
+  color: var(--ink-soft);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  animation: hero-rise var(--dur-base) var(--ease-enter) both;
+  animation-delay: 420ms;
+}
+
+/* ── Meta column (left, desktop only) ─────────────────────────────────────── */
+.hero-meta {
+  display: none;
+  position: absolute;
+  left: var(--gutter-x);
+  top: 50%;
+  translate: 0 -50%;
+  opacity: calc(1 - var(--p) * 2.2);
+}
+
+.hero-meta-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  animation: hero-fade var(--dur-base) var(--ease-enter) both;
+  animation-delay: 480ms;
+}
+
+.hero-meta-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 1024px) {
+  .hero-meta {
+    display: block;
+  }
+}
+
+/* ── Scroll cue (visible at rest, gone as soon as the scroll starts) ──────── */
+.hero-cue {
+  position: absolute;
+  left: 50%;
+  bottom: calc(28px + env(safe-area-inset-bottom));
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: calc(1 - var(--p) * 4);
+  color: var(--ink-soft);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.hero-cue::after {
+  content: '';
+  width: var(--hairline);
+  height: 32px;
+  background: var(--ink-soft);
+}
+
+/* keep the cue off the figure on desktop */
+@media (min-width: 1024px) {
+  .hero-cue {
+    left: var(--gutter-x);
+    translate: none;
+    align-items: flex-start;
+  }
+}
+
+/* ── Status rail (bottom, full width) ─────────────────────────────────────── */
+.hero-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding: 16px var(--gutter-x) calc(16px + env(safe-area-inset-bottom));
+  opacity: clamp(0, calc((var(--p) - 0.62) * 4), 1);
+}
+
+.hero-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--hairline);
+  background: var(--rule);
+  transform-origin: left center;
+  animation: hero-draw var(--dur-slow) var(--ease-out) both;
+  animation-delay: 820ms;
+}
+
+/* ── Load sequence keyframes (each runs once) ─────────────────────────────── */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-settle {
+  from {
+    transform: translateY(var(--rise));
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes hero-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ── Mobile: stack. Portrait 52vw, statement full width below, meta hidden ── */
+@media (max-width: 767px) {
+  .hero-portrait {
+    width: 52vw;
+  }
+
+  .hero-statement {
+    left: var(--gutter-x);
+    right: var(--gutter-x);
+    top: auto;
+    bottom: 132px; /* clears the (wrapped) status rail */
+    translate: none;
+    width: auto;
+  }
+
+  .hero-sub {
+    max-width: none;
+    font-size: 1rem;
+  }
+}
+
+/* ── Reduced motion: one static composition, everything at full opacity ───── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-stage {
+    height: auto;
+  }
+
+  .hero-sticky {
+    position: relative;
+    height: auto;
+    min-height: 100svh;
+    padding-bottom: 72px;
+  }
+
+  .hero-name,
+  .hero-slat,
+  .hero-statement,
+  .hero-meta,
+  .hero-rail {
+    transform: none !important;
+    opacity: 1 !important;
+    will-change: auto;
+  }
+
+  .hero-portrait {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .hero-cue {
+    display: none;
+  }
+
+  .hero-slat-img,
+  .hero-line,
+  .hero-sub,
+  .hero-meta-inner,
+  .hero-rail::before {
+    animation: none !important;
+  }
+}
+
+/* Static desktop composition: the figure-in-the-word moves left so the statement
+   sits beside it instead of on top of it (in the scroll version the name has left
+   by the time the statement arrives). */
+@media (prefers-reduced-motion: reduce) and (min-width: 768px) {
+  .hero-name,
+  .hero-portrait {
+    transform: translateX(-17vw) scale(0.8) !important;
+  }
+
+  .hero-meta {
+    top: auto;
+    bottom: 104px;
+    translate: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 767px) {
+  .hero-sticky {
+    grid-template: minmax(72svh, auto) auto auto / 100%;
+    padding-top: 72px;
+    padding-bottom: 0;
+  }
+
+  .hero-statement {
+    position: static;
+    grid-area: 2 / 1;
+    width: 100%;
+    padding: 24px var(--gutter-x) 0;
+  }
+
+  .hero-rail {
+    position: relative;
+    grid-area: 3 / 1;
+    width: 100%;
+    margin-top: 32px;
+  }
+}

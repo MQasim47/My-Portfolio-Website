@@ -36,8 +36,21 @@
   /* hairline weight; thickened by prefers-contrast */
   --hairline: 1px;
 
+  /* motion */
+  --dur-instant: 120ms; /* hover, focus, colour */
+  --dur-quick: 200ms;   /* small state changes */
+  --dur-base: 320ms;    /* reveals and fades */
+  --dur-slow: 520ms;    /* large transitions, image scale */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --rise: 12px;         /* the only vertical travel distance used (outside the hero scroll) */
+
+  /* hero scroll progress, 0 → 1 (written once per frame by HeroScroll) */
+  --p: 0;
+
   /* layout */
   --page-margin: 20px;
+  --gutter-x: max(var(--page-margin), calc((100vw - 1240px) / 2 + var(--page-margin)));
   --section-space: 64px;
   --focus-color: var(--accent);
 }
@@ -106,13 +119,21 @@ a {
 
 .link {
   color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-thickness: var(--hairline);
+  text-decoration: none;
+  padding-bottom: 2px;
+  background-image:
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(color-mix(in srgb, var(--accent) 40%, transparent), color-mix(in srgb, var(--accent) 40%, transparent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% var(--hairline), 100% var(--hairline);
+  transition: background-size var(--dur-instant) var(--ease-out);
 }
 
-.link:hover {
-  color: var(--accent-deep);
+@media (hover: hover) {
+  .link:hover {
+    background-size: 100% var(--hairline), 100% var(--hairline);
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -169,6 +190,14 @@ a {
   border: var(--hairline) solid var(--rule);
   border-radius: 10px;
   position: relative;
+  transition: border-color var(--dur-instant) var(--ease-out);
+}
+
+/* Skill groups: the rule shifts to accent (desktop pointer only). No lift, glow or scale. */
+@media (hover: hover) {
+  .card-rule-hover:hover {
+    border-color: var(--accent);
+  }
 }
 
 /* Buttons — flat, 3px radius, ink or emerald. */
@@ -186,7 +215,7 @@ a {
   font-weight: 600;
   line-height: 1.2;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: background-color var(--dur-instant) var(--ease-out), color var(--dur-instant) var(--ease-out), border-color var(--dur-instant) var(--ease-out);
 }
 
 .btn-primary {
@@ -195,9 +224,11 @@ a {
   border: var(--hairline) solid var(--ink);
 }
 
-.btn-primary:hover {
-  background: var(--accent);
-  border-color: var(--accent);
+@media (hover: hover) {
+  .btn-primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
 }
 
 .btn-outline {
@@ -206,9 +237,11 @@ a {
   border: var(--hairline) solid var(--ink);
 }
 
-.btn-outline:hover {
-  color: var(--accent);
-  border-color: var(--accent);
+@media (hover: hover) {
+  .btn-outline:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
 }
 
 .btn-ghost {
@@ -217,9 +250,11 @@ a {
   border: var(--hairline) solid var(--rule);
 }
 
-.btn-ghost:hover {
-  color: var(--accent);
-  border-color: var(--accent);
+@media (hover: hover) {
+  .btn-ghost:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
 }
 
 .btn-primary:disabled {
@@ -286,6 +321,50 @@ a {
 /* Blinking-free caret: static, never animated */
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   PROJECT BANDS — the only hover interactions: image 1 → 1.02, arrow → 4px.
+   Desktop pointer only; touch devices get no hover state at all.
+───────────────────────────────────────────────────────────────────────────── */
+.band-img-scale {
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.band-arrow {
+  transition: transform var(--dur-quick) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .band:hover .band-img-scale {
+    transform: scale(1.02);
+  }
+
+  .band:hover .band-arrow {
+    transform: translateX(4px);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION REVEAL
+   Resting state is VISIBLE. RevealController (JS) only marks below-the-fold
+   elements as pending after hydration and clears the mark when they enter.
+   If JS never runs, nothing is ever hidden.
+───────────────────────────────────────────────────────────────────────────── */
+[data-reveal] {
+  transition:
+    opacity var(--dur-base) var(--ease-enter),
+    transform var(--dur-base) var(--ease-enter);
+}
+
+[data-reveal][data-reveal-pending] {
+  opacity: 0;
+  transform: translateY(var(--rise));
+}
+
+/* Nav logo mark arrives exactly as the hero name shrinks into it */
+.nav-mark {
+  opacity: calc(var(--p) * 1.6 - 0.35);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    REDUCED MOTION — every resting state is a finished design
 ───────────────────────────────────────────────────────────────────────────── */
 html {
@@ -307,8 +386,14 @@ html {
   }
 
   /* Reveal wrappers rest fully visible and in place. */
-  [data-reveal] {
+  [data-reveal],
+  [data-reveal][data-reveal-pending] {
     opacity: 1 !important;
     transform: none !important;
+    transition: none !important;
+  }
+
+  .nav-mark {
+    opacity: 1 !important;
   }
 }

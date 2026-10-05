@@ -1,4 +1,4 @@
-import { Section, SectionHeading, MonoLabel, Reveal } from './ui';
+import { Section, SectionHeading, MonoLabel } from './ui';
 
 // Technologies confirmed as used in production (see QUESTIONS.md).
 // No proficiency labels, bars or numbers — context is a short factual note only.
@@ -32,9 +32,8 @@ export default function Skills() {
         What I build with
       </SectionHeading>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {SKILL_GROUPS.map((skill, i) => (
-          <Reveal key={skill.id} delay={(i % 3) * 0.06} className="h-full">
-            <article className="card flex h-full flex-col justify-between p-6 sm:p-7">
+        {SKILL_GROUPS.map((skill) => (
+            <article key={skill.id} className="card card-rule-hover flex h-full flex-col justify-between p-6 sm:p-7">
               <div>
                 <h3 className="mb-4 text-title text-ink">{skill.title}</h3>
                 <ul className="flex flex-wrap gap-1.5" aria-label={`${skill.title} technologies`}>
@@ -54,7 +53,6 @@ export default function Skills() {
                 </MonoLabel>
               )}
             </article>
-          </Reveal>
         ))}
       </div>
     </Section>

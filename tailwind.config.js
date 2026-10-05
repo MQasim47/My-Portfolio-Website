@@ -2,6 +2,8 @@
 // Every value here reads from the CSS custom properties in src/app/globals.css.
 // That file is the single source of truth â€” never add a literal color here.
 module.exports = {
+  // hover: variants only apply on devices that can hover — touch gets none.
+  future: { hoverOnlyWhenSupported: true },
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     colors: {

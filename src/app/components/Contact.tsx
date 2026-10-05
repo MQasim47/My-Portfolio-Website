@@ -2,8 +2,11 @@
 
 import { useState, type SyntheticEvent } from 'react';
 import { Download, Eye, Mail, Copy, Check } from 'lucide-react';
-import ResumeModal from './resumemodal';
+import dynamic from 'next/dynamic';
 import { Section, SectionHeading, MonoLabel, StatusDot } from './ui';
+
+// Loaded on first open — keeps the modal out of the first-load bundle.
+const ResumeModal = dynamic(() => import('./resumemodal'));
 
 const FORM_ENDPOINT = 'https://formspree.io/f/mojygwvj';
 const CONTACT_EMAIL = 'aslamqasim126@gmail.com';
@@ -71,6 +74,7 @@ export default function Contact() {
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<FormStatus>('idle');
   const [resumeOpen, setResumeOpen] = useState(false);
+  const [resumeEverOpened, setResumeEverOpened] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
@@ -129,7 +133,7 @@ export default function Contact() {
                   <Mail size={16} className="shrink-0 text-ink-soft" aria-hidden="true" />
                   <a
                     href={`mailto:${CONTACT_EMAIL}`}
-                    className="link truncate font-mono text-mono-m"
+                    className="link inline-flex min-h-[44px] items-center truncate font-mono text-mono-m"
                   >
                     {CONTACT_EMAIL}
                   </a>
@@ -162,7 +166,13 @@ export default function Contact() {
                 </MonoLabel>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <button onClick={() => setResumeOpen(true)} className="btn-outline px-3 py-2 text-caption">
+                <button
+                  onClick={() => {
+                    setResumeEverOpened(true);
+                    setResumeOpen(true);
+                  }}
+                  className="btn-outline px-3 py-2 text-caption"
+                >
                   <Eye size={14} aria-hidden="true" />
                   Preview
                 </button>
@@ -245,7 +255,9 @@ export default function Contact() {
         </div>
       </Section>
 
-      <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+      {resumeEverOpened && (
+        <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+      )}
     </>
   );
 }

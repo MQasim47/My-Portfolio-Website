@@ -1,5 +1,5 @@
 import { ExternalLink } from 'lucide-react';
-import { Section, SectionHeading, MonoLabel, StatusDot, Rule, Reveal } from './ui';
+import { Section, SectionHeading, MonoLabel, StatusDot, Rule } from './ui';
 
 // Source: resume.pdf. Only claims present on the resume are kept.
 const experiences = [
@@ -27,8 +27,7 @@ export default function Experience() {
       </SectionHeading>
       <div>
         {experiences.map((exp) => (
-          <Reveal key={exp.id}>
-            <article>
+            <article key={exp.id}>
               <Rule />
               <div className="grid gap-6 py-8 lg:grid-cols-12">
                 <div className="lg:col-span-4">
@@ -62,7 +61,6 @@ export default function Experience() {
               </div>
               <Rule />
             </article>
-          </Reveal>
         ))}
       </div>
     </Section>

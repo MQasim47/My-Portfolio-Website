@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Menu, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import ResumeModal from './resumemodal';
+// Loaded on first open — keeps the modal and its animation code out of the first-load bundle.
+const ResumeModal = dynamic(() => import('./resumemodal'));
 import { Container } from './ui';
 
 const NAV_ITEMS = [
@@ -21,6 +23,11 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
+  const [resumeEverOpened, setResumeEverOpened] = useState(false);
+  const openResume = () => {
+    setResumeEverOpened(true);
+    setResumeOpen(true);
+  };
 
   // Scroll detection for the hairline under the bar
   useEffect(() => {
@@ -41,7 +48,9 @@ export default function Navbar() {
         ([entry]) => {
           if (entry.isIntersecting) setActiveSection(id);
         },
-        { threshold: 0.3 }
+        // Active when the section crosses the middle of the viewport (works for sections
+        // taller than the viewport, e.g. the 300vh hero and the project bands).
+        { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
       );
       obs.observe(el);
       observers.push(obs);
@@ -74,7 +83,7 @@ export default function Navbar() {
             className="flex min-h-[44px] items-center gap-3"
             aria-label="Muhammad Qasim — go to top"
           >
-            <span className="font-display text-[1.375rem] leading-none text-ink">MQ</span>
+            <span className="nav-mark font-display text-[1.375rem] leading-none text-ink">MQ</span>
             <span className="hidden flex-col sm:flex">
               <span className="text-body font-semibold leading-tight text-ink">Muhammad Qasim</span>
               <span className="font-mono text-mono-s uppercase text-ink-soft">
@@ -83,7 +92,7 @@ export default function Navbar() {
             </span>
           </a>
 
-          <nav aria-label="Primary" className="hidden md:block">
+          <nav aria-label="Primary" className="hidden lg:block">
             <ul className="flex items-center gap-1">
               {NAV_ITEMS.map(({ label, href }) => {
                 const isActive = activeSection === href.replace('#', '');
@@ -93,7 +102,7 @@ export default function Navbar() {
                       href={href}
                       aria-current={isActive ? 'true' : undefined}
                       className={cn(
-                        'inline-flex min-h-[44px] items-center border-b-2 px-3 text-caption font-medium transition-colors',
+                        'inline-flex min-h-[44px] items-center border-b px-3 text-caption font-medium transition-colors duration-[var(--dur-instant)]',
                         isActive
                           ? 'border-accent text-accent'
                           : 'border-transparent text-ink-soft hover:text-ink'
@@ -107,8 +116,8 @@ export default function Navbar() {
             </ul>
           </nav>
 
-          <div className="hidden items-center gap-2 md:flex">
-            <button onClick={() => setResumeOpen(true)} className="btn-outline py-2 text-caption">
+          <div className="hidden items-center gap-2 lg:flex">
+            <button onClick={openResume} className="btn-outline py-2 text-caption">
               <FileText size={14} />
               Resume
             </button>
@@ -119,7 +128,7 @@ export default function Navbar() {
 
           <button
             onClick={() => setMobileOpen((p) => !p)}
-            className="flex h-11 w-11 items-center justify-center rounded border border-rule text-ink md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded border border-rule text-ink lg:hidden"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
@@ -135,7 +144,7 @@ export default function Navbar() {
           role="dialog"
           aria-modal="true"
           aria-label="Menu"
-          className="fixed inset-x-0 top-16 z-40 border-b border-rule bg-paper px-[var(--page-margin)] pb-6 pt-2 md:hidden"
+          className="fixed inset-x-0 top-16 z-40 border-b border-rule bg-paper px-[var(--page-margin)] pb-6 pt-2 lg:hidden"
         >
           <nav aria-label="Mobile">
             <ul className="flex flex-col">
@@ -163,7 +172,7 @@ export default function Navbar() {
             <button
               onClick={() => {
                 setMobileOpen(false);
-                setResumeOpen(true);
+                openResume();
               }}
               className="btn-outline w-full justify-center"
             >
@@ -181,7 +190,9 @@ export default function Navbar() {
         </div>
       )}
 
-      <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+      {resumeEverOpened && (
+        <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+      )}
     </>
   );
 }

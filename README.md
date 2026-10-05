@@ -13,6 +13,15 @@ npm run build    # production build
 npm run start    # serve the production build
 ```
 
+To verify a production build while `npm run dev` is running (they would otherwise share `.next`):
+
+```bash
+NEXT_DIST_DIR=.next-verify npm run build && NEXT_DIST_DIR=.next-verify npm start
+```
+
+```bash
+```
+
 ## Configuration
 
 | Variable | Purpose |

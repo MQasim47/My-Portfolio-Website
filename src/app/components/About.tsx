@@ -1,9 +1,8 @@
-import { Section, SectionHeading, Prose, Reveal } from './ui';
+import { Section, SectionHeading, Prose } from './ui';
 
 export default function About() {
   return (
     <Section id="about" labelledBy="about-title" className="pt-[calc(var(--section-space)/2)]">
-      <Reveal>
         <SectionHeading id="about-title" eyebrow="About">
           Building and shipping products
         </SectionHeading>
@@ -17,7 +16,6 @@ export default function About() {
             handle the deployment side myself.
           </p>
         </Prose>
-      </Reveal>
     </Section>
   );
 }

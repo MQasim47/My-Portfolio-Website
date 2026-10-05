@@ -9,6 +9,8 @@ interface SectionProps {
   className?: string;
   /** Labelled-by id of the section heading. */
   labelledBy?: string;
+  /** Rise-and-fade the whole content block once on enter. Default true. */
+  reveal?: boolean;
   children: ReactNode;
 }
 
@@ -18,6 +20,7 @@ export default function Section({
   tone = 'paper',
   className,
   labelledBy,
+  reveal = true,
   children,
 }: SectionProps) {
   return (
@@ -30,7 +33,9 @@ export default function Section({
         className
       )}
     >
-      <Container>{children}</Container>
+      <Container>
+        {reveal ? <div data-reveal>{children}</div> : children}
+      </Container>
     </section>
   );
 }
