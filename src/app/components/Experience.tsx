@@ -27,8 +27,7 @@ export default function Experience() {
       </SectionHeading>
       <div>
         {experiences.map((exp) => (
-            <article key={exp.id}>
-              <Rule />
+            <article key={exp.id} data-reveal>
               <div className="grid gap-6 py-8 lg:grid-cols-12">
                 <div className="lg:col-span-4">
                   <MonoLabel as="p">{exp.period}</MonoLabel>
