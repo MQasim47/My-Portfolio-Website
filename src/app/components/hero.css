@@ -130,12 +130,12 @@
   color: var(--accent);
 }
 
-/* Below 1024px there is no room beside the name: the tagline moves under the figure
-   and the meta blocks drop out. */
+/* Below 1024px there is no room beside the name: the tagline moves up into the clear space
+   above the head (the figure is flush with the bottom edge) and the meta blocks drop out. */
 @media (max-width: 1023px) {
   .hero-left {
-    top: auto;
-    bottom: 56px;
+    top: 84px;
+    bottom: auto;
     left: var(--gutter-x);
     right: var(--gutter-x);
     translate: none;
@@ -210,17 +210,15 @@
   background: var(--rule);
 }
 
-/* ── Mobile: portrait ≤76vw, top-anchored under the nav (the lower body stays clear
-   of the tagline), statement full width, meta hidden ──────────────────────── */
+/* ── Mobile: portrait ≤76vw, flush with the bottom edge like desktop (it bleeds off, no
+   floating cut edge), statement full width, meta hidden ───────────────────── */
 @media (max-width: 760px) {
   .hero-portrait {
     --ph: min(62svh, 560px, calc(76vw * 991 / 504));
     max-width: 76vw;
-    margin-top: 72px;
   }
 
   .hero-left {
-    bottom: 64px;
     font-size: 0.6875rem;
   }
 
@@ -327,7 +325,13 @@
     animation-delay: 480ms;
   }
 
-  /* Scroll cue: visible at rest, gone as soon as the scroll starts */
+  /* Scroll cue: visible at rest, gone as soon as the scroll starts (desktop only — below
+     1024px it would sit on the figure's legs) */
+  html.js .hero-cue {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
   html.js .hero-cue {
     position: absolute;
     left: 50%;
@@ -352,6 +356,7 @@
     width: var(--hairline);
     height: 32px;
     background: var(--accent);
+  }
   }
 
   /* Statement (right) — a scroll arrival. Each line rises out of its mask, staggered. */
@@ -393,14 +398,6 @@
   }
 
   @media (max-width: 760px) {
-    html.js .hero-cue {
-      bottom: calc(20px + env(safe-area-inset-bottom));
-    }
-
-    html.js .hero-cue::after {
-      display: none;
-    }
-
     html.js .hero-statement {
       left: var(--gutter-x);
       right: var(--gutter-x);

@@ -104,9 +104,11 @@ export default function ProjectBand({
           <figcaption className="mt-3 flex items-center justify-between gap-3">
             <MonoLabel as="span" className="normal-case tracking-normal">
               {project.title}
-              <span className="whitespace-nowrap">
-                {images.length > 0 ? ` — ${current + 1} / ${images.length}` : ' — screenshots to be added'}
-              </span>
+              {images.length > 0 ? (
+                <span className="whitespace-nowrap">{` — ${current + 1} / ${images.length}`}</span>
+              ) : (
+                ' — screenshots to be added'
+              )}
             </MonoLabel>
             {images.length > 0 && (
               <span className="flex items-center">
