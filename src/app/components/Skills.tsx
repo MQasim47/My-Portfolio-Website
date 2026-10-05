@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { Section, SectionHeading, MonoLabel } from './ui';
 
 // Technologies confirmed as used in production (see QUESTIONS.md).
@@ -33,12 +34,15 @@ export default function Skills() {
       </SectionHeading>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {SKILL_GROUPS.map((skill) => (
-            <article key={skill.id} className="card draw-border flex h-full flex-col justify-between p-6 sm:p-7">
+          // The wrapper carries the reveal (rise + fade, then the tags stagger in) so the
+          // card's own border-colour transition is left alone.
+          <div key={skill.id} data-reveal data-reveal-group className="h-full">
+            <article className="card card-hover flex h-full flex-col justify-between p-6 sm:p-7">
               <div>
                 <h3 className="mb-4 text-title text-ink">{skill.title}</h3>
                 <ul className="flex flex-wrap gap-1.5" aria-label={`${skill.title} technologies`}>
-                  {skill.tools.map((tool) => (
-                    <li key={tool} className="tech-tag">
+                  {skill.tools.map((tool, i) => (
+                    <li key={tool} className="tech-tag rv-tag" style={{ '--ti': i } as CSSProperties}>
                       {tool}
                     </li>
                   ))}
@@ -53,6 +57,7 @@ export default function Skills() {
                 </MonoLabel>
               )}
             </article>
+          </div>
         ))}
       </div>
     </Section>
