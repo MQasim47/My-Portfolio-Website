@@ -43,6 +43,12 @@
 
 /* Front copy: middle cut away so the figure stands inside the word.
    (The mask is alpha-only; any opaque colour works, so use a token.) */
+/* Per-letter weight: Bodoni Moda is a variable font. NameWeight sets --w (400 → 700) on each
+   letter as the cursor passes. At rest, with JS off, under reduced motion and on touch it is 400. */
+.hero-letter {
+  font-variation-settings: 'wght' var(--w, 400);
+}
+
 .hero-name-front {
   -webkit-mask-image: linear-gradient(
     90deg,

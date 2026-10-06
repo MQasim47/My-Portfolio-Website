@@ -1,10 +1,19 @@
 import type { CSSProperties } from 'react';
 import { preload } from 'react-dom';
 import HeroScroll from './HeroScroll';
+import NameWeight from './NameWeight';
 import { StatusDot } from './ui';
 import './hero.css';
 
 const SLATS = [0, 1, 2, 3, 4, 5, 6];
+
+// The name is five per-letter spans (in both layers) so each letter can have its own weight.
+const letters = (key: string) =>
+  'Qasim'.split('').map((ch, i) => (
+    <span key={`${key}${i}`} className="hero-letter" data-letter={i}>
+      {ch}
+    </span>
+  ));
 
 const slatStyle = (i: number) => ({ '--i': i }) as CSSProperties;
 const lineStyle = (n: number) => ({ '--n': n }) as CSSProperties;
@@ -21,12 +30,14 @@ export default function Hero() {
   return (
     <section id="hero" aria-label="Introduction" data-hero-stage className="hero-stage">
       <HeroScroll />
+      <NameWeight />
 
       <div className="hero-sticky">
         <div className="hero-figure">
           {/* layer 1 — the real heading */}
           <h1 className="hero-name font-display text-display-xl">
-            <span className="sr-only">Muhammad </span>Qasim
+            <span className="sr-only">Muhammad </span>
+            {letters('a')}
           </h1>
 
           {/* layer 2 — portrait in seven slats */}
@@ -43,7 +54,7 @@ export default function Hero() {
             className="hero-name hero-name-front font-display text-display-xl"
             aria-hidden="true"
           >
-            Qasim
+            {letters('b')}
           </div>
 
           {/* left: what I do (visible at rest) + meta (desktop) */}
