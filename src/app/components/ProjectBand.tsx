@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { ArrowRight, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { MonoLabel, Rule, StatusDot, type Status } from './ui';
 import SplitLines from './SplitLines';
+import DeviceFrame from './DeviceFrame';
 
 // Loaded on first open — keeps the viewer out of the first-load bundle.
 const Lightbox = dynamic(() => import('./Lightbox'));
@@ -67,7 +68,17 @@ export default function ProjectBand({
           className="band-media m-0"
         >
           <div className="panel-frame bg-paper-2 p-3 sm:p-5">
-            {images.length > 0 ? (
+            {project.imageMode === 'portrait' ? (
+              // Flutter apps: the screenshots live in a phone you can operate
+              <div className="flex justify-center py-1">
+                <DeviceFrame
+                  title={project.title}
+                  images={images}
+                  index={current}
+                  onIndexChange={setCurrent}
+                />
+              </div>
+            ) : images.length > 0 ? (
               <div className={`relative overflow-hidden ${mediaBox}`} data-parallax>
                 <div className="band-parallax">
                 <button

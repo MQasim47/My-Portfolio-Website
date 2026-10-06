@@ -450,6 +450,108 @@ a {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   DEVICE FRAME — a phone bezel around draggable app screenshots.
+   BASE (no JS): the screen is a native scroll-snap strip you can swipe.
+   ENHANCED (html.js): DeviceFrame drives a transform track with drag, momentum and snap.
+───────────────────────────────────────────────────────────────────────────── */
+.device {
+  --dh: min(54svh, 540px); /* screen height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* The outer corner is concentric with the 10px screen corner (10px + the 10px bezel). */
+.device-bezel {
+  padding: 10px;
+  background: var(--paper);
+  border: var(--hairline) solid var(--rule);
+  border-radius: 20px;
+}
+
+.device-screen {
+  height: var(--dh);
+  aspect-ratio: 9 / 20;
+  border-radius: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  background: var(--terminal);
+  touch-action: pan-y; /* vertical page scroll stays native; horizontal is ours */
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+
+.device-screen::-webkit-scrollbar {
+  display: none;
+}
+
+html.js .device-screen {
+  overflow: hidden;
+  scroll-snap-type: none;
+}
+
+.device-screen[data-dragging='true'] {
+  cursor: grabbing;
+}
+
+.device-screen--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+  cursor: default;
+}
+
+.device-track {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+}
+
+.device-slide {
+  position: relative;
+  flex: 0 0 100%;
+  height: 100%;
+  scroll-snap-align: start;
+}
+
+.device-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+html:not(.js) .device-dots {
+  display: none;
+}
+
+.device-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 44px; /* 44px target; the dot itself is small */
+}
+
+.device-dot span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: var(--hairline) solid var(--accent);
+  background: transparent;
+  transition: background-color var(--dur-quick) var(--ease-out);
+}
+
+.device-dot[aria-current='true'] span {
+  background: var(--accent);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    PINNED HORIZONTAL WORK
    BASE (mobile ≤860px, reduced motion, no JS): the panels simply stack vertically.
    ENHANCEMENT (≥861px, html.js, no reduced-motion preference): a 320vh stage with a
