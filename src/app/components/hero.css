@@ -24,6 +24,8 @@
 
 /* The stage: name and portrait stacked in one cell. The figure bleeds off the bottom. */
 .hero-figure {
+  --name-size: clamp(5rem, 22vw, 19rem);
+  --name-cy: 50svh; /* vertical centre of the name at rest (used to land it on the nav logo) */
   position: relative;
   display: grid;
   grid-template: 100% / 100%;
@@ -139,8 +141,24 @@
 /* Below 1024px there is no room beside the name: the tagline moves up into the clear space
    above the head (the figure is flush with the bottom edge) and the meta blocks drop out. */
 @media (max-width: 1023px) {
+  /* The name gets its own line above the figure (never hidden behind it): name, then the
+     tagline, then the figure, which is capped so it always clears them. */
+  .hero-figure {
+    --name-top: 96px;
+    --name-cy: calc(var(--name-top) + var(--name-size) * 0.39);
+  }
+
+  .hero-name {
+    align-self: start;
+    margin-top: var(--name-top);
+  }
+
+  .hero-portrait {
+    --ph: min(88svh, 1000px, calc(46vw * 991 / 504), calc(100svh - 250px));
+  }
+
   .hero-left {
-    top: 84px;
+    top: calc(var(--name-top) + var(--name-size) * 0.9 + 16px);
     bottom: auto;
     left: var(--gutter-x);
     right: var(--gutter-x);
@@ -220,7 +238,7 @@
    floating cut edge), statement full width, meta hidden ───────────────────── */
 @media (max-width: 760px) {
   .hero-portrait {
-    --ph: min(62svh, 560px, calc(76vw * 991 / 504));
+    --ph: min(62svh, 560px, calc(76vw * 991 / 504), calc(100svh - 250px));
     max-width: 76vw;
   }
 
@@ -277,10 +295,9 @@
      left edge meets the page gutter (where the mark sits), its centre meets the 64px bar's
      centre line. 0.17em = half the scaled word width (~2.83em wide, scaled to 0.12). */
   html.js .hero-name {
-    --name-size: clamp(5rem, 22vw, 19rem);
     transform: translate(
         calc(var(--p) * (var(--gutter-x) + var(--name-size) * 0.17 - 50vw)),
-        calc(var(--p) * (32px - 50svh))
+        calc(var(--p) * (32px - var(--name-cy)))
       )
       scale(calc(1 - var(--p) * 0.88));
     opacity: calc(1 - max(0, var(--p) - 0.74) * 3.8);
