@@ -18,16 +18,16 @@ Decisions already made (from Phase 0 review) are applied in code and not repeate
 - [ ] **M Hassan Traders screenshots.** The existing `public/images/projects/flutter-expense/*` images — are they M Hassan Traders screens? The GitHub repo description also mentions multi-item invoicing and local notifications; the resume says push notifications. Which wording is true?
 - [ ] **Flacron GameZone hosting.** The old site claimed Azure; the resume says Render. Where does it actually run? (Needed for the Shipping Record.)
 - [ ] **GameZone source repo.** `Flacron_Gamezone_Local` exists. Public to link? Currently no source link is shown.
-- [ ] **SkillSwap vs SwapVarsity** — which name should the card use? Repo `skillswap-nextjs` exists; link it? No screenshots exist for it.
+- [ ] **SkillSwap** now lives in Currently building (status: In development). Its tech list is intentionally empty until you give the new stack; no live URL or GitHub link until you confirm them (a repo `skillswap-nextjs` exists — link it?). Name: SkillSwap or SwapVarsity?
 - [ ] **Archive / Flacron Auto Social** — links or repos to show? Descriptions currently minimal.
 
 ### Content
-- [ ] **Experience role title.** Resume says "DevOps Engineer — Flacron Enterprise, 2025–Present"; that is what the site shows. Change to something broader (e.g. include full-stack)?
+- [x] Experience role is now "Full-Stack & Mobile Developer" (building leads, deployment supports).
 - [ ] **Experience bullets** are copied from the resume. Any additions?
 - [ ] **Availability line.** Site now says "Open to internships, junior roles and project work" (from the resume). Confirm.
 - [ ] **Location** is not stated anywhere (previously "Remote & Global"). What should it say?
 - [ ] **Hero portrait** `public/images/hero-portrait.png` is 982 KB — will be re-encoded in Phase 4. Hero still uses `photo.jpeg` until then.
-- [ ] **Resume** — updated PDF coming before launch (resume still says "Software Engineering Student ... DevOps Engineer").
+- [ ] **Resume PDF is now inconsistent with the site** (`public/resume.pdf`, served by the Resume buttons): it still says "DevOps Engineer" in the headline, the summary ("contributing as a DevOps engineer at Flacron") and the Experience entry ("DevOps Engineer — Flacron Enterprise"), lists IBM Cloud, and describes Skill Swap as Next.js · Node.js · SQL · React. Updated PDF still to come.
 
 ## Deployment (blocks Phase 3)
 - [ ] The site is local only. Target host for the portfolio? (Vercel assumed by the brief's `VERCEL_TOKEN` / deploy-status; confirm.) Database and R2 accounts needed for Phase 3.
@@ -37,7 +37,7 @@ For each project: platform, delivery method, environment (Production / Staging /
 - [ ] Flacron GameZone
 - [ ] Synthect
 - [ ] M Hassan Traders
-- [ ] SkillSwap
+- [ ] SkillSwap (move to Currently building; no deployment yet)
 - [ ] IBM Cloud (labelled Coursework) — which project/lab, and when?
 - [ ] Azure App Service / AWS — which projects, if any?
 

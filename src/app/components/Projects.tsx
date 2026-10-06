@@ -1,7 +1,5 @@
-import type { CSSProperties } from 'react';
-import { Container, SectionHeading, MonoLabel, Rule } from './ui';
+import { Container, SectionHeading, Rule } from './ui';
 import WorkScroll from './WorkScroll';
-import SplitLines from './SplitLines';
 import ProjectBand, { type BandProject } from './ProjectBand';
 
 // Featured, ranked by significance. Case-study routes arrive with the case-study pages.
@@ -64,23 +62,12 @@ const featured: BandProject[] = [
   },
 ];
 
-// Secondary work — not featured. A single full-width hairline row.
-const other = {
-  id: 'skillswap',
-  title: 'SkillSwap',
-  label: 'Web',
-  description:
-    'A web platform where users list their skills and exchange them with others, with user authentication, skill listing management and a matching system. Built full-stack independently, from database design to UI.',
-  techStack: ['Next.js', 'React', 'Node.js', 'SQL'],
-};
-
 export default function Projects() {
   return (
     <section
       id="projects"
       aria-labelledby="projects-title"
       data-register="paper"
-      className="pb-[var(--section-space)]"
     >
       <Container>
         <SectionHeading id="projects-title" eyebrow="Featured work">
@@ -128,41 +115,6 @@ export default function Projects() {
         <WorkScroll />
       </div>
 
-      <Container>
-        {/* Secondary work: one full-width hairline row. Its own reveal group. */}
-        <div className="mt-8" data-reveal-group>
-          <MonoLabel as="h3" className="rv-eyebrow mb-6 block text-accent">
-            More work
-          </MonoLabel>
-          <article>
-            <Rule />
-            <div className="grid gap-4 py-8 lg:grid-cols-12 lg:gap-8">
-              <div className="lg:col-span-3">
-                <MonoLabel as="p" className="rv-eyebrow mb-2 text-accent">
-                  {other.label}
-                </MonoLabel>
-                <SplitLines
-                  as="h4"
-                  className="font-display text-display-m text-ink"
-                  text={other.title}
-                />
-              </div>
-              <p className="text-body text-ink-soft lg:col-span-5">{other.description}</p>
-              <ul
-                className="flex flex-wrap content-start items-start gap-1.5 lg:col-span-4 lg:justify-end"
-                aria-label="Technologies"
-              >
-                {other.techStack.map((t, i) => (
-                  <li key={t} className="tech-tag rv-tag" style={{ '--ti': i } as CSSProperties}>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </article>
-          <Rule />
-        </div>
-      </Container>
     </section>
   );
 }
