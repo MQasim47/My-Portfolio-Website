@@ -97,6 +97,7 @@ export default function Navbar() {
         <Container className="flex h-16 items-center justify-between">
           <a
             href="#hero"
+            data-magnetic
             onClick={() => setMobileOpen(false)}
             className="flex min-h-[44px] items-center gap-3"
             aria-label="Muhammad Qasim — go to top"
