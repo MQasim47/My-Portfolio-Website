@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
-import { Section, SectionHeading, MonoLabel, Rule } from './ui';
+import { Container, SectionHeading, MonoLabel, Rule } from './ui';
+import WorkScroll from './WorkScroll';
 import SplitLines from './SplitLines';
 import ProjectBand, { type BandProject } from './ProjectBand';
 
@@ -75,57 +76,93 @@ const other = {
 
 export default function Projects() {
   return (
-    <Section id="projects" labelledBy="projects-title" className="pt-0">
-      <SectionHeading id="projects-title" eyebrow="Featured work">
-        Built &amp; shipped
-      </SectionHeading>
+    <section
+      id="projects"
+      aria-labelledby="projects-title"
+      data-register="paper"
+      className="pb-[var(--section-space)]"
+    >
+      <Container>
+        <SectionHeading id="projects-title" eyebrow="Featured work">
+          Built &amp; shipped
+        </SectionHeading>
+      </Container>
 
-      <div>
-        {featured.map((project, i) => (
-          <div key={project.id}>
-            <Rule />
-            <ProjectBand
-              project={project}
-              index={i + 1}
-              imageSide={i % 2 === 0 ? 'left' : 'right'}
-            />
+      {/* The work. Stacked by default; on wide screens with motion allowed it becomes a pinned
+          horizontal track (see "PINNED HORIZONTAL WORK" in globals.css). */}
+      <div className="work-stage" data-work-stage>
+        <div className="work-sticky">
+          <div className="work-track">
+            {featured.map((project, i) => (
+              <div key={project.id} className="work-panel" data-panel={i}>
+                <Container className="work-panel-inner">
+                  <Rule className="work-rule" />
+                  <ProjectBand
+                    project={project}
+                    index={i + 1}
+                    imageSide={i % 2 === 0 ? 'left' : 'right'}
+                  />
+                </Container>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      {/* Secondary work: one full-width hairline row. Its own reveal group. */}
-      <div className="mt-8" data-reveal-group>
-        <MonoLabel as="h3" className="rv-eyebrow mb-6 block text-accent">
-          More work
-        </MonoLabel>
-        <article>
-          <Rule />
-          <div className="grid gap-4 py-8 lg:grid-cols-12 lg:gap-8">
-            <div className="lg:col-span-3">
-              <MonoLabel as="p" className="rv-eyebrow mb-2 text-accent">
-                {other.label}
-              </MonoLabel>
-              <SplitLines
-                as="h4"
-                className="font-display text-display-m text-ink"
-                text={other.title}
-              />
-            </div>
-            <p className="text-body text-ink-soft lg:col-span-5">{other.description}</p>
-            <ul
-              className="flex flex-wrap gap-1.5 lg:col-span-4 lg:justify-end"
-              aria-label="Technologies"
-            >
-              {other.techStack.map((t, i) => (
-                <li key={t} className="tech-tag rv-tag" style={{ '--ti': i } as CSSProperties}>
-                  {t}
-                </li>
+          {/* progress rule + 01 / 02 / 03 markers (pinned mode only) */}
+          <div className="work-chrome" aria-hidden="false">
+            <div className="work-markers" role="group" aria-label="Jump to project">
+              {featured.map((project, i) => (
+                <button
+                  key={project.id}
+                  type="button"
+                  className="work-marker"
+                  data-i={i}
+                  aria-label={`Show ${project.title}`}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </button>
               ))}
-            </ul>
+            </div>
+            <div className="work-progress" aria-hidden="true" />
           </div>
-        </article>
-        <Rule />
+        </div>
+        <WorkScroll />
       </div>
-    </Section>
+
+      <Container>
+        {/* Secondary work: one full-width hairline row. Its own reveal group. */}
+        <div className="mt-8" data-reveal-group>
+          <MonoLabel as="h3" className="rv-eyebrow mb-6 block text-accent">
+            More work
+          </MonoLabel>
+          <article>
+            <Rule />
+            <div className="grid gap-4 py-8 lg:grid-cols-12 lg:gap-8">
+              <div className="lg:col-span-3">
+                <MonoLabel as="p" className="rv-eyebrow mb-2 text-accent">
+                  {other.label}
+                </MonoLabel>
+                <SplitLines
+                  as="h4"
+                  className="font-display text-display-m text-ink"
+                  text={other.title}
+                />
+              </div>
+              <p className="text-body text-ink-soft lg:col-span-5">{other.description}</p>
+              <ul
+                className="flex flex-wrap gap-1.5 lg:col-span-4 lg:justify-end"
+                aria-label="Technologies"
+              >
+                {other.techStack.map((t, i) => (
+                  <li key={t} className="tech-tag rv-tag" style={{ '--ti': i } as CSSProperties}>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+          <Rule />
+        </div>
+      </Container>
+    </section>
   );
 }

@@ -56,16 +56,15 @@ export default function ProjectBand({
       : 'aspect-[16/9]';
 
   const num = String(index).padStart(2, '0');
-  const imageFirst = imageSide === 'left';
 
   return (
     <>
     <article className="band" aria-labelledby={`band-${project.id}`}>
-      <div className="grid items-center gap-8 py-12 lg:min-h-[85svh] lg:grid-cols-12 lg:gap-14 lg:py-16">
+      <div className="band-grid" data-side={imageSide}>
         {/* ── media: screenshot in a paper-2 matte, 1px rule frame, mono caption ── */}
         <figure
           data-reveal
-          className={`m-0 lg:col-span-6 ${imageFirst ? 'lg:order-1' : 'lg:order-2'}`}
+          className="band-media m-0"
         >
           <div className="panel-frame bg-paper-2 p-3 sm:p-5">
             {images.length > 0 ? (
@@ -145,9 +144,7 @@ export default function ProjectBand({
         {/* ── copy ─────────────────────────────────────────────────────────── */}
         <div
           data-reveal-group
-          className={`lg:col-span-5 ${
-            imageFirst ? 'lg:order-2 lg:col-start-8' : 'lg:order-1 lg:col-start-1'
-          }`}
+          className="band-copy"
         >
           {/* eyebrow + number rise first, then the title lines rise out of their masks */}
           <MonoLabel as="p" className="rv-eyebrow mb-4 text-accent">
