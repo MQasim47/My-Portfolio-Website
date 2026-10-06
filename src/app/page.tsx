@@ -23,7 +23,7 @@ export default function HomePage() {
         <Contact />
       </main>
 
-      <footer className="relative z-[1] border-t border-rule py-10 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
+      <footer data-register="paper" className="relative z-[1] border-t border-rule py-10 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
         <Container className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-body text-ink">
             <span className="font-semibold">Muhammad Qasim</span>

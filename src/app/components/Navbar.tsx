@@ -90,7 +90,7 @@ export default function Navbar() {
     <>
       <header
         className={cn(
-          'fixed inset-x-0 top-0 z-50 bg-paper pt-[env(safe-area-inset-top)]',
+          'page-bg fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)]',
           scrolled ? 'border-b border-rule' : 'border-b border-transparent'
         )}
       >

@@ -61,6 +61,12 @@
   --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
   --rise: 12px;         /* the only vertical travel distance used (outside the hero scroll) */
 
+  /* section register crossfade: --bg-a → --bg-b by --t (written by RegisterFade) */
+  --bg-a: var(--paper);
+  --bg-b: var(--paper);
+  --t: 0;
+  --page-bg: color-mix(in srgb, var(--bg-b) calc(var(--t) * 100%), var(--bg-a));
+
   /* hero scroll progress, 0 → 1 (written once per frame by HeroScroll) */
   --p: 0;
 
@@ -143,12 +149,14 @@
 
 html {
   scroll-padding-top: 88px;
-  background-color: var(--paper);
+  /* The page background. At rest it is --paper; RegisterFade interpolates it between each
+     section's declared register (data-register) as the sections cross the viewport midpoint. */
+  background-color: var(--page-bg);
   -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background-color: var(--paper);
+  background-color: transparent; /* the page background lives on <html> so it can crossfade */
   color: var(--ink);
   font-family: var(--font-body), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 0.9375rem;
@@ -803,6 +811,19 @@ html:not(.js) .device-dots {
    paper-2 sections are a translucent tint so the glow shows through them too. */
 .section-band {
   background: var(--band-tint);
+}
+
+/* With JS and motion allowed, the page background itself crossfades between registers, so
+   sections are transparent. Without JS / under reduced motion the tint above applies. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .section-band {
+    background: transparent;
+  }
+}
+
+/* Fixed chrome that must match the page background as it crossfades */
+.page-bg {
+  background-color: var(--page-bg);
 }
 
 /* Nav: one underline slides between the items (transform only; width via scaleX) */

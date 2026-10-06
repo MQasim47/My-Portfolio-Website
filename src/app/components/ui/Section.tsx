@@ -24,6 +24,7 @@ export default function Section({
     <section
       id={id}
       aria-labelledby={labelledBy}
+      data-register={tone}
       className={cn(
         'py-[var(--section-space)]',
         // paper sections are transparent: the body paints the paper and the cursor glow

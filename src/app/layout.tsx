@@ -5,6 +5,7 @@ import RevealController from './components/RevealController';
 import ParallaxController from './components/ParallaxController';
 import CursorGlow from './components/CursorGlow';
 import Magnetic from './components/Magnetic';
+import RegisterFade from './components/RegisterFade';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Fonts — self-hosted, latin subset, variable. Only Bodoni Moda and Hanken
@@ -109,6 +110,7 @@ export default function RootLayout({
         <RevealController />
         <ParallaxController />
         <Magnetic />
+        <RegisterFade />
       </body>
     </html>
   );

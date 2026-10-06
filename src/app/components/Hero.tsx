@@ -28,7 +28,13 @@ export default function Hero() {
   });
 
   return (
-    <section id="hero" aria-label="Introduction" data-hero-stage className="hero-stage">
+    <section
+      id="hero"
+      aria-label="Introduction"
+      data-hero-stage
+      data-register="paper"
+      className="hero-stage"
+    >
       <HeroScroll />
       <NameWeight />
 

@@ -149,7 +149,7 @@ export default function Projects() {
               </div>
               <p className="text-body text-ink-soft lg:col-span-5">{other.description}</p>
               <ul
-                className="flex flex-wrap gap-1.5 lg:col-span-4 lg:justify-end"
+                className="flex flex-wrap content-start items-start gap-1.5 lg:col-span-4 lg:justify-end"
                 aria-label="Technologies"
               >
                 {other.techStack.map((t, i) => (
