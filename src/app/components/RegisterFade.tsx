@@ -13,7 +13,8 @@ const COLOR: Record<string, string> = {
  * data-register. As a section's top crosses the viewport midpoint the PAGE background
  * (--page-bg on <html>) interpolates from the previous register to the new one over a
  * zone of 40% of the viewport height, so the large fields blend like walking into a
- * different room instead of cutting. Hard 1px rules stay where they are.
+ * different room instead of cutting. Hard 1px rules stay where they are. The dark
+ * (terminal) register is the exception: a hard cut, painted by the section itself.
  *
  * One passive scroll listener, one rAF write per frame; only --t changes while crossing
  * (--bg-a / --bg-b change only when the pair changes). No timers. Not run under
@@ -24,7 +25,13 @@ export default function RegisterFade() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const secs = Array.from(document.querySelectorAll<HTMLElement>('[data-register]'));
     if (secs.length < 2) return;
-    const regs = secs.map((s) => s.dataset.register ?? 'paper');
+    // The terminal band paints its own opaque background with hard edges, so the page
+    // background never blends into or out of it: it reads as the neighbouring paper register.
+    const raw = secs.map((s) => s.dataset.register ?? 'paper');
+    const regs = raw.map((r, i) => {
+      for (let j = i; j >= 0; j--) if (raw[j] !== 'terminal') return raw[j];
+      return 'paper';
+    });
     const root = document.documentElement;
 
     let frame = 0;

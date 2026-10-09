@@ -5,6 +5,7 @@ import Projects from './components/Projects';
 import MoreWork from './components/MoreWork';
 import CurrentlyBuilding from './components/CurrentlyBuilding';
 import Skills from './components/Skills';
+import ShippingRecord from './components/ShippingRecord';
 import Experience from './components/Experience';
 import Contact from './components/Contact';
 import { Container, MonoLabel } from './components/ui';
@@ -21,6 +22,7 @@ export default function HomePage() {
         <MoreWork />
         <CurrentlyBuilding />
         <Skills />
+        <ShippingRecord />
         <Experience />
         <Contact />
       </main>

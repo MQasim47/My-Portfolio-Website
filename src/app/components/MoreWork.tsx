@@ -34,7 +34,7 @@ export default function MoreWork() {
 
   return (
     <Section id="more-work" labelledBy="more-work-title">
-      <SectionHeading id="more-work-title" eyebrow="Also shipped">
+      <SectionHeading id="more-work-title" eyebrow="Also shipped" className="!mb-0">
         More work
       </SectionHeading>
       <div className="border-b border-rule">
@@ -42,15 +42,15 @@ export default function MoreWork() {
           <article
             key={item.id}
             data-reveal-group
-            className="more-row grid items-center gap-8 border-t border-rule py-10 md:grid-cols-[minmax(0,220px)_1fr] md:gap-14"
+            className="more-row grid items-center gap-8 py-10 md:grid-cols-[minmax(0,220px)_1fr] md:gap-14"
           >
             {/* A single flat image: no device frame (the poster is portrait art, not a screenshot) */}
             <figure className="m-0 flex flex-col items-start">
               <button
                 type="button"
                 onClick={expand}
-                className="band-poster relative block w-full max-w-[220px] cursor-zoom-in overflow-hidden"
-                style={{ aspectRatio: '940 / 1672' }}
+                className="band-poster relative block w-full cursor-zoom-in overflow-hidden"
+                style={{ aspectRatio: '940 / 1672', maxWidth: 220 }}
                 aria-label={`Expand ${item.title} poster`}
               >
                 <Pic
