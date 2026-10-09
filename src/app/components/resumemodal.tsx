@@ -62,7 +62,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               <div>
                 <p className="text-body font-semibold text-ink">Muhammad Qasim — Resume</p>
                 <p className="font-mono text-mono-s uppercase text-ink-soft">
-                  Full-stack &amp; Mobile Engineer
+                  Full-stack &amp; Mobile Developer
                 </p>
               </div>
 

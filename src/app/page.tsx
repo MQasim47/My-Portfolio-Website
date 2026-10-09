@@ -70,6 +70,7 @@ const JSON_LD = {
       },
       alumniOf: {
         '@type': 'CollegeOrUniversity',
+        url: 'https://www.quest.edu.pk',
         name: 'Quaid-e-Awam University of Engineering, Science & Technology (QUEST), Nawabshah',
       },
       sameAs: [SOCIAL.github, SOCIAL.linkedin],
@@ -104,7 +105,7 @@ export default function HomePage() {
         <Container className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-body text-ink">
             <span className="font-semibold">Muhammad Qasim</span>
-            <span className="text-ink-soft"> · Full-stack &amp; Mobile Engineer</span>
+            <span className="text-ink-soft"> · Full-stack &amp; Mobile Developer</span>
           </p>
           <MonoLabel as="p" className="normal-case tracking-normal">
             © {new Date().getFullYear()} Muhammad Qasim

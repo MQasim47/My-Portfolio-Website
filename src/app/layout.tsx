@@ -95,10 +95,10 @@ const JS_FLAG = "document.documentElement.classList.add('js')";
 const THEME_INIT =
   "try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}";
 // Decides, before first paint, whether the opening card shows (see Splash.tsx): home page, no
-// hash, motion allowed, and not a crawler (so a render for indexing is never covered). It runs on every load. The timeout un-sticks the page even if React
+// hash, motion allowed. It runs on every load. The timeout un-sticks the page even if React
 // never hydrates.
 const SPLASH_INIT =
-  "try{var d=document.documentElement;if(location.pathname==='/'&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!/bot|crawl|spider|slurp|lighthouse|prerender/i.test(navigator.userAgent)){d.classList.add('splash-on');setTimeout(function(){d.classList.remove('splash-on')},3000)}}catch(e){}";
+  "try{var d=document.documentElement;if(location.pathname==='/'&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('splash-on');setTimeout(function(){d.classList.remove('splash-on')},3000)}}catch(e){}";
 
 export default function RootLayout({
   children,

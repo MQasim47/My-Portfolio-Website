@@ -3,7 +3,7 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3
 export const SITE_NAME = 'Muhammad Qasim';
 export const SITE_TITLE = 'Muhammad Qasim — Full-Stack & Mobile Developer';
 export const SITE_DESCRIPTION =
-  'Full-stack and Flutter mobile developer in Pakistan. I build web and mobile apps and ship them to production — Next.js, Node.js, Flutter, AWS.';
+  'Full-stack and Flutter mobile developer in Pakistan. I build web applications and mobile apps and ship them to production — Next.js, Node.js, Flutter, AWS.';
 export const THEME_COLOR = '#F6EAD4';
 export const SOCIAL = {
   github: 'https://github.com/MQasim47',

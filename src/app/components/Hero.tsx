@@ -66,7 +66,7 @@ export default function Hero() {
           {/* left: what I do (visible at rest) + meta (desktop) */}
           <div className="hero-left">
             <p className="hero-tagline">
-              Full-stack &amp; mobile engineer — web, Flutter, and the infrastructure behind them
+              Full-stack &amp; mobile developer — web, Flutter, and the infrastructure behind them
             </p>
             <div className="hero-meta-blocks">
               <p>
@@ -109,7 +109,7 @@ export default function Hero() {
             </span>
           </p>
           <p className="hero-sub">
-            Full-stack and mobile engineer. Web, Flutter apps and the infrastructure that keeps
+            Full-stack and mobile developer. Web, Flutter apps and the infrastructure that keeps
             them running — first commit to production.
           </p>
         </div>

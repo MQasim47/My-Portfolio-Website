@@ -106,7 +106,7 @@ export default function Navbar() {
             <span className="hidden flex-col sm:flex">
               <span className="text-body font-semibold leading-tight text-ink">Muhammad Qasim</span>
               <span className="font-mono text-mono-s uppercase text-ink-soft">
-                Full-stack &amp; Mobile Engineer
+                Full-stack &amp; Mobile Developer
               </span>
             </span>
           </a>

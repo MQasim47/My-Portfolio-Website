@@ -65,7 +65,7 @@ Replace `$SITE` with your URL.
    - `<link rel="canonical" href="$SITE/">`
    - `og:image` pointing at `$SITE/opengraph-image?...` (not localhost)
    - the `application/ld+json` block with `sameAs` for GitHub and LinkedIn
-3. **`$SITE/opengraph-image`** opens as a 1200×630 champagne card with your name and "Full-stack & mobile engineer".
+3. **`$SITE/opengraph-image`** opens as a 1200×630 champagne card with your name and "Full-Stack & Mobile Developer".
 4. **`$SITE/robots.txt`** shows `Sitemap: $SITE/sitemap.xml`, and **`$SITE/sitemap.xml`** lists `$SITE/`.
 5. **Link previews.** Paste the URL into WhatsApp and LinkedIn. Both cache aggressively, so if a preview is wrong or blank after you fixed something, force a refresh:
    - LinkedIn: <https://www.linkedin.com/post-inspector/>

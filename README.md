@@ -1,6 +1,6 @@
 # Muhammad Qasim — Portfolio
 
-The source of my personal portfolio: a single-page site for a full-stack and mobile (Flutter) engineer.
+The source of my personal portfolio: a single-page site for a full-stack and mobile (Flutter) developer.
 It shows the work I have shipped, the technology behind it, and how it gets into production.
 
 **Stack:** Next.js 15 (App Router) · React 19 · TypeScript · Tailwind CSS 3 · [`motion`](https://motion.dev) 12 · self-hosted variable fonts
