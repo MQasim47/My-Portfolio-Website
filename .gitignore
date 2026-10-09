@@ -33,4 +33,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.tsdesign-source/
+next-env.d.ts
+
+# full-size originals of the project images (see scripts/export-project-images.mjs)
+design-source/
