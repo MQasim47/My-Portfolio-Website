@@ -662,7 +662,7 @@ html:not(.js) .device-dots {
 /* ─────────────────────────────────────────────────────────────────────────────
    PINNED HORIZONTAL WORK
    BASE (mobile ≤860px, reduced motion, no JS): the panels simply stack vertically.
-   ENHANCEMENT (≥861px wide, ≥780px tall, html.js, no reduced-motion preference): a 320vh stage with a
+   ENHANCEMENT (≥861px wide, ≥800px tall, html.js, no reduced-motion preference): a 320vh stage with a
    sticky 100svh viewport; one --wp (0 → 1), written once per frame by WorkScroll, drives
    a track of three full-viewport panels sideways. The page itself scrolls at normal speed.
 ───────────────────────────────────────────────────────────────────────────── */
@@ -675,7 +675,7 @@ html:not(.js) .device-dots {
   display: none;
 }
 
-@media (min-width: 861px) and (min-height: 780px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 861px) and (min-height: 800px) and (prefers-reduced-motion: no-preference) {
   html.js .work-stage {
     height: 320vh;
   }

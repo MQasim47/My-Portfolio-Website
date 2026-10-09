@@ -21,7 +21,7 @@ const experiences = [
 
 export default function Experience() {
   return (
-    <Section id="experience" labelledBy="experience-title" className="pt-0">
+    <Section id="experience" labelledBy="experience-title">
       <SectionHeading id="experience-title" eyebrow="Career">
         Experience
       </SectionHeading>
