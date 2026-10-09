@@ -7,9 +7,9 @@
    tailwind.config.js reads these via var(). Components never contain a literal
    colour: every colour below this block is a var() or a color-mix() of tokens.
 
-   Theming: bare :root holds the LIGHT values. They are redefined for dark
-   (1) by the system preference, unless the user chose light explicitly, and
-   (2) by an explicit data-theme="dark". The toggle sets data-theme and persists it.
+   Theming: bare :root holds the LIGHT values, the default for every visitor regardless of
+   system preference. They are redefined for dark only by data-theme="dark", which the
+   toggle sets and persists.
 ───────────────────────────────────────────────────────────────────────────── */
 :root {
   color-scheme: light;
@@ -77,28 +77,7 @@
   --focus-color: var(--accent);
 }
 
-/* Dark, following the system — unless the user explicitly chose light */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-
-    --paper: var(--terminal);
-    --paper-2: var(--panel);
-    --ink: var(--paper-inv);
-    --ink-soft: var(--ink-soft-inv);
-    --rule-base: var(--panel-rule);
-    --accent: var(--signal);
-    --accent-deep: color-mix(in srgb, var(--signal) 78%, var(--paper-inv));
-    --accent-wash: color-mix(in srgb, var(--signal) 14%, var(--terminal));
-    --pass: var(--signal);
-    --warn: #D9962B;
-    --fail: #E0705F;
-    --glow-opacity: 0.2;
-    --band-tint: color-mix(in srgb, var(--paper-inv) 5%, transparent);
-  }
-}
-
-/* Dark, chosen explicitly */
+/* Dark: only ever from the toggle (data-theme="dark"); light is the default for everyone */
 :root[data-theme='dark'] {
   color-scheme: dark;
 
@@ -991,9 +970,9 @@ html {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   SPLASH — the once-per-session opening card. Shown only when <html> carries `splash-on`
+   SPLASH — the opening card, every page load. Shown only when <html> carries `splash-on`
    (set before paint by the inline script in layout.tsx). Uses the CURRENT theme's paper
-   and ink, so there is no light/dark flash. Total life ≈ 1.05s, then a 520ms lift.
+   and ink, so there is no light/dark flash. Total life ≈ 1.6s, then a 560ms lift.
 ───────────────────────────────────────────────────────────────────────────── */
 .splash {
   display: none;
@@ -1038,6 +1017,11 @@ html.splash-on .splash {
   gap: 14px;
 }
 
+/* eyebrow at 660ms (group released), heading lines at 660 + 120 = 780ms */
+.splash [data-reveal-group] .line-inner {
+  transition-delay: calc(120ms + var(--i, 0) * 60ms);
+}
+
 .splash-title {
   max-width: 18ch;
   text-wrap: balance;
@@ -1060,12 +1044,12 @@ html.splash-on .splash {
 .splash-run .byte-stroke {
   stroke-dasharray: 1 1;
   stroke-dashoffset: 1;
-  animation: byte-draw 420ms cubic-bezier(0.22, 1, 0.36, 1) 80ms forwards;
+  animation: byte-draw 520ms cubic-bezier(0.22, 1, 0.36, 1) 100ms forwards;
 }
 
 .splash-run .byte-eyes {
   opacity: 0;
-  animation: byte-fade 200ms ease-out 300ms forwards;
+  animation: byte-fade 200ms ease-out 380ms forwards;
 }
 
 .byte-eye {
@@ -1074,7 +1058,7 @@ html.splash-on .splash {
 }
 
 .splash-run .byte-eye {
-  animation: byte-blink 140ms ease-in-out 700ms 1;
+  animation: byte-blink 140ms ease-in-out 980ms 1;
 }
 
 .byte-dot {
@@ -1084,16 +1068,16 @@ html.splash-on .splash {
 }
 
 .splash-run .byte-dot {
-  animation: byte-light 300ms ease-out 380ms forwards;
+  animation: byte-light 300ms ease-out 470ms forwards;
 }
 
 .splash-run .splash-rule {
-  animation: splash-rule 520ms cubic-bezier(0.22, 1, 0.36, 1) 860ms forwards;
+  animation: splash-rule 420ms cubic-bezier(0.22, 1, 0.36, 1) 1150ms forwards;
 }
 
 .splash-leave {
   transform: translateY(-100%);
-  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .splash-dismiss {

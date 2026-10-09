@@ -6,17 +6,16 @@ import SplitLines from './SplitLines';
 import { MonoLabel } from './ui';
 
 /**
- * Opening card, once per session. Whether it shows is decided BEFORE first paint by a tiny
- * inline script in layout.tsx, which adds `splash-on` to <html> only when: the URL is "/" with no
- * hash, reduced motion is off, and sessionStorage is readable, writable and not yet flagged.
- * Without that class the card is display:none here, and this component removes itself, so
- * JS-off, reduced-motion, deep-link and repeat visits never see it. If storage throws, the
- * script fails to the fast path (no card).
+ * Opening card, shown on every load. Whether it shows is decided BEFORE first paint by a tiny
+ * inline script in layout.tsx, which adds `splash-on` to <html> only when the URL is "/" with
+ * no hash and reduced motion is off. Without that class the card is display:none here, and this
+ * component removes itself, so JS-off, reduced-motion and deep-link visits never see it.
  *
- * Timeline (ms): 80 Byte draws, 300 eyes, 380 dot pulse, 520 eyebrow, 600 heading lines,
- * 700 blink, 860 rule, 1050 card lifts (520ms). Most are CSS animations keyed off
- * `.splash-run`; the heading reuses the site's masked line reveal via data-reveal-pending.
- * Any input dismisses it with a 180ms fade; a hard 2s timeout removes it no matter what.
+ * Timeline (ms): 100 Byte draws (520), 380 eyes, 470 dot pulse, 660 eyebrow, 780 heading
+ * lines, 980 blink, 1150 rule (420), 1620 card lifts (560), 2180 done. Most are CSS animations
+ * keyed off `.splash-run`; the heading reuses the site's masked line reveal via
+ * data-reveal-pending. Any input dismisses it with a 180ms fade; a hard 3s timeout removes it
+ * no matter what.
  */
 export default function Splash() {
   const [active, setActive] = useState(true);
@@ -64,10 +63,10 @@ export default function Splash() {
 
     el.classList.add('splash-run');
     const group = el.querySelector('[data-reveal-group]');
-    timers.push(window.setTimeout(() => group?.removeAttribute('data-reveal-pending'), 520));
-    timers.push(window.setTimeout(() => el.classList.add('splash-leave'), 1050));
-    timers.push(window.setTimeout(finish, 1570));
-    timers.push(window.setTimeout(finish, 2000)); // hard stop: never trap the page
+    timers.push(window.setTimeout(() => group?.removeAttribute('data-reveal-pending'), 660));
+    timers.push(window.setTimeout(() => el.classList.add('splash-leave'), 1620));
+    timers.push(window.setTimeout(finish, 2180));
+    timers.push(window.setTimeout(finish, 3000)); // hard stop: never trap the page
 
     return () => {
       timers.forEach(clearTimeout);

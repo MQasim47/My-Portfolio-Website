@@ -64,7 +64,7 @@ Fill these in `src/app/components/ShippingRecord.tsx` (`since: ''`).
 - [ ] Unknot on GitHub Pages — month? (the first tagged release / first Pages deploy)
 
 ### Projects
-- [ ] **Synthect source URL.** Candidate: `https://github.com/MQasim47/Synnthect-an-offline-first-AI-powered-document-intelligence-app-` (note the double "n" in the repo name). The band's "Source code" link is disabled until you confirm. To enable: add `href` to the link in `Projects.tsx`.
+- [x] **Synthect source URL.** Confirmed and enabled: `https://github.com/MQasim47/Synnthect-an-offline-first-AI-powered-document-intelligence-app-` (double "n" is the real repo name).
 - [ ] **The Synthect poster says "SYNTHET"** (no "c") in its large headline and logo lockup. The band is named Synthect. Regenerate the poster with the right spelling before launch, or tell me to hide the poster and lead with the app screens.
 - [ ] **M Hassan Traders poster** has "Case Study" and "Portfolio Showcase" pills baked into the artwork, which look like buttons but are not. Fine to keep, or re-export without them.
 - [ ] **Synthect screenshots**: the source folder has image-1…6 and image-8 (no image-7). I used all seven in order. Intended?

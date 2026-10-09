@@ -82,8 +82,12 @@ const featured: BandProject[] = [
     images: shots(S, 7),
     status: 'shipped',
     statusLabel: 'Complete',
-    // Repo URL unconfirmed (QUESTIONS.md): the link stays disabled until it has an href.
-    links: [{ label: 'Source code' }],
+    links: [
+      {
+        label: 'Source code',
+        href: 'https://github.com/MQasim47/Synnthect-an-offline-first-AI-powered-document-intelligence-app-',
+      },
+    ],
   },
 ];
 

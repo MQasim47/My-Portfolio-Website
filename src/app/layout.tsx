@@ -82,15 +82,15 @@ export const metadata: Metadata = {
 const JS_FLAG = "document.documentElement.classList.add('js')";
 
 // Runs before first paint: applies a saved theme choice so there is no flash of the wrong
-// theme. With no saved choice the CSS follows the system preference. try/catch because
-// storage can be blocked.
+// theme. With no saved choice the site is light, whatever the system preference. try/catch
+// because storage can be blocked.
 const THEME_INIT =
   "try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}";
 // Decides, before first paint, whether the opening card shows (see Splash.tsx): home page, no
-// hash, motion allowed, and sessionStorage usable and not yet flagged. Any failure means no
-// card. The timeout un-sticks the page even if React never hydrates.
+// hash, motion allowed. It runs on every load. The timeout un-sticks the page even if React
+// never hydrates.
 const SPLASH_INIT =
-  "try{var d=document.documentElement;if(location.pathname==='/'&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!sessionStorage.getItem('splash')){sessionStorage.setItem('splash','1');d.classList.add('splash-on');setTimeout(function(){d.classList.remove('splash-on')},3500)}}catch(e){}";
+  "try{var d=document.documentElement;if(location.pathname==='/'&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('splash-on');setTimeout(function(){d.classList.remove('splash-on')},3000)}}catch(e){}";
 
 export default function RootLayout({
   children,
