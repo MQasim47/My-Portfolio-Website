@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { Pic } from './ui';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
@@ -61,13 +61,11 @@ function LightboxView({
         className="relative flex max-h-[85vh] max-w-[92vw] items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <Image
+        <Pic
           key={idx}
           src={images[idx]}
           alt={`${title} screenshot ${idx + 1}`}
-          width={1600}
-          height={1000}
-          sizes="92vw"
+          eager
           className="h-auto max-h-[82vh] w-auto max-w-full rounded object-contain shadow-overlay"
         />
       </div>

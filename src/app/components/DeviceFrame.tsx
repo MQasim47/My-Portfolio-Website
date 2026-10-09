@@ -8,8 +8,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
-import Image from 'next/image';
-import { MonoLabel } from './ui';
+import { MonoLabel, Pic } from './ui';
 
 interface DeviceFrameProps {
   title: string;
@@ -251,13 +250,11 @@ export default function DeviceFrame({ title, images, index, onIndexChange }: Dev
           <div ref={trackRef} className="device-track">
             {images.map((src, i) => (
               <div key={src} className="device-slide">
-                <Image
+                <Pic
                   src={src}
                   alt={`${title} screen ${i + 1} of ${n}`}
-                  fill
-                  sizes="260px"
-                  className="object-cover"
-                  draggable={false}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  eager={i === 0}
                 />
               </div>
             ))}

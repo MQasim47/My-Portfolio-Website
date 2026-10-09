@@ -8,3 +8,4 @@ export type { Status } from './StatusDot';
 export { default as TerminalBlock } from './TerminalBlock';
 export { default as Reveal } from './Reveal';
 export { default as Prose } from './Prose';
+export { default as Pic } from './Pic';

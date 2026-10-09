@@ -6,7 +6,7 @@ import { useEffect } from 'react';
  * Drives the pinned horizontal work track. One passive scroll listener; --wp (0 → 1) is written
  * on the stage once per animation frame, only when it changed. No library, no timers, and
  * crucially no wheel/touch handling at all: the page scrolls at its normal speed, this only
- * READS the scroll position. Inactive (and --wp removed) at ≤860px and under reduced motion,
+ * READS the scroll position. Inactive (and --wp removed) at ≤860px wide, <780px tall and under reduced motion,
  * where the CSS stacks the panels instead.
  */
 export default function WorkScroll() {
@@ -16,7 +16,9 @@ export default function WorkScroll() {
     const markers = Array.from(stage.querySelectorAll<HTMLButtonElement>('.work-marker'));
     const mqRm = window.matchMedia('(prefers-reduced-motion: reduce)');
     const mqNarrow = window.matchMedia('(max-width: 860px)');
-    const enabled = () => !mqRm.matches && !mqNarrow.matches;
+    // short windows can't fit a whole band, so they get the stacked layout too (see globals.css)
+    const mqShort = window.matchMedia('(max-height: 779px)');
+    const enabled = () => !mqRm.matches && !mqNarrow.matches && !mqShort.matches;
 
     let frame = 0;
     let last = -1;
@@ -72,12 +74,14 @@ export default function WorkScroll() {
     window.addEventListener('resize', onScroll);
     mqRm.addEventListener('change', onScroll);
     mqNarrow.addEventListener('change', onScroll);
+    mqShort.addEventListener('change', onScroll);
     stage.addEventListener('click', onClick);
     return () => {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
       mqRm.removeEventListener('change', onScroll);
       mqNarrow.removeEventListener('change', onScroll);
+      mqShort.removeEventListener('change', onScroll);
       stage.removeEventListener('click', onClick);
       if (frame) cancelAnimationFrame(frame);
     };

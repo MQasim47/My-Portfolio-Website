@@ -457,13 +457,113 @@ a {
   }
 }
 
+/* Bands with technical notes give the copy more room: 5 / 7 instead of 6 / 5 */
+@media (min-width: 1100px) {
+  .band-grid[data-wide='true'] .band-media {
+    grid-column: span 5;
+  }
+
+  .band-grid[data-wide='true'][data-side='left'] .band-copy {
+    grid-column: 7 / span 6;
+  }
+
+  .band-grid[data-wide='true'][data-side='right'] .band-copy {
+    grid-column: 1 / span 7;
+  }
+
+  .band-grid[data-wide='true'][data-side='right'] .band-media {
+    grid-column: 8 / span 5;
+  }
+}
+
+.band-desc {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.band-grid[data-wide='true'] .band-title {
+  font-size: clamp(2rem, 4vw, 2.875rem);
+}
+
+.band-notes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+.band-notes li {
+  position: relative;
+  padding: 5px 0 5px 18px;
+  border-top: var(--hairline) solid var(--rule);
+}
+
+.band-notes li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.95em;
+  width: 8px;
+  height: var(--hairline);
+  background: var(--accent);
+}
+
+/* Poster / app-screens switch (portrait projects). Both views are shown without JS. */
+.band-view-btn {
+  min-height: 36px;
+  padding: 0 14px;
+  border: var(--hairline) solid var(--rule);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: color var(--dur-quick) var(--ease-out), border-color var(--dur-quick) var(--ease-out);
+}
+
+.band-view-btn + .band-view-btn {
+  margin-left: -1px;
+}
+
+.band-view-btn[aria-pressed='true'] {
+  color: var(--accent);
+  border-color: var(--accent);
+  position: relative;
+}
+
+html:not(.js) .band-views {
+  display: none;
+}
+
+html.js .band-view[data-active='false'] {
+  display: none;
+}
+
+.band-view + .band-view {
+  margin-top: 16px;
+}
+
+html.js .band-view + .band-view {
+  margin-top: 0;
+}
+
+/* The flat hero image: a 1px frame that hugs it (aspect set inline), never cropped */
+.band-poster {
+  max-width: 100%;
+  border: var(--hairline) solid var(--rule);
+  border-radius: 10px;
+  background: var(--paper);
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    DEVICE FRAME — a phone bezel around draggable app screenshots.
    BASE (no JS): the screen is a native scroll-snap strip you can swipe.
    ENHANCED (html.js): DeviceFrame drives a transform track with drag, momentum and snap.
 ───────────────────────────────────────────────────────────────────────────── */
 .device {
-  --dh: min(54svh, 540px); /* screen height */
+  --dh: min(42svh, 500px); /* screen height */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -562,7 +662,7 @@ html:not(.js) .device-dots {
 /* ─────────────────────────────────────────────────────────────────────────────
    PINNED HORIZONTAL WORK
    BASE (mobile ≤860px, reduced motion, no JS): the panels simply stack vertically.
-   ENHANCEMENT (≥861px, html.js, no reduced-motion preference): a 320vh stage with a
+   ENHANCEMENT (≥861px wide, ≥780px tall, html.js, no reduced-motion preference): a 320vh stage with a
    sticky 100svh viewport; one --wp (0 → 1), written once per frame by WorkScroll, drives
    a track of three full-viewport panels sideways. The page itself scrolls at normal speed.
 ───────────────────────────────────────────────────────────────────────────── */
@@ -575,7 +675,7 @@ html:not(.js) .device-dots {
   display: none;
 }
 
-@media (min-width: 861px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 861px) and (min-height: 780px) and (prefers-reduced-motion: no-preference) {
   html.js .work-stage {
     height: 320vh;
   }
@@ -601,7 +701,7 @@ html:not(.js) .device-dots {
     height: 100svh;
     display: grid;
     place-items: center;
-    padding: 72px 0 104px;
+    padding: 68px 0 88px;
   }
 
   html.js .work-panel-inner {
