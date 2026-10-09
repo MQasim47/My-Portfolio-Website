@@ -53,3 +53,24 @@ For each project: platform, delivery method, environment (Production / Staging /
 ## Phase 3b (fixes) additions
 - [x] New portrait (504x991) received and exported (AVIF 33 KB / WebP 52 KB). The figure now bleeds off the bottom edge at every breakpoint, so the floating cut edge is gone.
 - [ ] **Dark-theme colours I had to invent** (the brief had none): `--warn #D9962B` and `--fail #E0705F` (lifted for contrast on dark). `--accent-deep` and `--accent-wash` in dark are derived with color-mix from `--signal`, `--paper-inv` and `--terminal`.
+
+## Phase 6 additions
+
+### Shipping record — "Since" months (the column renders, cells are empty)
+Fill these in `src/app/components/ShippingRecord.tsx` (`since: ''`).
+- [ ] Flacron GameZone on Azure — month it went live?
+- [ ] Flacron GameZone on AWS ECS — month?
+- [ ] Flacron Enterprises on Azure App Service — month? (which Flacron Enterprises site is this? the row says only "Flacron Enterprises")
+- [ ] Unknot on GitHub Pages — month? (the first tagged release / first Pages deploy)
+
+### Projects
+- [ ] **Synthect source URL.** Candidate: `https://github.com/MQasim47/Synnthect-an-offline-first-AI-powered-document-intelligence-app-` (note the double "n" in the repo name). The band's "Source code" link is disabled until you confirm. To enable: add `href` to the link in `Projects.tsx`.
+- [ ] **The Synthect poster says "SYNTHET"** (no "c") in its large headline and logo lockup. The band is named Synthect. Regenerate the poster with the right spelling before launch, or tell me to hide the poster and lead with the app screens.
+- [ ] **M Hassan Traders poster** has "Case Study" and "Portfolio Showcase" pills baked into the artwork, which look like buttons but are not. Fine to keep, or re-export without them.
+- [ ] **Synthect screenshots**: the source folder has image-1…6 and image-8 (no image-7). I used all seven in order. Intended?
+- [ ] **GameZone mobile app**: the description now says only that you built it. Link or store listing to show?
+- [ ] **Flacron GameZone hosting** is now shown as BOTH Azure (CI/CD on merge) and AWS ECS (Docker, own deployment), per your list. The earlier question (Azure vs Render) is superseded; confirm that both are live in production.
+
+### Launch
+- [ ] **Production URL** for `NEXT_PUBLIC_SITE_URL` (see DEPLOY.md). Until it is set, OG/canonical/sitemap point at `http://localhost:3000`.
+- [ ] **Favicon** is `public/favicon.svg` (MQ mark). There is no `.ico` or Apple touch icon; add PNGs if you want the iOS home-screen icon.
