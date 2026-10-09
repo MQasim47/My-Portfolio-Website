@@ -6,7 +6,7 @@ import ParallaxController from './components/ParallaxController';
 import CursorGlow from './components/CursorGlow';
 import Magnetic from './components/Magnetic';
 import RegisterFade from './components/RegisterFade';
-import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from '@/lib/site';
+import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, THEME_COLOR } from '@/lib/site';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Fonts — self-hosted, latin subset, variable. Only Bodoni Moda and Hanken
@@ -45,6 +45,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
+  themeColor: THEME_COLOR,
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -59,7 +60,14 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   authors: [{ name: 'Muhammad Qasim' }],
   alternates: { canonical: '/' },
-  icons: { icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }] },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
+  manifest: '/manifest.webmanifest',
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
@@ -87,10 +95,10 @@ const JS_FLAG = "document.documentElement.classList.add('js')";
 const THEME_INIT =
   "try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}";
 // Decides, before first paint, whether the opening card shows (see Splash.tsx): home page, no
-// hash, motion allowed. It runs on every load. The timeout un-sticks the page even if React
+// hash, motion allowed, and not a crawler (so a render for indexing is never covered). It runs on every load. The timeout un-sticks the page even if React
 // never hydrates.
 const SPLASH_INIT =
-  "try{var d=document.documentElement;if(location.pathname==='/'&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('splash-on');setTimeout(function(){d.classList.remove('splash-on')},3000)}}catch(e){}";
+  "try{var d=document.documentElement;if(location.pathname==='/'&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!/bot|crawl|spider|slurp|lighthouse|prerender/i.test(navigator.userAgent)){d.classList.add('splash-on');setTimeout(function(){d.classList.remove('splash-on')},3000)}}catch(e){}";
 
 export default function RootLayout({
   children,

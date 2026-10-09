@@ -9,6 +9,8 @@ import SplitLines from './SplitLines';
 const Lightbox = dynamic(() => import('./Lightbox'));
 
 const POSTER = '/images/projects/m-hassan-traders/poster';
+const POSTER_ALT =
+  'Poster for the M Hassan Traders app: two phones showing the customer dashboard and the reports screen, with the headline Smart Trading for a Stronger Tomorrow';
 
 // Full-width hairline rows. One entry for now.
 const ITEMS = [
@@ -55,7 +57,7 @@ export default function MoreWork() {
               >
                 <Pic
                   src={item.poster}
-                  alt={`${item.title} app poster`}
+                  alt={POSTER_ALT}
                   className="absolute inset-0 h-full w-full object-contain"
                 />
               </button>
@@ -96,6 +98,7 @@ export default function MoreWork() {
         <Lightbox
           open={open}
           images={[POSTER]}
+          alts={[POSTER_ALT]}
           startIndex={0}
           title="M Hassan Traders"
           onClose={() => setOpen(false)}

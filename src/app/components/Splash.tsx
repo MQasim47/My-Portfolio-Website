@@ -10,6 +10,8 @@ import { MonoLabel } from './ui';
  * inline script in layout.tsx, which adds `splash-on` to <html> only when the URL is "/" with
  * no hash and reduced motion is off. Without that class the card is display:none here, and this
  * component removes itself, so JS-off, reduced-motion and deep-link visits never see it.
+ * The server renders only the empty cover (no text, no Byte): the card's content is mounted on
+ * the client, so none of it is in the HTML a crawler fetches.
  *
  * Timeline (ms): 100 Byte draws (520), 380 eyes, 470 dot pulse, 660 eyebrow, 780 heading
  * lines, 980 blink, 1150 rule (420), 1620 card lifts (560), 2180 done. Most are CSS animations
@@ -18,16 +20,19 @@ import { MonoLabel } from './ui';
  * no matter what.
  */
 export default function Splash() {
-  const [active, setActive] = useState(true);
+  // 'idle' = server render and first client render (empty cover only)
+  const [phase, setPhase] = useState<'idle' | 'on' | 'off'>('idle');
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setPhase(document.documentElement.classList.contains('splash-on') ? 'on' : 'off');
+  }, []);
+
+  useEffect(() => {
+    if (phase !== 'on') return;
     const html = document.documentElement;
     const el = root.current;
-    if (!html.classList.contains('splash-on') || !el) {
-      setActive(false);
-      return;
-    }
+    if (!el) return;
 
     const timers: number[] = [];
     let done = false;
@@ -47,7 +52,7 @@ export default function Splash() {
       timers.forEach(clearTimeout);
       detach();
       html.classList.remove('splash-on');
-      setActive(false);
+      setPhase('off');
     };
     function dismiss() {
       if (done) return;
@@ -72,26 +77,28 @@ export default function Splash() {
       timers.forEach(clearTimeout);
       detach();
     };
-  }, []);
+  }, [phase]);
 
-  if (!active) return null;
+  if (phase === 'off') return null;
 
   return (
     <div ref={root} className="splash" aria-hidden="true">
-      <div className="splash-content">
-        <Byte className="byte" />
-        <div data-reveal-group data-reveal-pending className="splash-copy">
-          <MonoLabel as="p" className="rv-eyebrow text-accent">
-            Welcome to
-          </MonoLabel>
-          <SplitLines
-            as="p"
-            className="splash-title font-display text-display-m text-ink"
-            text="Qasim's development environment"
-          />
+      {phase === 'on' && (
+        <div className="splash-content">
+          <Byte className="byte" />
+          <div data-reveal-group data-reveal-pending className="splash-copy">
+            <MonoLabel as="p" className="rv-eyebrow text-accent">
+              Welcome to
+            </MonoLabel>
+            <SplitLines
+              as="p"
+              className="splash-title font-display text-display-m text-ink"
+              text="Qasim's development environment"
+            />
+          </div>
+          <div className="splash-rule" />
         </div>
-        <div className="splash-rule" />
-      </div>
+      )}
     </div>
   );
 }

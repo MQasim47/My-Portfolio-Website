@@ -6,7 +6,7 @@ import { ImageResponse } from 'next/og';
 // Same typography as the site (Bodoni Moda for the name, JetBrains Mono for the label) on
 // the champagne paper. Fonts are static instances of the site's variable fonts, in
 // src/fonts/og/ (the renderer cannot read WOFF2). Rendered once at build time (reads the fonts from disk).
-export const alt = 'Muhammad Qasim: Full-stack & mobile engineer';
+export const alt = 'Muhammad Qasim: Full-Stack & Mobile Developer';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -69,7 +69,7 @@ export default async function OpengraphImage() {
                 color: INK_SOFT,
               }}
             >
-              Full-stack &amp; mobile engineer
+              Full-Stack &amp; Mobile Developer
             </div>
           </div>
         </div>

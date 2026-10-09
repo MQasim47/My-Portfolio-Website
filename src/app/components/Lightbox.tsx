@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 interface LightboxProps {
   open: boolean;
   images: string[];
+  alts?: string[];
   startIndex: number;
   title: string;
   onClose: () => void;
@@ -16,6 +17,7 @@ interface LightboxProps {
 // State machine ported unchanged: Escape closes, arrows step, body scroll is locked.
 function LightboxView({
   images,
+  alts,
   startIndex,
   title,
   onClose,
@@ -64,7 +66,7 @@ function LightboxView({
         <Pic
           key={idx}
           src={images[idx]}
-          alt={`${title} screenshot ${idx + 1}`}
+          alt={alts?.[idx] ?? `${title} screenshot ${idx + 1}`}
           eager
           className="h-auto max-h-[82vh] w-auto max-w-full rounded object-contain shadow-overlay"
         />

@@ -13,6 +13,8 @@ import { MonoLabel, Pic } from './ui';
 interface DeviceFrameProps {
   title: string;
   images: string[];
+  /** Alt text per screen, same order as `images` */
+  alts?: string[];
   /** Controlled: the visible screen */
   index: number;
   onIndexChange: (i: number) => void;
@@ -35,7 +37,7 @@ const RUBBER = 0.35; // resistance past the first/last screen
  * Only `transform` is written, and only once per animation frame; the rAF loop runs only
  * while a drag or a snap is in progress. Without JS the screen is a native scroll-snap strip.
  */
-export default function DeviceFrame({ title, images, index, onIndexChange }: DeviceFrameProps) {
+export default function DeviceFrame({ title, images, alts, index, onIndexChange }: DeviceFrameProps) {
   const screenRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const s = useRef({
@@ -252,7 +254,7 @@ export default function DeviceFrame({ title, images, index, onIndexChange }: Dev
               <div key={src} className="device-slide">
                 <Pic
                   src={src}
-                  alt={`${title} screen ${i + 1} of ${n}`}
+                  alt={alts?.[i] ?? `${title} screen ${i + 1} of ${n}`}
                   className="absolute inset-0 h-full w-full object-cover"
                   eager={i === 0}
                 />

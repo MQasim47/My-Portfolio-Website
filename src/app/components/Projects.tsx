@@ -33,6 +33,16 @@ const featured: BandProject[] = [
       `${G}/gamezone7`,
       `${G}/gamezone-poster2`,
     ],
+    alts: [
+      'Flacron GameZone promo poster, "Your ultimate football hub", showing the platform on a desktop, a tablet and a phone',
+      'Flacron GameZone home page: a "Football Universe" hero with Watch Live and Browse Leagues buttons over a stadium photo',
+      'Flacron GameZone upcoming fixtures: a grid of match cards with team crests and kick-off times',
+      'Flacron GameZone highlights page with video cards of recent match goals',
+      'Flacron GameZone matches page: a league filter bar and a table of fixtures with scores',
+      'Flacron GameZone teams page, "Compete with the Best", with platform stats and a row of club crests',
+      'Flacron GameZone pricing page, "Choose Your Plan", comparing the Free tier with the Premium tier at $47.99',
+      'Flacron GameZone promo poster: the logo and "Your Ultimate Football Hub" beside the platform on a laptop and phones, with a live match graphic',
+    ],
   },
   {
     id: 'unknot',
@@ -51,8 +61,19 @@ const featured: BandProject[] = [
     techStack: ['Flutter', 'Dart', 'Riverpod', 'go_router', 'CustomPainter', 'GitHub Actions'],
     imageMode: 'portrait',
     poster: `${U}/banner`,
+    posterAlt:
+      'Unknot poster: the title "Learn. Tinker. Build." beside the orange Byte mascot and three phone screens of the app',
     posterAspect: '2 / 3',
     images: shots(U, 7),
+    alts: [
+      'Unknot launch screen: the Byte mascot above the Unknot title and tagline',
+      'Unknot home screen with a spotlight lesson card, "How DNS works", showing an animated diagram',
+      'Unknot concept library grouped by track: Web, Git & DevOps, Programming, APIs & Data and Security',
+      'Unknot lesson "Load balancers": a diagram of requests spreading across servers, with step controls',
+      'Unknot lesson "Docker vs virtual machines": a diagram comparing how each runs on a host computer',
+      'Unknot cron explainer tool: schedule presets and a plain-English reading of a cron expression',
+      'Unknot logic game "Order the pipeline": drag the steps of a login flow into the right order',
+    ],
     status: 'live',
     statusLabel: 'Live',
     links: [
@@ -78,8 +99,19 @@ const featured: BandProject[] = [
     techStack: ['Flutter', 'Dart', 'Offline NLP', 'Document parsing'],
     imageMode: 'portrait',
     poster: `${S}/poster`,
+    posterAlt:
+      'Synthect poster: an "Intelligent Document Analysis" headline beside two phones showing the app on a dark background',
     posterAspect: '941 / 1672',
     images: shots(S, 7),
+    alts: [
+      'Synthect launch screen: the app icon and name on a dark background',
+      'Synthect Upload Document screen with a tap-to-browse area and the upload history',
+      'Synthect home screen: an Analyze a Document card and a list of recent documents',
+      'Synthect Generate Reply screen: reply types and a choice of tone, from professional to friendly',
+      'Synthect About screen listing 100% offline processing and how the analysis works',
+      'Synthect Reply Email screen showing a drafted professional reply to an email',
+      'Synthect Analysis Complete screen: key topics and buttons for summaries, insights and replies',
+    ],
     status: 'shipped',
     statusLabel: 'Complete',
     links: [

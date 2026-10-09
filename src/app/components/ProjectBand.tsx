@@ -33,6 +33,10 @@ export interface BandProject {
   imageMode: 'portrait' | 'landscape';
   /** Image paths without extension (.avif and .webp sit beside them) */
   images: string[];
+  /** Alt text for each entry in `images`, same order: describes what the image shows */
+  alts?: string[];
+  /** Alt text for `poster` */
+  posterAlt?: string;
   /** Flat hero image shown first (no device frame); portrait projects pair it with `images` */
   poster?: string;
   /** CSS aspect-ratio of the poster so the frame hugs it, e.g. "2 / 3" (default 9 / 16) */
@@ -84,7 +88,7 @@ export default function ProjectBand({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [everOpened, setEverOpened] = useState(false);
 
-  const { images, poster } = project;
+  const { images, poster, alts, posterAlt } = project;
   const portrait = project.imageMode === 'portrait';
   // portrait + poster: the flat hero first, the phone second
   const hasScreens = portrait && images.length > 0;
@@ -94,6 +98,7 @@ export default function ProjectBand({
 
   // The lightbox shows whatever is on screen
   const lightboxImages = showPoster && poster ? [poster] : images;
+  const lightboxAlts = showPoster ? [posterAlt ?? `${project.title} overview`] : alts;
   const lightboxStart = showPoster ? 0 : current;
 
   const go = (n: number) => setCurrent((n + images.length) % images.length);
@@ -151,7 +156,7 @@ export default function ProjectBand({
                 >
                   <Pic
                     src={poster}
-                    alt={`${project.title} overview`}
+                    alt={posterAlt ?? `${project.title} overview`}
                     className="absolute inset-0 h-full w-full object-contain"
                     eager={index === 1}
                   />
@@ -165,6 +170,7 @@ export default function ProjectBand({
                 <DeviceFrame
                   title={project.title}
                   images={images}
+                  alts={alts}
                   index={current}
                   onIndexChange={setCurrent}
                 />
@@ -183,7 +189,7 @@ export default function ProjectBand({
                     <Pic
                       key={images[current]}
                       src={images[current]}
-                      alt={`${project.title} screenshot ${current + 1}`}
+                      alt={alts?.[current] ?? `${project.title} screenshot ${current + 1}`}
                       className="absolute inset-0 h-full w-full object-contain py-6"
                       eager={current === 0}
                     />
@@ -297,6 +303,7 @@ export default function ProjectBand({
           key={showPoster ? 'poster' : 'screens'}
           open={lightboxOpen}
           images={lightboxImages}
+          alts={lightboxAlts}
           startIndex={lightboxStart}
           title={project.title}
           onClose={() => setLightboxOpen(false)}

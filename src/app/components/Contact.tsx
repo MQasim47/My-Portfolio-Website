@@ -3,6 +3,7 @@
 import { useState, type SyntheticEvent } from 'react';
 import { Download, Eye, Mail, Copy, Check } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { SOCIAL } from '@/lib/site';
 import { Section, SectionHeading, MonoLabel, StatusDot } from './ui';
 
 // Loaded on first open — keeps the modal out of the first-load bundle.
@@ -156,6 +157,27 @@ export default function Contact() {
                   )}
                 </button>
               </div>
+            </div>
+
+            <div className="card flex flex-wrap items-center gap-x-6 gap-y-1 px-5 py-3">
+              <MonoLabel as="p">Elsewhere</MonoLabel>
+              {/* Followed links to the profiles in the Person's sameAs (no nofollow) */}
+              <a
+                href={SOCIAL.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link inline-flex min-h-[44px] items-center font-mono text-mono-m"
+              >
+                GitHub
+              </a>
+              <a
+                href={SOCIAL.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link inline-flex min-h-[44px] items-center font-mono text-mono-m"
+              >
+                LinkedIn
+              </a>
             </div>
 
             <div className="card flex flex-wrap items-center justify-between gap-4 p-5">

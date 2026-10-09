@@ -10,16 +10,71 @@ import ShippingRecord from './components/ShippingRecord';
 import Experience from './components/Experience';
 import Contact from './components/Contact';
 import { Container, MonoLabel } from './components/ui';
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SOCIAL } from '@/lib/site';
+import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, SOCIAL } from '@/lib/site';
 
-const PERSON_JSON_LD = {
+const PERSON_ID = `${SITE_URL}/#person`;
+const SITE_ID = `${SITE_URL}/#website`;
+
+// One graph: the WebSite, the ProfilePage about me, and the Person it is about.
+const JSON_LD = {
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: SITE_NAME,
-  url: SITE_URL,
-  jobTitle: 'Full-stack & mobile engineer',
-  description: SITE_DESCRIPTION,
-  sameAs: [SOCIAL.github, SOCIAL.linkedin],
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': SITE_ID,
+      url: `${SITE_URL}/`,
+      name: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      inLanguage: 'en',
+      publisher: { '@id': PERSON_ID },
+    },
+    {
+      '@type': 'ProfilePage',
+      '@id': `${SITE_URL}/#profile`,
+      url: `${SITE_URL}/`,
+      name: SITE_TITLE,
+      description: SITE_DESCRIPTION,
+      inLanguage: 'en',
+      isPartOf: { '@id': SITE_ID },
+      mainEntity: { '@id': PERSON_ID },
+    },
+    {
+      '@type': 'Person',
+      '@id': PERSON_ID,
+      name: SITE_NAME,
+      url: `${SITE_URL}/`,
+      image: `${SITE_URL}/images/hero-portrait.png`,
+      jobTitle: 'Full-Stack & Mobile Developer',
+      description: SITE_DESCRIPTION,
+      knowsAbout: [
+        'Next.js',
+        'React',
+        'TypeScript',
+        'Tailwind CSS',
+        'Node.js',
+        'Express',
+        'REST APIs',
+        'Flutter',
+        'Dart',
+        'Firebase',
+        'PostgreSQL',
+        'AWS',
+        'Microsoft Azure',
+        'Docker',
+        'GitHub Actions',
+      ],
+      worksFor: {
+        '@type': 'Organization',
+        name: 'Flacron Enterprises LLC',
+        url: 'https://flacronenterprises.com/',
+      },
+      alumniOf: {
+        '@type': 'CollegeOrUniversity',
+        name: 'Quaid-e-Awam University of Engineering, Science & Technology (QUEST), Nawabshah',
+      },
+      sameAs: [SOCIAL.github, SOCIAL.linkedin],
+    },
+  ],
 };
 
 export default function HomePage() {
@@ -28,7 +83,7 @@ export default function HomePage() {
       <script
         type="application/ld+json"
         // '<' is escaped so the JSON can never close the script tag
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSON_LD).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD).replace(/</g, '\\u003c') }}
       />
       <Splash />
       <Navbar />
