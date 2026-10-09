@@ -86,6 +86,12 @@ const JS_FLAG = "document.documentElement.classList.add('js')";
 // storage can be blocked.
 const THEME_INIT =
   "try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}";
+// Decides, before first paint, whether the opening card shows (see Splash.tsx): home page, no
+// hash, motion allowed, and sessionStorage usable and not yet flagged. Any failure means no
+// card. The timeout un-sticks the page even if React never hydrates.
+const SPLASH_INIT =
+  "try{var d=document.documentElement;if(location.pathname==='/'&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!sessionStorage.getItem('splash')){sessionStorage.setItem('splash','1');d.classList.add('splash-on');setTimeout(function(){d.classList.remove('splash-on')},3500)}}catch(e){}";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -98,7 +104,7 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT + ';' + JS_FLAG }} />
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT + ';' + JS_FLAG + ';' + SPLASH_INIT }} />
       </head>
       <body>
         <a href="#main" className="skip-link">

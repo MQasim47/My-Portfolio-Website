@@ -989,3 +989,160 @@ html {
     transform: none !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SPLASH — the once-per-session opening card. Shown only when <html> carries `splash-on`
+   (set before paint by the inline script in layout.tsx). Uses the CURRENT theme's paper
+   and ink, so there is no light/dark flash. Total life ≈ 1.05s, then a 520ms lift.
+───────────────────────────────────────────────────────────────────────────── */
+.splash {
+  display: none;
+}
+
+html.splash-on .splash {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* hidden until the sequence starts, so nothing shows half-hydrated */
+.splash-content {
+  visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.splash-run .splash-content {
+  visibility: visible;
+}
+
+.byte {
+  height: 96px;
+  width: auto;
+  margin-bottom: 40px;
+  overflow: visible;
+}
+
+.splash-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.splash-title {
+  max-width: 18ch;
+  text-wrap: balance;
+}
+
+.splash-rule {
+  width: 120px;
+  height: var(--hairline);
+  margin-top: 32px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* Byte: strokes at 65% ink (one group opacity, so joins don't double up) */
+.byte-ink {
+  opacity: 0.65;
+}
+
+.splash-run .byte-stroke {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  animation: byte-draw 420ms cubic-bezier(0.22, 1, 0.36, 1) 80ms forwards;
+}
+
+.splash-run .byte-eyes {
+  opacity: 0;
+  animation: byte-fade 200ms ease-out 300ms forwards;
+}
+
+.byte-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.splash-run .byte-eye {
+  animation: byte-blink 140ms ease-in-out 700ms 1;
+}
+
+.byte-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+
+.splash-run .byte-dot {
+  animation: byte-light 300ms ease-out 380ms forwards;
+}
+
+.splash-run .splash-rule {
+  animation: splash-rule 520ms cubic-bezier(0.22, 1, 0.36, 1) 860ms forwards;
+}
+
+.splash-leave {
+  transform: translateY(-100%);
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.splash-dismiss {
+  opacity: 0;
+  transition: opacity 180ms ease-out;
+}
+
+@keyframes byte-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes byte-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes byte-blink {
+  50% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes byte-light {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes splash-rule {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .byte {
+    height: 72px;
+    margin-bottom: 32px;
+  }
+}

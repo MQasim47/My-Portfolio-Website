@@ -1,3 +1,4 @@
+import Splash from './components/Splash';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -29,6 +30,7 @@ export default function HomePage() {
         // '<' is escaped so the JSON can never close the script tag
         dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSON_LD).replace(/</g, '\\u003c') }}
       />
+      <Splash />
       <Navbar />
 
       <main id="main" className="relative z-[1]">
