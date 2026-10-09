@@ -9,10 +9,26 @@ import ShippingRecord from './components/ShippingRecord';
 import Experience from './components/Experience';
 import Contact from './components/Contact';
 import { Container, MonoLabel } from './components/ui';
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SOCIAL } from '@/lib/site';
+
+const PERSON_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE_NAME,
+  url: SITE_URL,
+  jobTitle: 'Full-stack & mobile engineer',
+  description: SITE_DESCRIPTION,
+  sameAs: [SOCIAL.github, SOCIAL.linkedin],
+};
 
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        // '<' is escaped so the JSON can never close the script tag
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSON_LD).replace(/</g, '\\u003c') }}
+      />
       <Navbar />
 
       <main id="main" className="relative z-[1]">

@@ -6,6 +6,7 @@ import ParallaxController from './components/ParallaxController';
 import CursorGlow from './components/CursorGlow';
 import Magnetic from './components/Magnetic';
 import RegisterFade from './components/RegisterFade';
+import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from '@/lib/site';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Fonts — self-hosted, latin subset, variable. Only Bodoni Moda and Hanken
@@ -49,10 +50,8 @@ export const viewport: Viewport = {
 // ─────────────────────────────────────────────────────────────────────────────
 // Metadata
 // ─────────────────────────────────────────────────────────────────────────────
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-const TITLE = 'Muhammad Qasim | Full-stack & Mobile Engineer';
-const DESCRIPTION =
-  'Full-stack and mobile engineer building web apps and Flutter mobile apps, and shipping them to production.';
+const TITLE = SITE_TITLE;
+const DESCRIPTION = SITE_DESCRIPTION;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -60,16 +59,16 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   authors: [{ name: 'Muhammad Qasim' }],
   alternates: { canonical: '/' },
-  icons: { icon: '/favicon.svg' },
+  icons: { icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }] },
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
     url: '/',
-    siteName: 'Muhammad Qasim',
+    siteName: SITE_NAME,
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
   },
